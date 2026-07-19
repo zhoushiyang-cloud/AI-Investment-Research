@@ -32,6 +32,133 @@ except Exception:
     pass  # Credentials are optional — yfinance works without keys
 
 
+# ── Column Normalization ──────────────────────────────────────────────────────
+# Different providers use different column names for the same data.
+# This mapping ensures consumers (markdown.py, scripts) always find standard names.
+# Format: { standard_name: [possible provider-specific names] }
+
+_COLUMN_ALIASES: dict[str, list[str]] = {
+    # ── Income Statement ──
+    "total_revenue":       ["revenue", "total_revenue", "sales_revenue"],
+    "operating_income":   ["total_operating_income", "operating_income", "ebit"],
+    "net_income":          ["consolidated_net_income", "bottom_line_net_income",
+                            "net_income", "net_income_from_continuing_operations"],
+    "eps_diluted":         ["diluted_earnings_per_share", "eps_diluted", "diluted_eps"],
+    "eps_basic":           ["basic_earnings_per_share", "eps_basic", "basic_eps"],
+    "gross_profit":        ["gross_profit"],
+    "ebitda":              ["ebitda"],
+    "cost_of_revenue":     ["cost_of_revenue"],
+    "r_and_d":             ["research_and_development_expense", "research_and_development"],
+    "sga":                 ["selling_general_and_admin_expense", "general_and_admin_expense"],
+
+    # ── Balance Sheet ──
+    "total_assets":        ["total_assets"],
+    "total_liabilities":   ["total_liabilities"],
+    "total_equity":        ["total_common_equity", "total_equity",
+                            "total_equity_non_controlling_interests", "total_shareholders_equity"],
+    "total_debt":          ["total_debt"],
+    "net_debt":            ["net_debt"],
+    "cash_and_equivalents": ["cash_and_cash_equivalents", "cash_and_equivalents"],
+    "goodwill_intangibles": ["goodwill_and_intangible_assets", "goodwill_intangibles"],
+    "accounts_receivable": ["accounts_receivables", "accounts_receivable", "net_receivables"],
+    "inventory":           ["inventory"],
+    "total_current_assets": ["total_current_assets"],
+    "total_current_liabilities": ["total_current_liabilities"],
+
+    # ── Cash Flow ──
+    "operating_cash_flow": ["net_cash_from_operating_activities", "operating_cash_flow"],
+    "capital_expenditure": ["capital_expenditure", "purchase_of_property_plant_and_equipment"],
+    "free_cash_flow":     ["free_cash_flow"],
+    "depreciation_amortization": ["depreciation_and_amortization"],
+
+    # ── Valuation Multiples (from metrics + ratios) ──
+    "pe_ratio":           ["price_to_earnings", "pe_ratio", "pe_ttm"],
+    "pb_ratio":           ["price_to_book", "pb_ratio", "pb_ttm"],
+    "ps_ratio":           ["price_to_sales", "ps_ratio", "ps_ttm"],
+    "price_to_fcf":       ["price_to_free_cash_flow", "price_to_fcf"],
+    "peg_ratio":          ["price_to_earnings_growth", "peg_ratio"],
+    "ev_to_ebitda":       ["ev_to_ebitda", "enterprise_value_over_ebitda"],
+    "ev_to_sales":        ["ev_to_sales"],
+    "ev_to_fcf":          ["ev_to_free_cash_flow", "ev_to_fcf"],
+
+    # ── Profitability ──
+    "gross_margin":       ["gross_profit_margin", "gross_margin"],
+    "operating_margin":   ["operating_profit_margin", "operating_margin", "ebit_margin"],
+    "net_margin":         ["net_profit_margin", "net_margin", "bottom_line_profit_margin"],
+    "ebitda_margin":      ["ebitda_margin"],
+    "roe":                ["return_on_equity", "roe"],
+    "roa":                ["return_on_assets", "roa"],
+    "roic":               ["return_on_invested_capital", "roic"],
+    "earnings_yield":     ["earnings_yield"],
+    "fcf_yield":          ["free_cash_flow_yield", "fcf_yield"],
+
+    # ── Growth ──
+    "revenue_growth":     ["revenue_growth", "revenue_growth_yoy"],
+
+    # ── Financial Health ──
+    "debt_to_equity":     ["debt_to_equity", "debt_to_equity_ratio"],
+    "current_ratio":      ["current_ratio"],
+    "dividend_yield":     ["dividend_yield", "dividend_yield_percent"],
+
+    # ── Profile ──
+    "market_cap":         ["market_cap", "market_capitalization"],
+    "enterprise_value":   ["enterprise_value"],
+    "shares_outstanding": ["weighted_average_diluted_shares_outstanding",
+                           "shares_outstanding", "weighted_average_shares"],
+    "full_time_employees": ["full_time_employees", "employees"],
+    "sector":             ["sector"],
+    "industry":           ["industry"],
+    "name":               ["name", "company_name", "long_name"],
+    "country":            ["country"],
+    "website":            ["website", "website_url"],
+}
+
+
+def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Add standard column name aliases to a DataFrame.
+
+    For each standard name, if any of its provider-specific aliases exists
+    as a column, add a copy under the standard name. Original columns preserved.
+
+    Args:
+        df: DataFrame from any OpenBB provider.
+
+    Returns:
+        Same DataFrame with standard column aliases added.
+    """
+    if df is None or df.empty:
+        return df
+
+    df = df.copy()
+    for standard_name, aliases in _COLUMN_ALIASES.items():
+        for alias in aliases:
+            if alias in df.columns and standard_name not in df.columns:
+                df[standard_name] = df[alias]
+                break
+    return df
+
+
+def _col(df: pd.DataFrame, *names: str) -> Any:
+    """Safely get the first matching column value from a DataFrame row.
+
+    Args:
+        df: DataFrame with one row.
+        names: Column names to try, in priority order.
+
+    Returns:
+        First non-NaN value found, or None.
+    """
+    if df is None or df.empty:
+        return None
+    row = df.iloc[0]
+    for name in names:
+        if name in df.columns:
+            val = row[name]
+            if val is not None and not (isinstance(val, float) and pd.isna(val)):
+                return val
+    return None
+
+
 # ── Internal helpers ─────────────────────────────────────────────────────────
 
 def _safe_result(result, default: Any = None) -> Any:
@@ -68,15 +195,17 @@ def _to_df(result, **kwargs) -> pd.DataFrame:
     if result is None:
         return pd.DataFrame()
     try:
-        return result.to_dataframe(**kwargs)  # type: ignore[union-attr]
+        df = result.to_dataframe(**kwargs)  # type: ignore[union-attr]
+        return _normalize_columns(df)
     except Exception:
         # Fallback: try to build DataFrame from results list
         data = _safe_result(result)
         if isinstance(data, pd.DataFrame):
-            return data
+            return _normalize_columns(data)
         if isinstance(data, list) and len(data) > 0:
             try:
-                return pd.DataFrame([d.model_dump() if hasattr(d, "model_dump") else d for d in data])
+                df = pd.DataFrame([d.model_dump() if hasattr(d, "model_dump") else d for d in data])
+                return _normalize_columns(df)
             except Exception:
                 pass
         return pd.DataFrame()
@@ -133,7 +262,7 @@ def get_price_history(
         interval: '1m', '5m', '15m', '30m', '1h', '1d', '1wk', '1mo'.
         provider: Override the default provider.
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "tiingo")
+    p = _resolve_provider(provider, "fmp", "tiingo", "yfinance")
     if start is None:
         start = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
     if isinstance(start, datetime):
@@ -158,7 +287,7 @@ def get_profile(ticker: str, provider: str | None = None) -> pd.DataFrame:
 
     OpenBB: obb.equity.profile()
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio")
     try:
         return _to_df(obb.equity.profile(ticker, provider=p))
     except Exception as e:
@@ -181,7 +310,7 @@ def get_income_statement(
         period: 'annual' or 'quarter'.
         limit: Number of periods to return.
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio", "sec")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
     try:
         return _to_df(obb.equity.fundamental.income(
             ticker, period=period, limit=limit, provider=p,
@@ -201,7 +330,7 @@ def get_balance_sheet(
 
     OpenBB: obb.equity.fundamental.balance()
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio", "sec")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
     try:
         return _to_df(obb.equity.fundamental.balance(
             ticker, period=period, limit=limit, provider=p,
@@ -221,7 +350,7 @@ def get_cash_flow(
 
     OpenBB: obb.equity.fundamental.cash()
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio", "sec")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
     try:
         return _to_df(obb.equity.fundamental.cash(
             ticker, period=period, limit=limit, provider=p,
@@ -240,8 +369,9 @@ def get_key_metrics(
     """Get key financial metrics: P/E, P/B, ROE, ROA, margins, etc.
 
     OpenBB: obb.equity.fundamental.metrics()
+    FMP provides richer metrics than yfinance.
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio")
     try:
         return _to_df(obb.equity.fundamental.metrics(
             ticker, period=period, limit=limit, provider=p,
@@ -300,7 +430,7 @@ def get_estimates_consensus(
     OpenBB: obb.equity.estimates.consensus()
     Works with yfinance (free) and fmp (premium).
     """
-    p = _resolve_provider(provider, "yfinance", "fmp")
+    p = _resolve_provider(provider, "fmp", "yfinance")
     try:
         return _to_df(obb.equity.estimates.consensus(ticker, provider=p))
     except Exception as e:
@@ -345,7 +475,7 @@ def get_news(
         end: End date. Default: today.
         limit: Max articles to return.
     """
-    p = _resolve_provider(provider, "yfinance", "benzinga", "fmp", "tiingo")
+    p = _resolve_provider(provider, "tiingo", "yfinance", "fmp", "benzinga")
     if start is None:
         start = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
     if isinstance(start, datetime):
@@ -374,18 +504,19 @@ def get_sec_filings(
     """Get SEC EDGAR filings for a company.
 
     OpenBB: obb.equity.fundamental.filings()
-    SEC provider is free.
+    SEC provider is free. FMP also available.
 
     Args:
         ticker: Stock symbol.
         form_type: Filter by form type (e.g., '10-K', '10-Q', '8-K'). None = all.
         limit: Max filings to return.
     """
-    p = _resolve_provider(provider, "sec", "fmp")
+    p = _resolve_provider(provider, "fmp", "sec")
     try:
-        return _to_df(obb.equity.fundamental.filings(
-            ticker, form_type=form_type, limit=limit, provider=p,
-        ))
+        kwargs = {"symbol": ticker, "limit": limit, "provider": p}
+        if form_type is not None:
+            kwargs["form_type"] = form_type
+        return _to_df(obb.equity.fundamental.filings(**kwargs))
     except Exception as e:
         warnings.warn(f"get_sec_filings({ticker}) failed with {p}: {e}")
         return pd.DataFrame()
@@ -440,7 +571,8 @@ def get_peer_metrics(
 ) -> pd.DataFrame:
     """Get key metrics for a list of peer tickers.
 
-    Fetches metrics for each ticker and combines into a comparison table.
+    Fetches metrics + ratios for each ticker and combines into a comparison table.
+    Uses FMP ratios for valuation multiples when available.
 
     Args:
         tickers: List of ticker symbols.
@@ -454,26 +586,33 @@ def get_peer_metrics(
         try:
             profile = get_profile(t, provider=provider)
             metrics = get_key_metrics(t, limit=1, provider=provider)
+            ratios = get_ratios(t, limit=1, provider=provider)
 
             row: dict[str, Any] = {"ticker": t.upper()}
 
             if not profile.empty:
-                row["name"] = profile.iloc[0].get("name", t)
-                row["sector"] = profile.iloc[0].get("sector", "")
-                row["market_cap"] = profile.iloc[0].get("market_cap", None)
+                row["name"] = _col(profile, "name", "company_name")
+                row["sector"] = _col(profile, "sector")
+                row["market_cap"] = _col(profile, "market_cap")
 
-            if not metrics.empty:
-                m = metrics.iloc[0]
-                row["pe_ratio"] = m.get("pe_ratio", None)
-                row["pb_ratio"] = m.get("pb_ratio", None)
-                row["ps_ratio"] = m.get("ps_ratio", None)
-                row["ev_to_ebitda"] = m.get("ev_to_ebitda", None)
-                row["roe"] = m.get("roe", None)
-                row["roa"] = m.get("roa", None)
-                row["revenue_growth"] = m.get("revenue_growth", None)
-                row["gross_margin"] = m.get("gross_margin", None)
-                row["operating_margin"] = m.get("operating_margin", None)
-                row["net_margin"] = m.get("net_margin", None)
+            # Merge metrics + ratios: ratios has P/E, P/B, etc. (FMP)
+            for source in [metrics, ratios]:
+                if source is None or source.empty:
+                    continue
+                m = source.iloc[0]
+                for field in [
+                    "pe_ratio", "pb_ratio", "ps_ratio", "price_to_fcf",
+                    "ev_to_ebitda", "ev_to_sales", "peg_ratio",
+                    "roe", "roa", "roic",
+                    "gross_margin", "operating_margin", "net_margin",
+                    "revenue_growth",
+                    "debt_to_equity", "current_ratio", "dividend_yield",
+                    "earnings_yield", "fcf_yield",
+                ]:
+                    if field in source.columns and field not in row:
+                        val = m[field]
+                        if val is not None and not (isinstance(val, float) and pd.isna(val)):
+                            row[field] = val
 
             all_metrics.append(row)
         except Exception as e:
@@ -529,10 +668,13 @@ def fetch_all_for_ticker(
     data["balance"] = get_balance_sheet(ticker, provider=provider)
     data["cashflow"] = get_cash_flow(ticker, provider=provider)
     data["metrics"] = get_key_metrics(ticker, provider=provider)
+    data["ratios"] = get_ratios(ticker, provider=provider)
     data["estimates"] = get_estimates_consensus(ticker, provider=provider)
 
-    # News
-    data["news"] = get_news(ticker, days=days_of_news, provider=provider)
+    # News — convert days to date range
+    end_date = datetime.now().strftime("%Y-%m-%d")
+    start_date = (datetime.now() - timedelta(days=days_of_news)).strftime("%Y-%m-%d")
+    data["news"] = get_news(ticker, start=start_date, end=end_date, limit=50, provider=provider)
 
     # SEC
     data["filings"] = get_sec_filings(ticker, limit=10, provider=provider)

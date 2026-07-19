@@ -63,12 +63,19 @@ def main() -> None:
         if income is not None and not income.empty and "total_revenue" in income.columns:
             rev = income.iloc[0]["total_revenue"]
             if rev and not (hasattr(rev, 'isna') and rev.isna()):
-                rev_str = f"${rev:,.0f}M"
+                if rev > 1e12:
+                    rev_str = f"${rev/1e12:.1f}T"
+                elif rev > 1e9:
+                    rev_str = f"${rev/1e9:.1f}B"
+                elif rev > 1e6:
+                    rev_str = f"${rev/1e6:.0f}M"
+                else:
+                    rev_str = f"${rev:,.0f}"
 
-        print(f"  ✅ {name} ({ticker}) — Revenue: {rev_str}")
-        print(f"  📄 Saved to {md_path}")
+        print(f"  [OK] {name} ({ticker}) - Revenue: {rev_str}")
+        print(f"  Saved to {md_path}")
 
-    print(f"\n✅ Done. Updated {len(tickers)} company file(s).")
+    print(f"\n[Done] Updated {len(tickers)} company file(s).")
 
 
 if __name__ == "__main__":

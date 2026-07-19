@@ -15,12 +15,34 @@ import pandas as pd
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
+def _col(df: pd.DataFrame, *names: str, default: Any = None) -> Any:
+    """Safely get the first matching column value from a DataFrame's first row.
+
+    Args:
+        df: DataFrame with at least one row.
+        names: Column names to try, in priority order.
+        default: Value to return if no matching column found.
+
+    Returns:
+        First non-NaN value found, or default.
+    """
+    if df is None or df.empty:
+        return default
+    row = df.iloc[0]
+    for name in names:
+        if name in df.columns:
+            val = row[name]
+            if val is not None and not (isinstance(val, float) and pd.isna(val)):
+                return val
+    return default
+
+
 def _fmt(value: Any, unit: str = "", decimals: int = 1) -> str:
     """Format a numeric value for display.
 
     Args:
         value: The value to format.
-        unit: Suffix (e.g., 'B', 'M', '%').
+        unit: Suffix (e.g., 'B', 'M', '%', 'T').
         decimals: Number of decimal places.
 
     Returns:
@@ -32,13 +54,32 @@ def _fmt(value: Any, unit: str = "", decimals: int = 1) -> str:
         num = float(value)
         if pd.isna(num):
             return "—"
-        if unit == "%" and decimals == 0:
-            return f"{num:.0f}%"
+        if unit == "%":
+            # Values come as ratios (0.74 = 74%), multiply by 100
+            display = num * 100 if abs(num) < 10 else num
+            return f"{display:.{decimals}f}%"
+        if unit == "T":
+            # Auto-scale to T/B/M
+            if abs(num) >= 1e12:
+                return f"${num/1e12:.{decimals}f}T"
+            elif abs(num) >= 1e9:
+                return f"${num/1e9:.{decimals}f}B"
+            elif abs(num) >= 1e6:
+                return f"${num/1e6:.{decimals}f}M"
+            return f"${num:,.{decimals}f}"
         if unit == "B":
-            return f"${num:.{decimals}f}B"
+            if abs(num) >= 1e12:
+                return f"${num/1e12:.{decimals}f}T"
+            return f"${num/1e9:.{decimals}f}B"
         if unit == "M":
-            return f"${num:.{decimals}f}M"
+            return f"${num/1e6:.{decimals}f}M"
         if unit == "$":
+            if abs(num) >= 1e12:
+                return f"${num/1e12:.{decimals}f}T"
+            elif abs(num) >= 1e9:
+                return f"${num/1e9:.{decimals}f}B"
+            elif abs(num) >= 1e6:
+                return f"${num/1e6:.{decimals}f}M"
             return f"${num:,.{decimals}f}"
         if decimals == 0:
             return f"{num:,.0f}"
@@ -122,6 +163,7 @@ def generate_company_md(
     ticker = ticker.upper()
     profile = data.get("profile", pd.DataFrame())
     metrics = data.get("metrics", pd.DataFrame())
+    ratios = data.get("ratios", pd.DataFrame())
     income = data.get("income", pd.DataFrame())
     balance = data.get("balance", pd.DataFrame())
     cashflow = data.get("cashflow", pd.DataFrame())
@@ -130,10 +172,17 @@ def generate_company_md(
     filings = data.get("filings", pd.DataFrame())
     peers = data.get("peers", [])
 
+    # Merge metrics + ratios for complete data access
+    combined = metrics.copy() if not metrics.empty else pd.DataFrame()
+    if not ratios.empty:
+        for col in ratios.columns:
+            if col not in combined.columns:
+                combined[col] = ratios[col].values[:len(combined)] if len(combined) > 0 else ratios[col]
+
     lines: list[str] = []
 
     # ── Header ──
-    lines.append(f"# {ticker} — {_extract(profile, 'name', ticker)}")
+    lines.append(f"# {ticker} — {_col(profile, 'name', 'company_name', default=ticker)}")
     lines.append("")
     lines.append(f"> *Auto-generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}*")
     lines.append("")
@@ -144,40 +193,47 @@ def generate_company_md(
 
     overview_rows: list[tuple[str, str]] = [
         ("Ticker", ticker),
-        ("Name", str(_extract(profile, "name", "—"))),
-        ("Sector", str(_extract(profile, "sector", "—"))),
-        ("Industry", str(_extract(profile, "industry", "—"))),
-        ("Market Cap", _fmt(_extract(profile, "market_cap"), unit="B")),
-        ("Employees", _fmt(_extract(profile, "full_time_employees"), decimals=0)),
-        ("Country", str(_extract(profile, "country", "—"))),
-        ("Website", str(_extract(profile, "website", "—"))),
+        ("Name", str(_col(profile, "name", "company_name", default="—"))),
+        ("Sector", str(_col(profile, "sector", default="—"))),
+        ("Industry", str(_col(profile, "industry", default="—"))),
+        ("Market Cap", _fmt(_col(combined, "market_cap"), unit="T")),
+        ("Enterprise Value", _fmt(_col(combined, "enterprise_value"), unit="T")),
+        ("Employees", _fmt(_col(profile, "full_time_employees"), decimals=0)),
+        ("Country", str(_col(profile, "country", default="—"))),
+        ("Website", str(_col(profile, "website", default="—"))),
     ]
     lines.append(_kv_section("Profile", overview_rows))
 
     # ── Key Metrics ──
-    if not metrics.empty:
+    if not combined.empty:
         lines.append("## Key Metrics (TTM)")
         lines.append("")
-        m = metrics.iloc[0]
         metric_rows: list[tuple[str, str]] = [
-            ("P/E Ratio", _fmt(m.get("pe_ratio"))),
-            ("P/B Ratio", _fmt(m.get("pb_ratio"))),
-            ("P/S Ratio", _fmt(m.get("ps_ratio"))),
-            ("EV/EBITDA", _fmt(m.get("ev_to_ebitda"))),
-            ("ROE", _fmt(m.get("roe"), unit="%")),
-            ("ROA", _fmt(m.get("roa"), unit="%")),
-            ("Gross Margin", _fmt(m.get("gross_margin"), unit="%")),
-            ("Operating Margin", _fmt(m.get("operating_margin"), unit="%")),
-            ("Net Margin", _fmt(m.get("net_margin"), unit="%")),
-            ("Revenue Growth (YoY)", _fmt(m.get("revenue_growth"), unit="%")),
-            ("Debt/Equity", _fmt(m.get("debt_to_equity"))),
-            ("Current Ratio", _fmt(m.get("current_ratio"))),
+            ("P/E Ratio", _fmt(_col(combined, "pe_ratio", "price_to_earnings"))),
+            ("P/B Ratio", _fmt(_col(combined, "pb_ratio", "price_to_book"))),
+            ("P/S Ratio", _fmt(_col(combined, "ps_ratio", "price_to_sales"))),
+            ("P/FCF Ratio", _fmt(_col(combined, "price_to_fcf", "price_to_free_cash_flow"))),
+            ("PEG Ratio", _fmt(_col(combined, "peg_ratio", "price_to_earnings_growth"))),
+            ("EV/EBITDA", _fmt(_col(combined, "ev_to_ebitda"))),
+            ("EV/Sales", _fmt(_col(combined, "ev_to_sales"))),
+            ("ROE", _fmt(_col(combined, "roe", "return_on_equity"), unit="%")),
+            ("ROA", _fmt(_col(combined, "roa", "return_on_assets"), unit="%")),
+            ("ROIC", _fmt(_col(combined, "roic", "return_on_invested_capital"), unit="%")),
+            ("Gross Margin", _fmt(_col(combined, "gross_margin", "gross_profit_margin"), unit="%")),
+            ("Operating Margin", _fmt(_col(combined, "operating_margin", "operating_profit_margin"), unit="%")),
+            ("Net Margin", _fmt(_col(combined, "net_margin", "net_profit_margin"), unit="%")),
+            ("EBITDA Margin", _fmt(_col(combined, "ebitda_margin"), unit="%")),
+            ("Debt/Equity", _fmt(_col(combined, "debt_to_equity"))),
+            ("Current Ratio", _fmt(_col(combined, "current_ratio"))),
+            ("Dividend Yield", _fmt(_col(combined, "dividend_yield"), unit="%")),
+            ("Earnings Yield", _fmt(_col(combined, "earnings_yield"), unit="%")),
+            ("FCF Yield", _fmt(_col(combined, "fcf_yield", "free_cash_flow_yield"), unit="%")),
         ]
         lines.append(_kv_section("Valuation & Profitability", metric_rows))
     else:
         lines.append("## Key Metrics")
         lines.append("")
-        lines.append("*Metrics data not available — check provider configuration.*")
+        lines.append("*Metrics data not available.*")
         lines.append("")
 
     # ── Financial Statements ──
@@ -188,21 +244,24 @@ def generate_company_md(
         lines.append("### Income Statement (Annual)")
         lines.append("")
         income_cols = ["period_ending", "total_revenue", "gross_profit",
-                       "operating_income", "net_income", "eps_diluted"]
+                       "operating_income", "net_income", "eps_diluted",
+                       "ebitda", "cost_of_revenue", "r_and_d"]
         lines.append(_df_to_md_table(income, income_cols))
 
     if not balance.empty:
         lines.append("### Balance Sheet (Annual)")
         lines.append("")
         balance_cols = ["period_ending", "total_assets", "total_liabilities",
-                        "total_equity", "total_debt", "cash_and_equivalents"]
+                        "total_equity", "total_debt", "net_debt",
+                        "cash_and_equivalents", "goodwill_intangibles"]
         lines.append(_df_to_md_table(balance, balance_cols))
 
     if not cashflow.empty:
         lines.append("### Cash Flow (Annual)")
         lines.append("")
         cf_cols = ["period_ending", "operating_cash_flow",
-                    "capital_expenditure", "free_cash_flow"]
+                    "capital_expenditure", "free_cash_flow",
+                    "depreciation_amortization"]
         lines.append(_df_to_md_table(cashflow, cf_cols))
 
     # ── Analyst Estimates ──
@@ -235,7 +294,15 @@ def generate_company_md(
         lines.append("## Peers")
         lines.append("")
         if isinstance(peers, list):
-            lines.append(", ".join(str(p) for p in peers))
+            peer_names = []
+            for p in peers:
+                if hasattr(p, 'name'):
+                    peer_names.append(f"{getattr(p, 'symbol', '')} ({getattr(p, 'name', '')})")
+                elif hasattr(p, 'symbol'):
+                    peer_names.append(str(p.symbol))
+                else:
+                    peer_names.append(str(p))
+            lines.append(", ".join(peer_names))
             lines.append("")
 
     # ── Manual Sections (preserved placeholders) ──

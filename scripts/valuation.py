@@ -135,15 +135,17 @@ def auto_dcf_params(ticker: str, discount_rate: float = 0.10,
         print(f"  ⚠️  Cannot derive positive FCF for {ticker}. Using estimate.")
         fcf = 10_000  # Fallback
 
-    # Revenue growth from income statement
-    income = get_income_statement(ticker, period="annual", limit=3)
+    # Revenue growth from income statement (CAGR over historical periods)
+    income = get_income_statement(ticker, period="annual", limit=5)
     growth_rate = 0.15  # Default 15%
     if not income.empty and "total_revenue" in income.columns and len(income) >= 2:
+        # Sort oldest-first for correct CAGR computation
+        if "period_ending" in income.columns:
+            income = income.sort_values("period_ending")
         revs = income["total_revenue"].dropna().values
-        if len(revs) >= 2 and revs[-1] > 0:
-            # Simple CAGR between oldest and newest
-            cagr = (revs[0] / revs[-1]) ** (1 / (len(revs) - 1)) - 1 if revs[-1] > 0 else 0.15
-            growth_rate = max(0.05, min(0.50, cagr))  # Clamp 5%-50%
+        if len(revs) >= 2 and revs[0] > 0:
+            cagr = (revs[-1] / revs[0]) ** (1 / (len(revs) - 1)) - 1
+            growth_rate = max(0.03, min(0.60, cagr))  # Clamp 3%-60%
 
     # Shares outstanding from metrics
     metrics = get_key_metrics(ticker, limit=1)
@@ -236,8 +238,11 @@ def run_comps(ticker: str, peers: list[str] | None = None) -> CompsResult | None
     target_row = df[df["ticker"] == ticker.upper()]
     peer_rows = df[df["ticker"] != ticker.upper()]
 
-    median_pe = peer_rows["pe_ratio"].dropna().median()
-    median_ev_ebitda = peer_rows["ev_to_ebitda"].dropna().median()
+    # Filter: only positive P/E (negative = unprofitable, doesn't make sense for comps)
+    valid_pe = peer_rows[peer_rows["pe_ratio"] > 0]["pe_ratio"] if "pe_ratio" in peer_rows else pd.Series()
+    median_pe = valid_pe.dropna().median() if len(valid_pe) > 0 else None
+    valid_ev = peer_rows[peer_rows["ev_to_ebitda"] > 0]["ev_to_ebitda"] if "ev_to_ebitda" in peer_rows else pd.Series()
+    median_ev_ebitda = valid_ev.dropna().median() if len(valid_ev) > 0 else None
 
     # Implied prices
     target_eps = target_row.iloc[0].get("pe_ratio")
