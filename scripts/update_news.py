@@ -138,16 +138,16 @@ def main() -> None:
             print(f"  ℹ️  No news found for {ticker}.")
             continue
 
-        print(f"  📰 Fetched {len(news_df)} articles")
+        print(f"  [News] Fetched {len(news_df)} articles")
 
         # Save JSON
         json_path = save_news_json(ticker, news_df)
         if json_path:
-            print(f"  💾 Saved to {json_path}")
+            print(f"  [Save] Saved to {json_path}")
 
         # Append to company .md
         appended = append_news_to_md(ticker, news_df)
-        print(f"  📄 Appended {appended} articles to companies/{ticker}.md")
+        print(f"  [Append] Appended {appended} articles to companies/{ticker}.md")
 
     print(f"\n✅ Done.")
 

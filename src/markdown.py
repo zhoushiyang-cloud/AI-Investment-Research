@@ -167,6 +167,8 @@ def generate_company_md(
     income = data.get("income", pd.DataFrame())
     balance = data.get("balance", pd.DataFrame())
     cashflow = data.get("cashflow", pd.DataFrame())
+    price_history = data.get("price_history", pd.DataFrame())
+    quote = data.get("quote", pd.DataFrame())
     estimates = data.get("estimates", pd.DataFrame())
     news = data.get("news", pd.DataFrame())
     filings = data.get("filings", pd.DataFrame())
@@ -263,6 +265,52 @@ def generate_company_md(
                     "capital_expenditure", "free_cash_flow",
                     "depreciation_amortization"]
         lines.append(_df_to_md_table(cashflow, cf_cols))
+
+    # ── Price & K-line Data ──
+    if not quote.empty:
+        lines.append("## Current Price")
+        lines.append("")
+        price_rows: list[tuple[str, str]] = []
+        for field, label in [
+            ("last_price", "Last Price"), ("open", "Open"), ("high", "High"),
+            ("low", "Low"), ("prev_close", "Previous Close"),
+            ("change_percent", "Change %"), ("volume", "Volume"),
+            ("year_high", "52-Week High"), ("year_low", "52-Week Low"),
+            ("ma50", "50-Day MA"), ("ma200", "200-Day MA"),
+            ("market_cap", "Market Cap"),
+        ]:
+            val = _col(quote, field)
+            if val is not None:
+                if field == "volume":
+                    price_rows.append((label, f"{val:,.0f}"))
+                elif field == "change_percent":
+                    price_rows.append((label, _fmt(val, unit="%")))
+                elif field in ("market_cap",):
+                    price_rows.append((label, _fmt(val, unit="T")))
+                elif val > 1e9:
+                    price_rows.append((label, _fmt(val, unit="T")))
+                else:
+                    price_rows.append((label, _fmt(val, unit="$")))
+        lines.append(_kv_section("Quote", price_rows))
+
+    if not price_history.empty and len(price_history) >= 5:
+        lines.append("## Price History (K-Line)")
+        lines.append("")
+        ph = price_history
+        # Find date column
+        date_col = None
+        for c in ["date", "index"]:
+            if c in ph.columns:
+                date_col = c
+                break
+        # Show recent 10 rows
+        display_cols = [date_col] if date_col else []
+        for c in ["open", "high", "low", "close", "volume"]:
+            if c in ph.columns:
+                display_cols.append(c)
+        available_cols = [c for c in display_cols if c in ph.columns]
+        lines.append(_df_to_md_table(ph.tail(10), available_cols))
+        lines.append("")
 
     # ── Analyst Estimates ──
     if not estimates.empty:

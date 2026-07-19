@@ -79,7 +79,7 @@ def main() -> None:
         sys.exit(1)
 
     print(f"\n{'='*60}")
-    print(f"  🚀 AI Investment System — Pipeline Start")
+    print(f"  AI Investment System - Pipeline Start")
     print(f"  Tickers: {', '.join(tickers)}")
     print(f"  Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'='*60}")
@@ -144,7 +144,7 @@ def main() -> None:
     # ── Summary ──
     total_elapsed = time.time() - pipeline_start
     print(f"\n{'='*60}")
-    print(f"  📊 Pipeline Summary")
+    print(f"  Pipeline Summary")
     print(f"{'='*60}")
 
     success_count = 0
@@ -153,15 +153,15 @@ def main() -> None:
         t = results.get(ticker, {})
         statuses = []
         if "company" in t:
-            statuses.append("📄" if t["company"] else "❌")
+            statuses.append("[OK]" if t["company"] else "[FAIL]")
         if "news" in t:
-            statuses.append("📰" if t["news"] else "❌")
+            statuses.append("[OK]" if t["news"] else "[FAIL]")
         if "valuation" in t:
-            statuses.append("💰" if t["valuation"] else "❌")
+            statuses.append("[OK]" if t["valuation"] else "[FAIL]")
         if "report" in t:
-            statuses.append("📝" if t["report"] else "❌")
+            statuses.append("[OK]" if t["report"] else "[FAIL]")
 
-        failed = sum(1 for s in statuses if s == "❌")
+        failed = sum(1 for s in statuses if s == "[FAIL]")
         if failed == 0:
             success_count += 1
             print(f"  ✅ {ticker}: {' '.join(statuses)} — All steps passed")

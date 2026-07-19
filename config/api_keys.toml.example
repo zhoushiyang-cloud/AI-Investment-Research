@@ -34,3 +34,10 @@ model = "gpt-4o"
 [anthropic]
 api_key = "sk-ant-your-anthropic-key"
 model = "claude-sonnet-4-20250514"
+
+[deepseek]
+# DeepSeek — https://platform.deepseek.com/
+# API is OpenAI-compatible. Same key used in Claude Code `cc switch`.
+api_key = "sk-your-deepseek-key"
+base_url = "https://api.deepseek.com/v1"
+model = "deepseek-chat"

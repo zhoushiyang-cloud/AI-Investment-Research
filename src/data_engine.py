@@ -196,12 +196,22 @@ def _to_df(result, **kwargs) -> pd.DataFrame:
         return pd.DataFrame()
     try:
         df = result.to_dataframe(**kwargs)  # type: ignore[union-attr]
+        # Move date index to column if present
+        if isinstance(df.index, pd.DatetimeIndex) or (
+            hasattr(df.index, 'dtype') and 'date' in str(df.index.dtype).lower()
+        ):
+            df = df.reset_index()
+        if df.index.name == 'date' or 'date' in str(df.index.dtype).lower():
+            df = df.reset_index()
         return _normalize_columns(df)
     except Exception:
         # Fallback: try to build DataFrame from results list
         data = _safe_result(result)
         if isinstance(data, pd.DataFrame):
-            return _normalize_columns(data)
+            df = data
+            if isinstance(df.index, pd.DatetimeIndex):
+                df = df.reset_index()
+            return _normalize_columns(df)
         if isinstance(data, list) and len(data) > 0:
             try:
                 df = pd.DataFrame([d.model_dump() if hasattr(d, "model_dump") else d for d in data])
@@ -236,7 +246,7 @@ def get_quote(ticker: str, provider: str | None = None) -> pd.DataFrame:
 
     OpenBB: obb.equity.price.quote()
     """
-    p = _resolve_provider(provider, "yfinance", "fmp", "intrinio")
+    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio")
     try:
         return _to_df(obb.equity.price.quote(ticker, provider=p))
     except Exception as e:

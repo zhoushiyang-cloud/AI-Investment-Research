@@ -129,17 +129,17 @@ def run_claude(prompt: str, config: dict) -> str | None:
     try:
         from anthropic import Anthropic
     except ImportError:
-        print("  ⚠️  anthropic package not installed. Run: pip install anthropic")
+        print("  [WARN] anthropic package not installed. Run: pip install anthropic")
         return None
 
     api_key = config.get("anthropic", {}).get("api_key", "")
     model = config.get("anthropic", {}).get("model", "claude-sonnet-4-20250514")
 
     if not api_key:
-        print("  ⚠️  No Anthropic API key configured in config/api_keys.toml")
+        print("  [WARN] No Anthropic API key configured in config/api_keys.toml")
         return None
 
-    print(f"  🤖 Calling Claude ({model})...")
+    print(f"  [LLM] Calling Claude ({model})...")
 
     try:
         client = Anthropic(api_key=api_key)
@@ -154,7 +154,7 @@ def run_claude(prompt: str, config: dict) -> str | None:
                 return block.text
         return str(response.content[0])
     except Exception as e:
-        print(f"  ❌ Claude API error: {e}")
+        print(f"  [Error]Claude API error: {e}")
         return None
 
 
@@ -171,17 +171,17 @@ def run_openai(prompt: str, config: dict) -> str | None:
     try:
         from openai import OpenAI
     except ImportError:
-        print("  ⚠️  openai package not installed. Run: pip install openai")
+        print("  [WARN] openai package not installed. Run: pip install openai")
         return None
 
     api_key = config.get("openai", {}).get("api_key", "")
     model = config.get("openai", {}).get("model", "gpt-4o")
 
     if not api_key:
-        print("  ⚠️  No OpenAI API key configured in config/api_keys.toml")
+        print("  [WARN] No OpenAI API key configured in config/api_keys.toml")
         return None
 
-    print(f"  🤖 Calling OpenAI ({model})...")
+    print(f"  [LLM] Calling OpenAI ({model})...")
 
     try:
         client = OpenAI(api_key=api_key)
@@ -192,7 +192,52 @@ def run_openai(prompt: str, config: dict) -> str | None:
         )
         return response.choices[0].message.content
     except Exception as e:
-        print(f"  ❌ OpenAI API error: {e}")
+        print(f"  [Error] OpenAI API: {e}")
+        return None
+
+
+def run_deepseek(prompt: str, config: dict) -> str | None:
+    """Call DeepSeek API for report generation.
+
+    DeepSeek's API is OpenAI-compatible (https://api.deepseek.com/v1).
+    Use your DeepSeek API key — the same one you configured in Claude Code
+    via `cc switch`.
+
+    Args:
+        prompt: The analysis prompt.
+        config: Full config dict.
+
+    Returns:
+        Generated report text, or None on failure.
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        print("  [WARN] openai package not installed. Run: pip install openai")
+        return None
+
+    api_key = config.get("deepseek", {}).get("api_key", "")
+    model = config.get("deepseek", {}).get("model", "deepseek-chat")
+    base_url = config.get("deepseek", {}).get("base_url", "https://api.deepseek.com/v1")
+
+    if not api_key:
+        print("  [WARN] No DeepSeek API key configured in config/api_keys.toml")
+        print("  Add [deepseek] section with api_key and base_url.")
+        return None
+
+    print(f"  [LLM] Calling DeepSeek ({model}) via {base_url}...")
+
+    try:
+        client = OpenAI(api_key=api_key, base_url=base_url)
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=4096,
+            temperature=0.3,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"  [Error] DeepSeek API: {e}")
         return None
 
 
@@ -200,9 +245,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate LLM investment research reports")
     parser.add_argument("--ticker", type=str, help="Single ticker to analyze")
     parser.add_argument("--all", action="store_true", help="Generate for all tracked companies")
-    parser.add_argument("--provider", type=str, default="anthropic",
-                        choices=["anthropic", "openai"],
-                        help="LLM provider (default: anthropic)")
+    parser.add_argument("--provider", type=str, default="deepseek",
+                        choices=["anthropic", "openai", "deepseek"],
+                        help="LLM provider (default: deepseek)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show prompt without calling LLM")
     args = parser.parse_args()
@@ -224,11 +269,11 @@ def main() -> None:
 
     for ticker in tickers:
         print(f"\n{'='*60}")
-        print(f"  📝 Generating Report: {ticker}")
+        print(f"  Generating Report: {ticker}")
         print(f"{'='*60}")
 
         # Fetch all data
-        print(f"  📊 Fetching data...")
+        print(f"  [Data] Fetching financials, metrics, news...")
         data = fetch_all_for_ticker(ticker)
 
         # Build prompt
@@ -237,18 +282,20 @@ def main() -> None:
         if args.dry_run:
             prompt_path = reports_dir / f"{ticker}_prompt_{datetime.now().strftime('%Y-%m-%d')}.md"
             prompt_path.write_text(prompt, encoding="utf-8")
-            print(f"  📄 Prompt saved to {prompt_path}")
-            print(f"  ℹ️  Dry run — no LLM called.")
+            print(f"  [DryRun] Prompt saved to {prompt_path}")
+            print(f"  [DryRun] No LLM called.")
             continue
 
         # Call LLM
-        if args.provider == "anthropic":
-            analysis = run_claude(prompt, config)
-        else:
+        if args.provider == "deepseek":
+            analysis = run_deepseek(prompt, config)
+        elif args.provider == "openai":
             analysis = run_openai(prompt, config)
+        else:
+            analysis = run_claude(prompt, config)
 
         if analysis is None:
-            print(f"  ⚠️  Report generation failed for {ticker}.")
+            print(f"  [WARN] Report generation failed for {ticker}.")
             continue
 
         # Generate and save report
@@ -256,9 +303,9 @@ def main() -> None:
         report_path = reports_dir / f"{ticker}_report_{datetime.now().strftime('%Y-%m-%d')}.md"
         report_path.write_text(report, encoding="utf-8")
 
-        print(f"  ✅ Report saved to {report_path}")
+        print(f"  [OK]Report saved to {report_path}")
 
-    print(f"\n✅ Done.")
+    print(f"\n[Done] Report generation complete.")
 
 
 if __name__ == "__main__":
