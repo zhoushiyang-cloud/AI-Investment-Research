@@ -1,0 +1,23 @@
+# API Keys Configuration (Example)
+# Copy this file to api_keys.toml and fill in your keys.
+# api_keys.toml is git-ignored — NEVER commit real keys.
+
+[fmp]
+api_key = "your-fmp-key-here"
+
+[alpha_vantage]
+api_key = "your-av-key-here"
+
+[openai]
+api_key = "sk-your-openai-key"
+model = "gpt-4o"
+
+[anthropic]
+api_key = "sk-ant-your-anthropic-key"
+model = "claude-sonnet-4-20250514"
+
+[newsapi]
+api_key = "your-newsapi-key"
+
+[polygon]
+api_key = "your-polygon-key"

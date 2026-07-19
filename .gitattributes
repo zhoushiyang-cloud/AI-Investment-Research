@@ -1,0 +1,21 @@
+* text=auto
+
+# Python
+*.py text diff=python
+
+# Notebooks (tracked, not ignored)
+*.ipynb text
+
+# TOML config
+*.toml text
+
+# Markdown
+*.md text diff=markdown
+
+# Data files (binary to avoid merge conflicts)
+*.json binary
+*.csv binary
+*.parquet binary
+
+# Shell scripts
+*.sh text eol=lf

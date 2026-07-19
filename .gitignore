@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & config
+config/api_keys.toml
+.env
+*.secret
+
+# Jupyter (track notebooks, ignore checkpoints only)
+.ipynb_checkpoints/
+
+# Tool caches
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+
+# Data (keep structure, ignore contents)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Reports (keep structure, ignore generated)
+reports/*
+!reports/.gitkeep
+
+# Obsidian export
+obsidian_export/*
+!obsidian_export/.gitkeep

@@ -1,0 +1,30 @@
+---
+title: Investment Dashboard
+date: {{ date }}
+tags:
+  - dashboard
+  - investment
+  - portfolio
+---
+
+# 📊 Investment Dashboard
+
+> Updated: {{ date }}
+
+## Portfolio Summary
+
+| Ticker | Name | Price | Market Cap | P/E | Rev Growth | Gross Margin |
+|---|---|---|---|---|---|---|
+{% for t in tickers %}
+| [[{{ t.ticker }}]] | {{ t.name }} | {{ t.price }} | {{ t.market_cap }} | {{ t.pe }} | {{ t.rev_growth }} | {{ t.gross_margin }} |
+{% endfor %}
+
+## Quick Links
+
+{% for sector in sectors %}
+- [[Sector — {{ sector }}]]
+{% endfor %}
+- [[Peer Comparison]]
+- [[Economic Indicators]]
+- [[News Feed]]
+- [[Watchlist]]

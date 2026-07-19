@@ -1,0 +1,87 @@
+---
+ticker: {{ ticker }}
+sector: {{ sector }}
+industry: {{ industry }}
+updated: {{ date }}
+tags:
+  - investment
+  - {{ ticker | lower }}
+  - {{ sector | lower | replace(' ', '-') }}
+---
+
+# {{ ticker }} — {{ name }}
+
+> *Auto-generated: {{ date }}*
+
+## Company Overview
+
+| Metric | Value |
+|---|---|
+| Ticker | {{ ticker }} |
+| Name | {{ name }} |
+| Sector | {{ sector }} |
+| Industry | {{ industry }} |
+| Market Cap | {{ market_cap }} |
+| Employees | {{ employees }} |
+| Country | {{ country }} |
+| Website | {{ website }} |
+
+## Key Metrics (TTM)
+
+| Metric | Value |
+|---|---|
+| P/E Ratio | {{ pe_ratio }} |
+| P/B Ratio | {{ pb_ratio }} |
+| EV/EBITDA | {{ ev_to_ebitda }} |
+| ROE | {{ roe }} |
+| Gross Margin | {{ gross_margin }} |
+| Operating Margin | {{ operating_margin }} |
+| Net Margin | {{ net_margin }} |
+| Revenue Growth | {{ revenue_growth }} |
+
+## Financial Statements
+
+### Income Statement (Annual)
+{{ income_table }}
+
+### Balance Sheet (Annual)
+{{ balance_table }}
+
+### Cash Flow (Annual)
+{{ cashflow_table }}
+
+## Analyst Estimates
+{{ estimates_table }}
+
+## Recent News
+{% for article in news %}
+- [{{ article.title }}]({{ article.url }}) — *{{ article.source }}* ({{ article.date }})
+{% endfor %}
+
+## SEC Filings
+{{ filings_table }}
+
+## Peers
+{% for peer in peers %}- [[{{ peer }}]]
+{% endfor %}
+
+## Moat Assessment
+<!-- Add your moat analysis here -->
+
+## Risks
+<!-- Add risk analysis here -->
+
+## Catalysts
+<!-- Add catalysts here -->
+
+## Recent Updates
+<!-- Last updated: {{ date }} -->
+
+## 🔗 Related Notes
+- [[Investment Dashboard]]
+- [[{{ ticker }} Valuation]]
+- [[Peer Comparison]]
+{% if sector != 'Unknown' %}
+- [[Sector — {{ sector }}]]
+{% endif %}
+- [[News Feed]]

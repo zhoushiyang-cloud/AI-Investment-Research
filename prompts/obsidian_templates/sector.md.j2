@@ -1,0 +1,33 @@
+---
+title: Sector — {{ sector }}
+date: {{ date }}
+tags:
+  - topic
+  - sector
+  - {{ sector | lower | replace(' ', '-') }}
+---
+
+# 🏭 Sector — {{ sector }}
+
+## Holdings
+
+{% for ticker in tickers %}
+- [[{{ ticker }}]]
+{% endfor %}
+
+## Sector Overview
+
+| Ticker | Market Cap | P/E | Rev Growth | Weight |
+|---|---|---|---|---|
+{% for t in companies %}
+| [[{{ t.ticker }}]] | {{ t.market_cap }} | {{ t.pe }} | {{ t.rev_growth }} | {{ t.weight }}% |
+{% endfor %}
+
+## Sector Context
+
+<!-- Add sector-level macro analysis, competitive dynamics, trends -->
+
+## Related
+- [[Investment Dashboard]]
+- [[Peer Comparison]]
+- [[Economic Indicators]]
