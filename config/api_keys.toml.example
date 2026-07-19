@@ -1,12 +1,31 @@
 # API Keys Configuration (Example)
 # Copy this file to api_keys.toml and fill in your keys.
 # api_keys.toml is git-ignored — NEVER commit real keys.
+#
+# HOW TO GET FREE API KEYS:
+#   FMP (Financial Modeling Prep): https://financialmodelingprep.com/developer/docs/
+#       → Free tier: 250 requests/day, covers financials, metrics, ratios, news
+#   FRED (Federal Reserve): https://fred.stlouisfed.org/docs/api/api_key.html
+#       → Free: US economic data, interest rates, GDP, CPI, employment
+#   Tiingo: https://www.tiingo.com/account/api/token
+#       → Free tier: 1000 unique tickers/month, good for price history
+#
+# START HERE: Get a free FMP key → test with valuation.py → add more as needed.
 
 [fmp]
 api_key = "your-fmp-key-here"
 
-[alpha_vantage]
-api_key = "your-av-key-here"
+[intrinio]
+api_key = "your-intrinio-key-here"
+
+[tiingo]
+api_key = "your-tiingo-token-here"
+
+[benzinga]
+api_key = "your-benzinga-key-here"
+
+[fred]
+api_key = "your-fred-key-here"
 
 [openai]
 api_key = "sk-your-openai-key"
@@ -15,9 +34,3 @@ model = "gpt-4o"
 [anthropic]
 api_key = "sk-ant-your-anthropic-key"
 model = "claude-sonnet-4-20250514"
-
-[newsapi]
-api_key = "your-newsapi-key"
-
-[polygon]
-api_key = "your-polygon-key"

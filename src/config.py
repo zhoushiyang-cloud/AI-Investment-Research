@@ -35,41 +35,55 @@ def load_config() -> dict:
         return tomllib.load(f)
 
 
-def setup_openbb_credentials(config: dict | None = None) -> None:
-    """Configure OpenBB provider credentials from api_keys.toml.
+def setup_openbb_credentials(config: dict | None = None) -> list[str]:
+    """Configure OpenBB provider credentials from config/api_keys.toml.
 
-    Reads credentials and sets them via obb.user.credentials.
-    Only sets keys that are non-empty in the config.
+    Sets credentials via direct field assignment on obb.user.credentials.
+    Only configures providers whose keys are non-empty.
 
     Args:
         config: Optional config dict. If None, calls load_config().
+
+    Returns:
+        List of provider names that were successfully configured.
     """
     from openbb import obb
 
     if config is None:
         config = load_config()
 
-    creds: dict[str, str] = {}
-
-    # Map config sections to OpenBB credential field names
-    provider_keys = {
-        "fmp": "fmp_api_key",
-        "intrinio": "intrinio_api_key",
-        "tiingo": "tiingo_token",
-        "benzinga": "benzinga_api_key",
+    # Map config.toml sections → (OpenBB credential field name, key field in section)
+    # OpenBB 4.x uses direct attribute assignment: obb.user.credentials.fmp_api_key = "xxx"
+    provider_map: dict[str, tuple[str, str]] = {
+        # section       → (credential_attr,    key_field)
+        "fmp":          ("fmp_api_key",         "api_key"),
+        "intrinio":     ("intrinio_api_key",    "api_key"),
+        "tiingo":       ("tiingo_token",        "api_key"),
+        "benzinga":     ("benzinga_api_key",    "api_key"),
+        "fred":         ("fred_api_key",        "api_key"),
+        "bls":          ("bls_api_key",         "api_key"),
+        "econdb":       ("econdb_api_key",      "api_key"),
+        "eia":          ("eia_api_key",         "api_key"),
+        "tradingeconomics": ("tradingeconomics_api_key", "api_key"),
     }
 
-    for section, cred_field in provider_keys.items():
-        if section in config and config[section].get("api_key"):
-            creds[cred_field] = config[section]["api_key"]
+    configured: list[str] = []
 
-    if creds:
-        try:
-            obb.user.credentials.patch(**creds)
-        except AttributeError:
-            # Older OpenBB versions use a different credential API
-            for key, value in creds.items():
-                obb.user.credentials.patch({key: value})
+    for section, (attr_name, key_field) in provider_map.items():
+        section_data = config.get(section, {})
+        key_value = section_data.get(key_field, "") if isinstance(section_data, dict) else ""
+        if key_value and not key_value.startswith("your-") and key_value != "":
+            try:
+                setattr(obb.user.credentials, attr_name, key_value)
+                configured.append(section)
+            except Exception as e:
+                import warnings
+                warnings.warn(f"Failed to set OpenBB credential '{attr_name}': {e}")
+
+    if configured:
+        print(f"[CONFIG] OpenBB credentials configured for: {', '.join(configured)}")
+
+    return configured
 
 
 def get_available_providers(command_result: list) -> list[str]:
