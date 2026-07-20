@@ -1,0 +1,23 @@
+{
+  "id": "conv-1784367310800-j1amxmiol",
+  "providerId": "claude",
+  "title": "Advise web scraping for news extraction",
+  "titleGenerationStatus": "success",
+  "createdAt": 1784367310808,
+  "updatedAt": 1784390443949,
+  "lastResponseAt": 1784390443949,
+  "sessionId": "f38e0288-d75f-4525-918f-304fcfa94800",
+  "providerState": {
+    "providerSessionId": "f38e0288-d75f-4525-918f-304fcfa94800"
+  },
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 553,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 380928,
+    "contextWindow": 200000,
+    "contextTokens": 381481,
+    "percentage": 100,
+    "contextWindowIsAuthoritative": true
+  }
+}

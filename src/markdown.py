@@ -353,25 +353,42 @@ def generate_company_md(
             lines.append(", ".join(peer_names))
             lines.append("")
 
-    # ── Manual Sections (preserved placeholders) ──
-    lines.append("## Moat Assessment")
-    lines.append("")
-    lines.append("<!-- Add your moat analysis here -->")
+    # ── Research Framework (Obsidian Callouts) ──
+    lines.append("## Research Framework")
     lines.append("")
 
-    lines.append("## Risks")
-    lines.append("")
-    lines.append("<!-- Add risk analysis here -->")
+    lines.append("> [!abstract] Moat Assessment")
+    lines.append("> *What protects this company from competitors?*")
+    lines.append("> 1. **Switching Costs** — how hard is it for customers to leave?")
+    lines.append("> 2. **Network Effects** — does each user make it more valuable?")
+    lines.append("> 3. **Intangible Assets** — patents, brand, regulatory moats?")
+    lines.append("> 4. **Cost Advantage** — structural cost position vs peers?")
+    lines.append("> 5. **Efficient Scale** — is the market naturally limited?")
     lines.append("")
 
-    lines.append("## Catalysts")
-    lines.append("")
-    lines.append("<!-- Add catalysts here -->")
+    lines.append("> [!warning] Risks")
+    lines.append("> | # | Risk | Severity | Probability |")
+    lines.append("> |---|------|----------|-------------|")
+    lines.append("> | 1 | *Describe risk...* | `#critical` | High / Med / Low |")
+    lines.append("> | 2 | *Describe risk...* | `#medium` | High / Med / Low |")
+    lines.append("> | 3 | *Describe risk...* | `#low` | High / Med / Low |")
     lines.append("")
 
-    lines.append("## Recent Updates")
+    lines.append("> [!tip] Catalysts")
+    lines.append("> | # | Catalyst | Timeline | Impact |")
+    lines.append("> |---|----------|----------|--------|")
+    lines.append("> | 1 | *Describe catalyst...* | `#near-term` | High / Med / Low |")
+    lines.append("> | 2 | *Describe catalyst...* | `#medium-term` | High / Med / Low |")
     lines.append("")
-    lines.append(f"<!-- Last updated: {datetime.now().strftime('%Y-%m-%d')} -->")
+
+    lines.append("> [!question] Investment Thesis")
+    lines.append("> - **Position:** [Long / Neutral / Avoiding]")
+    lines.append("> - **Fair Value Estimate:** $___ (margin of safety: ___%)")
+    lines.append("> - **Key Assumption Being Priced In:** ___")
+    lines.append("> - **What Would Change My Mind:** ___")
+    lines.append("")
+
+    lines.append(f"*Last data refresh: {datetime.now().strftime('%Y-%m-%d %H:%M')}*")
     lines.append("")
 
     return "\n".join(lines)
@@ -475,42 +492,83 @@ def generate_report_md(
     data: dict[str, Any],
     analysis: str = "",
 ) -> str:
-    """Generate an investment research report markdown.
+    """Generate an Obsidian-native investment research report.
+
+    Outputs a report designed for Obsidian reading with:
+    - YAML frontmatter (tags, ticker, date)
+    - Callout blocks (> [!abstract], > [!warning], > [!tip], > [!quote])
+    - Collapsible financial data appendix
+    - [[wikilinks]] to related notes
 
     Args:
         ticker: Stock ticker.
         data: Full data dict from fetch_all_for_ticker.
-        analysis: Pre-written analysis text (e.g., from Claude).
+        analysis: LLM-generated analysis text.
 
     Returns:
-        Full markdown report string.
+        Full Obsidian-formatted markdown report.
     """
+    today = datetime.now().strftime("%Y-%m-%d")
+    profile = data.get("profile", pd.DataFrame())
+    name = _col(profile, "name", "company_name", default=ticker)
+    sector = str(_col(profile, "sector", default="Unknown"))
+
     lines: list[str] = []
-    lines.append(f"# {ticker} — Investment Research Report")
-    lines.append(f"*{datetime.now().strftime('%B %d, %Y')}*")
+
+    # ── YAML Frontmatter ──
+    lines.append("---")
+    lines.append(f"title: \"{ticker} — Investment Research Report\"")
+    lines.append(f"ticker: {ticker}")
+    lines.append(f"company: \"{name}\"")
+    lines.append(f"sector: \"{sector}\"")
+    lines.append(f"date: {today}")
+    lines.append("tags:")
+    lines.append("  - investment-report")
+    lines.append(f"  - {ticker.lower()}")
+    lines.append(f"  - {sector.lower().replace(' ', '-')}")
+    lines.append("type: report")
+    lines.append("---")
     lines.append("")
 
-    # TOC
-    lines.append("## Table of Contents")
-    lines.append("1. [Executive Summary](#executive-summary)")
-    lines.append("2. [Financial Overview](#financial-overview)")
-    lines.append("3. [Valuation](#valuation)")
-    lines.append("4. [Risks & Catalysts](#risks--catalysts)")
-    lines.append("5. [Recommendation](#recommendation)")
+    # ── Header ──
+    lines.append(f"# 📊 {ticker} — {name}")
+    lines.append(f"> *Investment Research Report · {datetime.now().strftime('%B %d, %Y')}*")
+    lines.append("")
+    lines.append(f"**Ticker:** [[{ticker}]] | **Sector:** [[Sector — {sector}]] | **Market Cap:** {_fmt(_col(data.get('metrics', pd.DataFrame()), 'market_cap'), unit='T')}")
     lines.append("")
 
+    # ── Quick Links ──
+    lines.append("> [!tip]- Quick Navigation")
+    lines.append("> - [[Investment Dashboard]] | [[Peer Comparison]] | [[{ticker} Valuation]]".replace("{ticker}", ticker))
+    lines.append("> - [[Sector — {sector}]] | [[Economic Indicators]]".replace("{sector}", sector))
+    lines.append("")
+    # ── Analysis Section (LLM output) ──
     if analysis:
         lines.append(analysis)
     else:
-        lines.append("## Executive Summary")
-        lines.append("")
-        lines.append("*Analysis pending — run generate_report.py with Claude API key.*")
+        lines.append("> [!warning] Analysis Pending")
+        lines.append("> Run `python scripts/generate_report.py --ticker " + ticker + "` to generate.")
         lines.append("")
 
-    # Append financial data appendix
+    # ── Separator ──
     lines.append("---")
-    lines.append("## Appendix: Financial Data")
     lines.append("")
-    lines.append(generate_company_md(ticker, data))
+
+    # ── Collapsible Financial Appendix ──
+    lines.append("> [!note]- 📋 Financial Data Appendix *(click to expand)*")
+    lines.append(">")
+    # Embed the company data with '>' prefix for callout nesting
+    company_md = generate_company_md(ticker, data)
+    for line in company_md.split("\n"):
+        if line.strip():
+            lines.append(f"> {line}")
+        else:
+            lines.append(">")
+    lines.append("")
+
+    # ── Footer ──
+    lines.append(f"---")
+    lines.append(f"*Report generated {datetime.now().strftime('%Y-%m-%d %H:%M')} · AI Investment System*")
+    lines.append(f"*Related: [[{ticker}]] · [[Peer Comparison]] · [[Investment Dashboard]]*")
 
     return "\n".join(lines)

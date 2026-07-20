@@ -239,19 +239,46 @@ def _resolve_provider(preferred: str | None, *fallbacks: str) -> str:
     return pick_provider(*fallbacks)
 
 
+def _try_with_fallback(fn, *fallback_providers: str, **kwargs) -> pd.DataFrame:
+    """Try an OpenBB call, falling back through providers on failure.
+
+    When the primary provider fails (402, timeout, etc.), this automatically
+    retries with each fallback provider until one succeeds.
+
+    Args:
+        fn: A callable that takes (provider=...) and returns an OpenBB result.
+        fallback_providers: Provider names to try in order.
+        **kwargs: Additional kwargs passed to fn (excluding 'provider').
+
+    Returns:
+        DataFrame from the first successful provider, or empty DataFrame.
+    """
+    last_error = ""
+    for provider in fallback_providers:
+        try:
+            result = fn(provider=provider, **kwargs)
+            df = _to_df(result)
+            if not df.empty:
+                return df
+            last_error = f"empty result from {provider}"
+        except Exception as e:
+            last_error = str(e)
+            continue  # Try next provider
+
+    warnings.warn(f"All providers failed: {', '.join(fallback_providers)}. Last: {last_error}")
+    return pd.DataFrame()
+
+
 # ── Price & Market Data ──────────────────────────────────────────────────────
 
 def get_quote(ticker: str, provider: str | None = None) -> pd.DataFrame:
-    """Get real-time quote for a ticker.
-
-    OpenBB: obb.equity.price.quote()
-    """
-    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio")
-    try:
-        return _to_df(obb.equity.price.quote(ticker, provider=p))
-    except Exception as e:
-        warnings.warn(f"get_quote({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    """Get real-time quote for a ticker."""
+    if provider:
+        return _to_df(obb.equity.price.quote(ticker, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.price.quote(ticker, provider=p),
+        *_get_providers("fmp", "yfinance"),
+    )
 
 
 def get_price_history(
@@ -272,7 +299,6 @@ def get_price_history(
         interval: '1m', '5m', '15m', '30m', '1h', '1d', '1wk', '1mo'.
         provider: Override the default provider.
     """
-    p = _resolve_provider(provider, "fmp", "tiingo", "yfinance")
     if start is None:
         start = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
     if isinstance(start, datetime):
@@ -281,13 +307,12 @@ def get_price_history(
         end = datetime.now().strftime("%Y-%m-%d")
     if isinstance(end, datetime):
         end = end.strftime("%Y-%m-%d")
-    try:
-        return _to_df(obb.equity.price.historical(
-            ticker, start_date=start, end_date=end, interval=interval, provider=p,
-        ))
-    except Exception as e:
-        warnings.warn(f"get_price_history({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    if provider:
+        return _to_df(obb.equity.price.historical(ticker, start_date=start, end_date=end, interval=interval, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.price.historical(ticker, start_date=start, end_date=end, interval=interval, provider=p),
+        *_get_providers("fmp", "tiingo", "yfinance"),
+    )
 
 
 # ── Company Profile & Fundamentals ───────────────────────────────────────────
@@ -305,29 +330,56 @@ def get_profile(ticker: str, provider: str | None = None) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+# ── Provider Fallback Logic ──────────────────────────────────────────────────
+# When FMP free tier blocks a ticker (402 error), automatically try yfinance/SEC.
+
+def _get_providers(*preferred: str) -> list[str]:
+    """Build a fallback chain: configured providers first, then free ones."""
+    config = load_config()
+    result: list[str] = []
+    for p in preferred:
+        if p in ("yfinance", "sec"):
+            result.append(p)
+        else:
+            key_map = {"fmp": ("fmp", "api_key"), "tiingo": ("tiingo", "api_key"),
+                       "intrinio": ("intrinio", "api_key"), "benzinga": ("benzinga", "api_key"),}
+            if p in key_map:
+                section, field = key_map[p]
+                if config.get(section, {}).get(field, ""):
+                    result.append(p)
+    # Always append yfinance and sec as ultimate fallbacks
+    if "yfinance" not in result:
+        result.append("yfinance")
+    if "sec" not in result:
+        result.append("sec")
+    return result
+
+
+def _try_providers(func, *providers: str, **kwargs) -> pd.DataFrame:
+    """Call func(provider=p, **kwargs) for each p, return first non-empty result."""
+    for p in providers:
+        try:
+            df = _to_df(func(p, **kwargs))
+            if not df.empty:
+                return df
+        except Exception:
+            continue
+    return pd.DataFrame()
+
+
 def get_income_statement(
     ticker: str,
     period: str = "annual",
     limit: int = 5,
     provider: str | None = None,
 ) -> pd.DataFrame:
-    """Get income statement (revenue, gross profit, net income, EPS, etc.).
-
-    OpenBB: obb.equity.fundamental.income()
-
-    Args:
-        ticker: Stock symbol.
-        period: 'annual' or 'quarter'.
-        limit: Number of periods to return.
-    """
-    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
-    try:
-        return _to_df(obb.equity.fundamental.income(
-            ticker, period=period, limit=limit, provider=p,
-        ))
-    except Exception as e:
-        warnings.warn(f"get_income_statement({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    """Get income statement (revenue, gross profit, net income, EPS, etc.)."""
+    if provider:
+        return _to_df(obb.equity.fundamental.income(ticker, period=period, limit=limit, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.fundamental.income(ticker, period=period, limit=limit, provider=p),
+        *_get_providers("fmp", "sec", "yfinance"),
+    )
 
 
 def get_balance_sheet(
@@ -336,18 +388,13 @@ def get_balance_sheet(
     limit: int = 5,
     provider: str | None = None,
 ) -> pd.DataFrame:
-    """Get balance sheet: assets, liabilities, equity, debt, cash.
-
-    OpenBB: obb.equity.fundamental.balance()
-    """
-    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
-    try:
-        return _to_df(obb.equity.fundamental.balance(
-            ticker, period=period, limit=limit, provider=p,
-        ))
-    except Exception as e:
-        warnings.warn(f"get_balance_sheet({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    """Get balance sheet: assets, liabilities, equity, debt, cash."""
+    if provider:
+        return _to_df(obb.equity.fundamental.balance(ticker, period=period, limit=limit, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.fundamental.balance(ticker, period=period, limit=limit, provider=p),
+        *_get_providers("fmp", "sec", "yfinance"),
+    )
 
 
 def get_cash_flow(
@@ -356,18 +403,13 @@ def get_cash_flow(
     limit: int = 5,
     provider: str | None = None,
 ) -> pd.DataFrame:
-    """Get cash flow statement: operating cash flow, capex, FCF.
-
-    OpenBB: obb.equity.fundamental.cash()
-    """
-    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio", "sec")
-    try:
-        return _to_df(obb.equity.fundamental.cash(
-            ticker, period=period, limit=limit, provider=p,
-        ))
-    except Exception as e:
-        warnings.warn(f"get_cash_flow({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    """Get cash flow statement: operating cash flow, capex, FCF."""
+    if provider:
+        return _to_df(obb.equity.fundamental.cash(ticker, period=period, limit=limit, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.fundamental.cash(ticker, period=period, limit=limit, provider=p),
+        *_get_providers("fmp", "sec", "yfinance"),
+    )
 
 
 def get_key_metrics(
@@ -376,19 +418,13 @@ def get_key_metrics(
     limit: int = 5,
     provider: str | None = None,
 ) -> pd.DataFrame:
-    """Get key financial metrics: P/E, P/B, ROE, ROA, margins, etc.
-
-    OpenBB: obb.equity.fundamental.metrics()
-    FMP provides richer metrics than yfinance.
-    """
-    p = _resolve_provider(provider, "fmp", "yfinance", "intrinio")
-    try:
-        return _to_df(obb.equity.fundamental.metrics(
-            ticker, period=period, limit=limit, provider=p,
-        ))
-    except Exception as e:
-        warnings.warn(f"get_key_metrics({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    """Get key financial metrics: P/E, P/B, ROE, ROA, margins, etc."""
+    if provider:
+        return _to_df(obb.equity.fundamental.metrics(ticker, period=period, limit=limit, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.fundamental.metrics(ticker, period=period, limit=limit, provider=p),
+        *_get_providers("fmp", "yfinance"),
+    )
 
 
 def get_ratios(
@@ -440,12 +476,12 @@ def get_estimates_consensus(
     OpenBB: obb.equity.estimates.consensus()
     Works with yfinance (free) and fmp (premium).
     """
-    p = _resolve_provider(provider, "fmp", "yfinance")
-    try:
-        return _to_df(obb.equity.estimates.consensus(ticker, provider=p))
-    except Exception as e:
-        warnings.warn(f"get_estimates_consensus({ticker}) failed with {p}: {e}")
-        return pd.DataFrame()
+    if provider:
+        return _to_df(obb.equity.estimates.consensus(ticker, provider=provider))
+    return _try_providers(
+        lambda p: obb.equity.estimates.consensus(ticker, provider=p),
+        *_get_providers("fmp", "yfinance"),
+    )
 
 
 def get_price_targets(

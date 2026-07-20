@@ -1,6 +1,6 @@
 # NVDA — NVIDIA Corporation
 
-> *Auto-generated: 2026-07-19 23:09*
+> *Auto-generated: 2026-07-19 23:29*
 
 ## Company Overview
 
@@ -136,18 +136,33 @@
 
 symbol='AAPL' name='Apple Inc.' price=333.74 market_cap=4901758191440, symbol='GOOGL' name='Alphabet Inc.' price=346.77 market_cap=4194138171504, symbol='MSFT' name='Microsoft Corporation' price=393.82 market_cap=2925464302600, symbol='TSM' name='Taiwan Semiconductor Manufacturing Company Limited' price=398.37 market_cap=2066138037600, symbol='AVGO' name='Broadcom Inc.' price=370.825 market_cap=1764229603500, symbol='ADI' name='Analog Devices, Inc.' price=375.36 market_cap=182832991334, symbol='TER' name='Teradyne, Inc.' price=322.355 market_cap=50462148632, symbol='ENTG' name='Entegris, Inc.' price=138.74 market_cap=21130102000, symbol='IMOS' name='ChipMOS TECHNOLOGIES Inc.' price=68.81 market_cap=2408291511
 
-## Moat Assessment
+## Research Framework
 
-<!-- Add your moat analysis here -->
+> [!abstract] Moat Assessment
+> *What protects this company from competitors?*
+> 1. **Switching Costs** — how hard is it for customers to leave?
+> 2. **Network Effects** — does each user make it more valuable?
+> 3. **Intangible Assets** — patents, brand, regulatory moats?
+> 4. **Cost Advantage** — structural cost position vs peers?
+> 5. **Efficient Scale** — is the market naturally limited?
 
-## Risks
+> [!warning] Risks
+> | # | Risk | Severity | Probability |
+> |---|------|----------|-------------|
+> | 1 | *Describe risk...* | `#critical` | High / Med / Low |
+> | 2 | *Describe risk...* | `#medium` | High / Med / Low |
+> | 3 | *Describe risk...* | `#low` | High / Med / Low |
 
-<!-- Add risk analysis here -->
+> [!tip] Catalysts
+> | # | Catalyst | Timeline | Impact |
+> |---|----------|----------|--------|
+> | 1 | *Describe catalyst...* | `#near-term` | High / Med / Low |
+> | 2 | *Describe catalyst...* | `#medium-term` | High / Med / Low |
 
-## Catalysts
+> [!question] Investment Thesis
+> - **Position:** [Long / Neutral / Avoiding]
+> - **Fair Value Estimate:** $___ (margin of safety: ___%)
+> - **Key Assumption Being Priced In:** ___
+> - **What Would Change My Mind:** ___
 
-<!-- Add catalysts here -->
-
-## Recent Updates
-
-<!-- Last updated: 2026-07-19 -->
+*Last data refresh: 2026-07-19 23:29*

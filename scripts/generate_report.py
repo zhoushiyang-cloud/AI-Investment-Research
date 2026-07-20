@@ -87,30 +87,42 @@ def build_analysis_prompt(ticker: str, data: dict) -> str:
     prompt += """
 ## Instructions
 
-Write a comprehensive investment memo with these sections:
+Write a comprehensive investment memo. **Use Obsidian callout syntax** throughout:
 
-### 1. Executive Summary (3-5 bullet points)
-Key takeaways an investor needs in 30 seconds.
+> [!abstract] Executive Summary
+> 3-5 bullet points — key takeaways in 30 seconds
 
-### 2. Business Overview
-What the company does, competitive position, key segments.
+> [!info] Business Overview
+> What the company does, competitive position, key segments with revenue share
 
-### 3. Financial Analysis
-Revenue trends, margins, cash flow, balance sheet health. Include specific numbers.
+> [!example] Financial Analysis
+> Revenue trends, margins, cash flow, balance sheet. **Cite specific numbers** from the data above.
 
-### 4. Valuation Assessment
-Are the current multiples justified by growth? Compare to peers and history.
+> [!info] Valuation Assessment
+> Current multiples (P/E, EV/EBITDA, etc.) vs peers vs history. Are they justified?
 
-### 5. Risks (numbered, with severity: High/Medium/Low)
-Concrete, specific risks — not generic boilerplate.
+> [!warning] Risks
+> Numbered list with severity tags: `#critical`, `#medium`, `#low`. Concrete risks — NOT generic.
 
-### 6. Catalysts (with timeline: Near-term / Medium-term)
-What could drive upside in 6-18 months?
+> [!tip] Catalysts
+> What could drive upside in 6-18 months. Tag each: `#near-term` or `#medium-term`.
 
-### 7. Recommendation
-Buy / Hold / Sell with conviction level (High / Medium / Low) and 12-month thesis.
+> [!quote] Recommendation
+> **Buy / Hold / Sell** with conviction (High/Medium/Low). Price target and 12-month thesis.
 
-Format in clean markdown. Use Obsidian [[wikilinks]] where appropriate.
+IMPORTANT:
+- Output ONLY the callout blocks above, filled with analysis. No preamble, no sign-off.
+- Use [[wikilinks]] when referencing other companies: [[NVDA]], [[AVGO]], etc.
+- Cite specific numbers: "$215.9B revenue, 74.1% gross margin" not "strong revenue"
+- For Risks, use this format:
+  ```
+  > [!warning] Risks
+  > 1. **Risk Name** `#critical`
+  >    Specific explanation with numbers if applicable
+  > 2. **Risk Name** `#medium`
+  >    ...
+  ```
+- Keep each section concise. The reader is an experienced investor.
 """
 
     return prompt

@@ -132,7 +132,7 @@ def auto_dcf_params(ticker: str, discount_rate: float = 0.10,
             fcf = (ocf - abs(capex)) / 1_000_000
 
     if fcf <= 0:
-        print(f"  ⚠️  Cannot derive positive FCF for {ticker}. Using estimate.")
+        print(f"  [WARN] Cannot derive positive FCF for {ticker}. Using estimate.")
         fcf = 10_000  # Fallback
 
     # Revenue growth from income statement (CAGR over historical periods)
@@ -232,7 +232,7 @@ def run_comps(ticker: str, peers: list[str] | None = None) -> CompsResult | None
     df = get_peer_metrics(all_tickers)
 
     if df.empty or "ticker" not in df.columns:
-        print("  ⚠️  No peer data available.")
+        print("  [WARN] No peer data available.")
         return None
 
     target_row = df[df["ticker"] == ticker.upper()]
@@ -327,7 +327,7 @@ def run_graham(ticker: str) -> dict[str, Any]:
         print(f"  Graham Number:   ${graham_number:.2f}")
         print(f"\n  Interpretation: Graham suggested buying below ${graham_number:.2f}")
     else:
-        print(f"  ⚠️  Insufficient data. EPS={eps}, BVPS={bvps}")
+        print(f"  [WARN] Insufficient data. EPS={eps}, BVPS={bvps}")
     print(f"{'='*60}\n")
 
     return {"eps": eps, "bvps": bvps, "graham_number": graham_number}
