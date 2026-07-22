@@ -1,0 +1,4 @@
+- [Default Report Generation](memory/default-report-generation.md) — When user asks "generate XX report", auto-run 3-step pipeline (update_company → valuation → generate_report) with all APIs
+- [Bilingual Reports](memory/bilingual-reports.md) — After generating English report, immediately translate to Chinese via DeepSeek API; every report gets both EN and CN versions
+- [Update All Reports](memory/update-all-reports.md) — When user says "更新所有研报", refresh all companies/ reports with latest data via the full pipeline
+- [Financial Calendar](memory/financial-calendar.md) — When user asks "日历" or "calendar", run financial_calendar.py to generate monthly earnings calendar + predictions + HTML
