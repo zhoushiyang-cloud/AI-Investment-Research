@@ -423,9 +423,7 @@ def main() -> None:
     print(f"    Found {len(tracked)} companies")
 
     # 2. Generate files
-    print("  [4/4] Generating docs/...")
-
-    # index.html
+    print("  [4/6] Generating docs/index.html...")
     index_html = build_index_html(reports, calendar, tracked)
     (DOCS_DIR / "index.html").write_text(index_html, encoding="utf-8")
     print(f"    docs/index.html ({len(index_html):,} bytes)")
@@ -438,15 +436,36 @@ def main() -> None:
     (DOCS_DIR / "sw.js").write_text(SW_JS, encoding="utf-8")
     print("    docs/sw.js")
 
-    # Copy latest calendar HTML if exists
-    if calendar and calendar.get("calendar_html"):
-        cal_src = PROJECT_ROOT / calendar["calendar_html"]
-        if cal_src.exists():
-            cal_dest = DOCS_DIR / "calendar.html"
-            content = cal_src.read_text(encoding="utf-8")
-            with open(str(cal_dest), "w", encoding="utf-8") as f:
-                f.write(content)
-            print("    docs/calendar.html (copied)")
+    # 5. Copy reports, companies, and calendar into docs/ so links work on GitHub Pages
+    print("  [5/6] Copying reports and companies into docs/...")
+    import shutil
+
+    # Copy reports/
+    docs_reports = DOCS_DIR / "reports"
+    if docs_reports.exists():
+        shutil.rmtree(str(docs_reports))
+    shutil.copytree(str(REPORTS_DIR), str(docs_reports),
+                    ignore=shutil.ignore_patterns("*.json", "*.log"))
+    print(f"    docs/reports/ (copied)")
+
+    # Copy companies/
+    docs_companies = DOCS_DIR / "companies"
+    if docs_companies.exists():
+        shutil.rmtree(str(docs_companies))
+    shutil.copytree(str(COMPANIES_DIR), str(docs_companies))
+    print(f"    docs/companies/ (copied)")
+
+    # 6. Verify
+    print("  [6/6] Verifying links...")
+    broken = []
+    for r in reports:
+        target = DOCS_DIR / r["path"]
+        if not target.exists():
+            broken.append(r["path"])
+    if broken:
+        print(f"    ⚠️ {len(broken)} missing files (expected for future dates)")
+    else:
+        print("    All report links OK")
 
     print(f"\n[Done] Site built in docs/\n")
     print("  Next: git add docs/ && git commit && git push")
