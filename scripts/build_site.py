@@ -192,7 +192,10 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
     # Convert Obsidian callouts to styled divs
     def _callout(m):
         ctype = m.group(1).lower()
-        title = m.group(2) or ctype.capitalize()
+        title = (m.group(2) or ctype.capitalize()).strip()
+        # Strip collapsible marker (+/-) from title
+        if title and title[0] in "+-":
+            title = title[1:].strip()
         content = m.group(3)
         # Map callout types to colors/emoji
         type_map = {
@@ -203,8 +206,17 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
             "success": ("✅", "#3fb950"), "danger": ("🚨", "#f85149"),
         }
         emoji, color = type_map.get(ctype, ("📌", "#8b949e"))
-        # Recursively process inner content
-        inner = _convert_body(content)
+        # Strip '> ' prefix from each line, then convert inner markdown
+        stripped_lines = []
+        for line in content.split("\n"):
+            s = line.strip()
+            if s.startswith("> "):
+                stripped_lines.append(s[2:])
+            elif s == ">":
+                stripped_lines.append("")
+            else:
+                stripped_lines.append(s)
+        inner = _convert_body("\n".join(stripped_lines))
         return (
             f'<div class="callout callout-{ctype}" style="border-left:3px solid {color}">'
             f'<div class="callout-title">{emoji} {title}</div>'
@@ -329,7 +341,7 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
 </head>
 <body>
 <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
-<a class="back-link" href="../index.html">← Back to Portal</a>
+<a class="back-link" href="javascript:history.back()">← Back</a>
 <div class="meta-header">
   <span><strong>{ticker}</strong></span>
   <span>{meta.get('company', '')}</span>
@@ -337,7 +349,7 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
   <span>{date_str}</span>
 </div>
 {html_body}
-<a class="back-link" href="../index.html" style="margin-top:24px;display:block;">← Back to Portal</a>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
 
 <script>
   (function() {{
