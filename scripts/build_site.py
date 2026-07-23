@@ -526,6 +526,9 @@ def build_index_html(
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>{SITE_TITLE}</title>
 <meta name="description" content="{SITE_DESC}">
 <meta name="theme-color" content="#0d1117">
@@ -624,7 +627,7 @@ def build_index_html(
 
 <header>
   <h1>📊 {SITE_TITLE}</h1>
-  <div class="sub">Updated: {now} · {len(latest_reports)} reports · {len(tracked)} companies tracked</div>
+  <div class="sub">Updated: {now} · {len(latest_reports)} reports · {len(tracked)} companies tracked<br>Build {datetime.now().strftime('%Y%m%d%H%M%S')}</div>
 </header>
 
 <!-- Mega-Cap Earnings Alert -->
