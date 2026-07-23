@@ -85,24 +85,70 @@
     text-decoration: none;
   }
 
+  /* Search */
+  .search-wrap { margin: 10px 0; }
+  .search-box {
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    background: var(--card); color: var(--text); border: 1px solid var(--border);
+    font-size: 0.9em; outline: none; transition: border 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
   /* Report Cards */
   .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .report-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px; text-decoration: none; color: inherit;
+    border-radius: 10px; padding: 10px; text-decoration: none; color: inherit;
     transition: all 0.15s;
   }
   .report-card:active { background: #1c2333; }
+  .report-card.hidden { display: none; }
+  .rc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
   .rc-ticker { font-weight: 800; color: var(--accent); font-size: 0.85em; }
-  .rc-name { font-size: 0.72em; color: var(--muted); margin: 2px 0 4px;
+  .rc-price { font-size: 0.78em; color: var(--text); font-weight: 600; }
+  .rc-name { font-size: 0.7em; color: var(--muted); margin: 2px 0 4px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .rc-meta { display: flex; gap: 6px; align-items: center; }
-  .rating { font-size: 0.68em; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+  .rc-meta { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+  .rating { font-size: 0.65em; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
   .rating.buy { background: #1a3a1a; color: var(--buy); }
   .rating.sell { background: #3a1a1a; color: var(--sell); }
   .rating.hold { background: #3a2a0a; color: var(--hold); }
-  .target { font-size: 0.68em; color: var(--muted); }
-  .rc-date { font-size: 0.65em; color: var(--muted); margin-top: 4px; }
+  .target { font-size: 0.65em; color: var(--muted); }
+  .rc-chg { font-size: 0.65em; font-weight: 600; }
+  .rc-chg.up { color: var(--buy); }
+  .rc-chg.down { color: var(--sell); }
+  .rc-footer { display: flex; justify-content: space-between; margin-top: 4px; }
+  .rc-mcap { font-size: 0.62em; color: var(--muted); }
+  .rc-date { font-size: 0.6em; color: var(--muted); }
+
+  /* Mini Calendar */
+  .mini-cal { display: flex; gap: 4px; overflow-x: auto; padding: 4px 0; }
+  .mini-day {
+    flex: 0 0 44px; text-align: center; background: var(--card);
+    border-radius: 8px; padding: 6px 2px; font-size: 0.7em;
+    border: 1px solid var(--border);
+  }
+  .mini-date { font-weight: 700; color: var(--accent); }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    max-width: 600px; width: 100%;
+    display: flex; justify-content: space-around;
+    background: var(--card); border-top: 1px solid var(--border);
+    padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    z-index: 998;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center;
+    text-decoration: none; color: var(--muted); font-size: 0.65em;
+    padding: 4px 12px; border-radius: 8px; transition: all 0.15s;
+  }
+  .nav-item.active { color: var(--accent); }
+  .nav-item:active { background: var(--bg); }
+  .nav-icon { font-size: 1.4em; }
+  .nav-label { margin-top: 1px; }
 
   /* Tracked Chips */
   .chip-row { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -125,30 +171,36 @@
 
 <header>
   <h1>📊 AI Investment Research</h1>
-  <div class="sub">更新： 2026-07-23 11:14 · 18 份报告 · 18 家公司追踪<br>Build 20260723111407</div>
+  <div class="sub">更新： 2026-07-23 13:59 · 18 份报告 · 18 家公司追踪</div>
 </header>
 
-<!-- Mega-Cap Earnings Alert -->
+<!-- Search Bar -->
+<div class="search-wrap">
+  <input type="text" class="search-box" id="searchBox"
+    placeholder="搜索股票代码或公司..."
+    oninput="filterReports()" autocomplete="off">
+</div>
+
+<!-- Dynamic Mega-Cap Earnings Alert -->
 <section>
   <div class="section-title">🔥 本周重磅财报</div>
-  <div class="alert">
-    <div class="alert-title">⚠️ 高影响力事件</div>
-    <div class="alert-items">
-      <a href="companies/INTC.html" class="alert-chip">INTC Jul 23</a>
-      <a href="companies/GOOGL.html" class="alert-chip">GOOGL Jul 22 ✅</a>
-      <a href="companies/TSLA.html" class="alert-chip">TSLA Jul 22 ✅</a>
-      <a href="companies/MSFT.html" class="alert-chip">MSFT Jul 29</a>
-      <a href="companies/AAPL.html" class="alert-chip" style="display:none">AAPL Jul 30</a>
-    </div>
-    <div style="margin-top:4px;font-size:0.7em;color:var(--muted)">
-      🏛 FOMC Jul 29 · GDP Jul 30 · PCE Jul 31
-    </div>
-  </div>
+  <div class="alert"><div class="alert-title">⚠️ 高影响力事件</div><div class="alert-items"><a href="companies/AXP.html" class="alert-chip">AXP 07-24 </a>
+<a href="companies/AZN.html" class="alert-chip">AZN 07-27 </a>
+<a href="companies/V.html" class="alert-chip">V 07-28 </a>
+<a href="companies/KO.html" class="alert-chip">KO 07-28 </a>
+<a href="companies/KLAC.html" class="alert-chip">KLAC 07-28 </a>
+<a href="companies/MSFT.html" class="alert-chip">MSFT 07-29 </a>
+</div></div>
 </section>
 
-<!-- Calendar + Predictions -->
+<!-- Mini Calendar: This Week -->
 <section>
-  <div class="section-title">📅 日历与预测</div>
+  <div class="section-title">📅 本周</div>
+  <div class="mini-cal"><div class='mini-day'><span class='mini-date'>23 Thu</span></div><div class='mini-day'><span class='mini-date'>24 Fri</span></div><div class='mini-day'><span class='mini-date'>25 Sat</span></div><div class='mini-day'><span class='mini-date'>26 Sun</span></div><div class='mini-day'><span class='mini-date'>27 Mon</span></div><div class='mini-day'><span class='mini-date'>28 Tue</span></div><div class='mini-day'><span class='mini-date'>29 Wed</span></div></div>
+</section>
+
+<!-- Calendar + Predictions links -->
+<section>
   
         <a href="reports/calendar/2026-07_calendar.html" class="card-link">
           <div class="quick-card">
@@ -175,169 +227,295 @@
 <!-- Latest Reports -->
 <section>
   <div class="section-title">📑 最新研究报告</div>
-  <div class="report-grid">
+  <div class="report-grid" id="reportGrid">
     
         <a href="reports/NVDA_report_2026-07-23_cn.html" class="report-card">
-          <div class="rc-ticker">NVDA</div>
+          <div class="rc-header">
+            <span class="rc-ticker">NVDA</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">英伟达公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-23</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-23</span>
+          </div>
         </a>
         <a href="reports/AVGO_report_2026-07-23_cn.html" class="report-card">
-          <div class="rc-ticker">AVGO</div>
+          <div class="rc-header">
+            <span class="rc-ticker">AVGO</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">博通公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-23</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-23</span>
+          </div>
         </a>
         <a href="reports/SMCI_report_2026-07-22_cn.html" class="report-card">
-          <div class="rc-ticker">SMCI</div>
+          <div class="rc-header">
+            <span class="rc-ticker">SMCI</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">超微电脑公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-22</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-22</span>
+          </div>
         </a>
         <a href="reports/PLTR_report_2026-07-22_cn.html" class="report-card">
-          <div class="rc-ticker">PLTR</div>
+          <div class="rc-header">
+            <span class="rc-ticker">PLTR</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">Palantir Technologies Inc.</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-22</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-22</span>
+          </div>
         </a>
         <a href="reports/ONDS_report_2026-07-22_cn.html" class="report-card">
-          <div class="rc-ticker">ONDS</div>
+          <div class="rc-header">
+            <span class="rc-ticker">ONDS</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">Ondas Holdings Inc.</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-22</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-22</span>
+          </div>
         </a>
         <a href="reports/DELL_report_2026-07-22_cn.html" class="report-card">
-          <div class="rc-ticker">DELL</div>
+          <div class="rc-header">
+            <span class="rc-ticker">DELL</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">戴尔科技公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-22</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-22</span>
+          </div>
         </a>
         <a href="reports/SPCX_report_2026-07-21_cn.html" class="report-card">
-          <div class="rc-ticker">SPCX</div>
+          <div class="rc-header">
+            <span class="rc-ticker">SPCX</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">太空探索技术公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-21</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-21</span>
+          </div>
         </a>
         <a href="reports/SKHYV_report_2026-07-21_cn.html" class="report-card">
-          <div class="rc-ticker">SKHYV</div>
+          <div class="rc-header">
+            <span class="rc-ticker">SKHYV</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">SK海力士公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-21</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-21</span>
+          </div>
         </a>
         <a href="reports/RKLB_report_2026-07-21_cn.html" class="report-card">
-          <div class="rc-ticker">RKLB</div>
+          <div class="rc-header">
+            <span class="rc-ticker">RKLB</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">火箭实验室美国公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-21</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-21</span>
+          </div>
         </a>
         <a href="reports/MRVL_report_2026-07-21_cn.html" class="report-card">
-          <div class="rc-ticker">MRVL</div>
+          <div class="rc-header">
+            <span class="rc-ticker">MRVL</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">Marvell Technology, Inc.</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-21</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-21</span>
+          </div>
         </a>
         <a href="reports/CRCL_report_2026-07-21_cn.html" class="report-card">
-          <div class="rc-ticker">CRCL</div>
+          <div class="rc-header">
+            <span class="rc-ticker">CRCL</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">Circle Internet Group</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-21</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-21</span>
+          </div>
         </a>
         <a href="reports/TSLA_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">TSLA</div>
+          <div class="rc-header">
+            <span class="rc-ticker">TSLA</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">特斯拉公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/ORCL_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">ORCL</div>
+          <div class="rc-header">
+            <span class="rc-ticker">ORCL</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">甲骨文公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/MSFT_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">MSFT</div>
+          <div class="rc-header">
+            <span class="rc-ticker">MSFT</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">微软公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/GOOGL_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">GOOGL</div>
+          <div class="rc-header">
+            <span class="rc-ticker">GOOGL</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">GOOGL</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/CGNX_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">CGNX</div>
+          <div class="rc-header">
+            <span class="rc-ticker">CGNX</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">康耐视公司</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/AMZN_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">AMZN</div>
+          <div class="rc-header">
+            <span class="rc-ticker">AMZN</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">AMZN</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
         <a href="reports/ALGM_report_2026-07-20_cn.html" class="report-card">
-          <div class="rc-ticker">ALGM</div>
+          <div class="rc-header">
+            <span class="rc-ticker">ALGM</span>
+            <span class="rc-price">—</span>
+          </div>
           <div class="rc-name">Allegro MicroSystems, Inc.</div>
           <div class="rc-meta">
             <span class="rating ">—</span>
             <span class="target">🎯 $—</span>
+            
           </div>
-          <div class="rc-date">2026-07-20</div>
+          <div class="rc-footer">
+            <span class="rc-mcap"></span>
+            <span class="rc-date">2026-07-20</span>
+          </div>
         </a>
   </div>
 </section>
@@ -345,7 +523,7 @@
 <!-- Tracked Companies -->
 <section>
   <div class="section-title">🏢 追踪公司 (18)</div>
-  <div class="chip-row">
+  <div class="chip-row" id="chipRow">
     <a href="companies/ALGM.html" class="tracked-chip has-report">ALGM</a>
 <a href="companies/AMZN.html" class="tracked-chip has-report">AMZN</a>
 <a href="companies/AVGO.html" class="tracked-chip has-report">AVGO</a>
@@ -368,12 +546,48 @@
   </div>
 </section>
 
+<div style="height:80px"></div><!-- spacer for bottom nav -->
+
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item active">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">首页</span>
+  </a>
+  <a href="reports/calendar/2026-07_calendar.html" class="nav-item">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">日历</span>
+  </a>
+  <a href="reports/calendar/2026-07_predictions.html" class="nav-item">
+    <span class="nav-icon">🔮</span>
+    <span class="nav-label">预测</span>
+  </a>
+  <a href="index_cn.html" class="nav-item">
+    <span class="nav-icon">🇨🇳</span>
+    <span class="nav-label">中文</span>
+  </a>
+</nav>
+
 <div class="footer">
-  AI Investment Research System · Generated 2026-07-23 11:14<br>
+  AI Investment Research System · Generated 2026-07-23 13:59<br>
   <a href="https://github.com" style="color:var(--accent)">在 GitHub 上查看</a>
 </div>
 
 <script>
+  // Search filter
+  function filterReports() {
+    var q = (document.getElementById('searchBox').value || '').toUpperCase();
+    document.querySelectorAll('.report-card').forEach(function(c) {
+      var t = (c.querySelector('.rc-ticker')?.textContent || '').toUpperCase();
+      var n = (c.querySelector('.rc-name')?.textContent || '').toUpperCase();
+      c.classList.toggle('hidden', q.length > 0 && !t.includes(q) && !n.includes(q));
+    });
+    document.querySelectorAll('.tracked-chip').forEach(function(c) {
+      c.style.opacity = (q.length > 0 && !c.textContent.toUpperCase().includes(q)) ? '0.3' : '1';
+    });
+  }
+
+  // Theme
   (function() {
     var theme = localStorage.getItem('theme');
     if (theme === 'light') {
@@ -393,6 +607,15 @@
       localStorage.setItem('theme', 'light');
     }
   }
+
+  // Push notification for mega-cap earnings
+  if ('Notification' in window && Notification.permission === 'default') {
+    document.addEventListener('click', function once() {
+      Notification.requestPermission();
+      document.removeEventListener('click', once);
+    }, { once: true });
+  }
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }

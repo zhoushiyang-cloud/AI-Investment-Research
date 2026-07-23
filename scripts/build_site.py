@@ -14,8 +14,10 @@ import json
 import re
 import sys
 import warnings
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+
+import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -487,6 +489,112 @@ def scan_tracked_companies() -> list[dict]:
     return companies
 
 
+# ── Live Prices ──────────────────────────────────────────────────────────────
+
+def fetch_live_prices(tickers: list[str]) -> dict[str, dict]:
+    """Get real-time quotes from FMP for all tracked tickers."""
+    from src.config import load_config as _lc
+    config = _lc()
+    api_key = config.get("fmp", {}).get("api_key", "")
+    if not api_key:
+        return {}
+    prices: dict[str, dict] = {}
+    try:
+        symbols = ",".join(tickers[:20])
+        url = f"https://financialmodelingprep.com/api/v3/quote/{symbols}?apikey={api_key}"
+        r = requests.get(url, timeout=15)
+        if r.status_code == 200:
+            for q in r.json():
+                prices[q["symbol"]] = {
+                    "price": q.get("price", 0),
+                    "change_pct": q.get("changesPercentage", 0),
+                    "change": q.get("change", 0),
+                    "market_cap": q.get("marketCap", 0),
+                }
+    except Exception:
+        pass
+    return prices
+
+
+def extract_mega_events(calendar: dict | None) -> list[dict]:
+    """Extract mega-cap earnings events for this week from calendar data."""
+    if not calendar:
+        return []
+    # Read the calendar HTML to extract mega events
+    cal_html = calendar.get("calendar_html", "")
+    if not cal_html:
+        return []
+    cal_path = PROJECT_ROOT / cal_html
+    if not cal_path.exists():
+        return []
+
+    mega = []
+    now = datetime.now()
+    try:
+        # Parse calendar HTML for mega-cap events (className 'mega')
+        html = cal_path.read_text(encoding="utf-8")
+        # Extract calendar data from the embedded JSON
+        match = re.search(r"const CALENDAR_DATA\s*=\s*({.*?});", html, re.DOTALL)
+        if match:
+            data = json.loads(match.group(1))
+            for date_str, events in data.items():
+                try:
+                    ev_date = datetime.strptime(date_str, "%Y-%m-%d")
+                except ValueError:
+                    continue
+                if ev_date < now:
+                    continue  # past
+                for ev in events:
+                    if ev.get("importance", 0) >= 3:
+                        mega.append({
+                            "date": date_str,
+                            "symbol": ev["symbol"],
+                            "eps": ev.get("eps", "?"),
+                        })
+        # Sort by date, take top 8
+        mega.sort(key=lambda x: x["date"])
+    except Exception:
+        pass
+    return mega[:8]
+
+
+# ── HTML Generation Helpers ──────────────────────────────────────────────────
+
+def _build_mega_alert(mega_events: list[dict], prices: dict, T) -> str:
+    """Build dynamic mega-cap earnings alert HTML."""
+    if not mega_events:
+        return '<div class="alert"><div class="alert-title">⚠️ No mega-cap events in data</div></div>'
+    chips = ""
+    for ev in mega_events[:6]:
+        sym = ev["symbol"]
+        p = prices.get(sym, {})
+        chg = p.get("change_pct", 0)
+        chg_sign = "📈" if chg > 0 else "📉" if chg < 0 else ""
+        chips += f'<a href="companies/{sym}.html" class="alert-chip">{sym} {ev["date"][5:]} {chg_sign}</a>\n'
+    return f'<div class="alert"><div class="alert-title">⚠️ {T("High-Impact Events", "高影响力事件")}</div><div class="alert-items">{chips}</div></div>'
+
+
+def _build_mini_calendar(calendar: dict | None, T) -> str:
+    """Build a 'This Week' mini calendar from calendar data."""
+    if not calendar:
+        return "<p>No calendar data available.</p>"
+
+    cal_html = calendar.get("calendar_html", "")
+    cal_path = PROJECT_ROOT / cal_html
+    if not cal_path.exists():
+        return "<p>Calendar data not found.</p>"
+
+    today = datetime.now()
+    rows = ""
+    for offset in range(7):
+        d = today + timedelta(days=offset)
+        date_str = d.strftime("%Y-%m-%d")
+        day_name = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][d.weekday()]
+        rows += f"<div class='mini-day'><span class='mini-date'>{d.day} {day_name[:3]}</span></div>"
+
+    return f'<div class="mini-cal">{rows}</div>'
+
+
 # ── HTML Generation ────────────────────────────────────────────────────────────
 
 def build_index_html(
@@ -494,12 +602,21 @@ def build_index_html(
     calendar: dict | None,
     tracked: list[dict],
     lang: str = "en",
+    prices: dict[str, dict] | None = None,
+    mega_events: list[dict] | None = None,
 ) -> str:
     """Generate the mobile-first portal index.html.
 
     Args:
         lang: 'en' for English, 'cn' for Chinese UI.
+        prices: Optional live price data keyed by ticker.
+        mega_events: Optional mega-cap earnings events.
     """
+    if prices is None:
+        prices = {}
+    if mega_events is None:
+        mega_events = []
+
     C = lang == "cn"  # Chinese mode
     T = lambda en, cn: cn if C else en
 
@@ -519,7 +636,6 @@ def build_index_html(
             ticker_latest[t] = r
     latest_reports = sorted(ticker_latest.values(), key=lambda x: x["date"], reverse=True)
     if not latest_reports and C:
-        # Fallback to EN reports if no CN reports available
         for r in reports:
             if r["is_cn"]:
                 continue
@@ -534,16 +650,28 @@ def build_index_html(
         rating_class = {
             "BUY": "buy", "SELL": "sell", "HOLD": "hold",
         }.get(r["rating"], "")
-        cn_path = r["path"].replace(".md", "_cn.html")
+        p = prices.get(r["ticker"], {})
+        price_str = f"${p.get('price', 0):.2f}" if p.get("price") else "—"
+        chg = p.get("change_pct", 0)
+        chg_str = f"<span class='rc-chg {'up' if chg >= 0 else 'down'}'>{chg:+.1f}%</span>" if p else ""
+        mcap = p.get("market_cap", 0)
+        mcap_str = f"${mcap/1e9:.0f}B" if mcap > 0 else ""
         report_cards += f"""
         <a href="{r['path']}" class="report-card">
-          <div class="rc-ticker">{r['ticker']}</div>
+          <div class="rc-header">
+            <span class="rc-ticker">{r['ticker']}</span>
+            <span class="rc-price">{price_str}</span>
+          </div>
           <div class="rc-name">{r['company'][:30]}</div>
           <div class="rc-meta">
             <span class="rating {rating_class}">{r['rating']}</span>
             <span class="target">🎯 ${r['target']}</span>
+            {chg_str}
           </div>
-          <div class="rc-date">{r['date']}</div>
+          <div class="rc-footer">
+            <span class="rc-mcap">{mcap_str}</span>
+            <span class="rc-date">{r['date']}</span>
+          </div>
         </a>"""
 
     # Build economic events HTML
@@ -668,24 +796,70 @@ def build_index_html(
     text-decoration: none;
   }}
 
+  /* Search */
+  .search-wrap {{ margin: 10px 0; }}
+  .search-box {{
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    background: var(--card); color: var(--text); border: 1px solid var(--border);
+    font-size: 0.9em; outline: none; transition: border 0.2s;
+  }}
+  .search-box:focus {{ border-color: var(--accent); }}
+  .search-box::placeholder {{ color: var(--muted); }}
+
   /* Report Cards */
   .report-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
   .report-card {{
     background: var(--card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px; text-decoration: none; color: inherit;
+    border-radius: 10px; padding: 10px; text-decoration: none; color: inherit;
     transition: all 0.15s;
   }}
   .report-card:active {{ background: #1c2333; }}
+  .report-card.hidden {{ display: none; }}
+  .rc-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }}
   .rc-ticker {{ font-weight: 800; color: var(--accent); font-size: 0.85em; }}
-  .rc-name {{ font-size: 0.72em; color: var(--muted); margin: 2px 0 4px;
+  .rc-price {{ font-size: 0.78em; color: var(--text); font-weight: 600; }}
+  .rc-name {{ font-size: 0.7em; color: var(--muted); margin: 2px 0 4px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-  .rc-meta {{ display: flex; gap: 6px; align-items: center; }}
-  .rating {{ font-size: 0.68em; font-weight: 700; padding: 1px 6px; border-radius: 3px; }}
+  .rc-meta {{ display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }}
+  .rating {{ font-size: 0.65em; font-weight: 700; padding: 1px 5px; border-radius: 3px; }}
   .rating.buy {{ background: #1a3a1a; color: var(--buy); }}
   .rating.sell {{ background: #3a1a1a; color: var(--sell); }}
   .rating.hold {{ background: #3a2a0a; color: var(--hold); }}
-  .target {{ font-size: 0.68em; color: var(--muted); }}
-  .rc-date {{ font-size: 0.65em; color: var(--muted); margin-top: 4px; }}
+  .target {{ font-size: 0.65em; color: var(--muted); }}
+  .rc-chg {{ font-size: 0.65em; font-weight: 600; }}
+  .rc-chg.up {{ color: var(--buy); }}
+  .rc-chg.down {{ color: var(--sell); }}
+  .rc-footer {{ display: flex; justify-content: space-between; margin-top: 4px; }}
+  .rc-mcap {{ font-size: 0.62em; color: var(--muted); }}
+  .rc-date {{ font-size: 0.6em; color: var(--muted); }}
+
+  /* Mini Calendar */
+  .mini-cal {{ display: flex; gap: 4px; overflow-x: auto; padding: 4px 0; }}
+  .mini-day {{
+    flex: 0 0 44px; text-align: center; background: var(--card);
+    border-radius: 8px; padding: 6px 2px; font-size: 0.7em;
+    border: 1px solid var(--border);
+  }}
+  .mini-date {{ font-weight: 700; color: var(--accent); }}
+
+  /* Bottom Nav */
+  .bottom-nav {{
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    max-width: 600px; width: 100%;
+    display: flex; justify-content: space-around;
+    background: var(--card); border-top: 1px solid var(--border);
+    padding: 6px 0 env(safe-area-inset-bottom, 6px);
+    z-index: 998;
+  }}
+  .nav-item {{
+    display: flex; flex-direction: column; align-items: center;
+    text-decoration: none; color: var(--muted); font-size: 0.65em;
+    padding: 4px 12px; border-radius: 8px; transition: all 0.15s;
+  }}
+  .nav-item.active {{ color: var(--accent); }}
+  .nav-item:active {{ background: var(--bg); }}
+  .nav-icon {{ font-size: 1.4em; }}
+  .nav-label {{ margin-top: 1px; }}
 
   /* Tracked Chips */
   .chip-row {{ display: flex; flex-wrap: wrap; gap: 5px; }}
@@ -708,37 +882,37 @@ def build_index_html(
 
 <header>
   <h1>📊 {SITE_TITLE}</h1>
-  <div class="sub">{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}<br>Build {datetime.now().strftime('%Y%m%d%H%M%S')}</div>
+  <div class="sub">{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}</div>
 </header>
 
-<!-- Mega-Cap Earnings Alert -->
+<!-- Search Bar -->
+<div class="search-wrap">
+  <input type="text" class="search-box" id="searchBox"
+    placeholder="{T('Search ticker or company...', '搜索股票代码或公司...')}"
+    oninput="filterReports()" autocomplete="off">
+</div>
+
+<!-- Dynamic Mega-Cap Earnings Alert -->
 <section>
   <div class="section-title">🔥 {T('Mega-Cap Earnings This Week', '本周重磅财报')}</div>
-  <div class="alert">
-    <div class="alert-title">⚠️ {T('High-Impact Events', '高影响力事件')}</div>
-    <div class="alert-items">
-      <a href="companies/INTC.html" class="alert-chip">INTC Jul 23</a>
-      <a href="companies/GOOGL.html" class="alert-chip">GOOGL Jul 22 ✅</a>
-      <a href="companies/TSLA.html" class="alert-chip">TSLA Jul 22 ✅</a>
-      <a href="companies/MSFT.html" class="alert-chip">MSFT Jul 29</a>
-      <a href="companies/AAPL.html" class="alert-chip" style="display:none">AAPL Jul 30</a>
-    </div>
-    <div style="margin-top:4px;font-size:0.7em;color:var(--muted)">
-      🏛 FOMC Jul 29 · GDP Jul 30 · PCE Jul 31
-    </div>
-  </div>
+  {_build_mega_alert(mega_events, prices, T)}
 </section>
 
-<!-- Calendar + Predictions -->
+<!-- Mini Calendar: This Week -->
 <section>
-  <div class="section-title">📅 {T('Calendar & Predictions', '日历与预测')}</div>
+  <div class="section-title">📅 {T('This Week', '本周')}</div>
+  {_build_mini_calendar(calendar, T)}
+</section>
+
+<!-- Calendar + Predictions links -->
+<section>
   {econ_html}
 </section>
 
 <!-- Latest Reports -->
 <section>
   <div class="section-title">📑 {T('Latest Research Reports', '最新研究报告')}</div>
-  <div class="report-grid">
+  <div class="report-grid" id="reportGrid">
     {report_cards}
   </div>
 </section>
@@ -746,10 +920,32 @@ def build_index_html(
 <!-- Tracked Companies -->
 <section>
   <div class="section-title">🏢 {T('Tracked Companies', '追踪公司')} ({len(tracked)})</div>
-  <div class="chip-row">
+  <div class="chip-row" id="chipRow">
     {tracked_html}
   </div>
 </section>
+
+<div style="height:80px"></div><!-- spacer for bottom nav -->
+
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item active">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">{T('Home', '首页')}</span>
+  </a>
+  <a href="reports/calendar/2026-07_calendar.html" class="nav-item">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">{T('Calendar', '日历')}</span>
+  </a>
+  <a href="reports/calendar/2026-07_predictions.html" class="nav-item">
+    <span class="nav-icon">🔮</span>
+    <span class="nav-label">{T('Predict', '预测')}</span>
+  </a>
+  <a href="{T('index.html', 'index_cn.html')}" class="nav-item">
+    <span class="nav-icon">{T('🇺🇸', '🇨🇳')}</span>
+    <span class="nav-label">{T('EN', '中文')}</span>
+  </a>
+</nav>
 
 <div class="footer">
   AI Investment Research System · Generated {now}<br>
@@ -757,6 +953,20 @@ def build_index_html(
 </div>
 
 <script>
+  // Search filter
+  function filterReports() {{
+    var q = (document.getElementById('searchBox').value || '').toUpperCase();
+    document.querySelectorAll('.report-card').forEach(function(c) {{
+      var t = (c.querySelector('.rc-ticker')?.textContent || '').toUpperCase();
+      var n = (c.querySelector('.rc-name')?.textContent || '').toUpperCase();
+      c.classList.toggle('hidden', q.length > 0 && !t.includes(q) && !n.includes(q));
+    }});
+    document.querySelectorAll('.tracked-chip').forEach(function(c) {{
+      c.style.opacity = (q.length > 0 && !c.textContent.toUpperCase().includes(q)) ? '0.3' : '1';
+    }});
+  }}
+
+  // Theme
   (function() {{
     var theme = localStorage.getItem('theme');
     if (theme === 'light') {{
@@ -776,6 +986,15 @@ def build_index_html(
       localStorage.setItem('theme', 'light');
     }}
   }}
+
+  // Push notification for mega-cap earnings
+  if ('Notification' in window && Notification.permission === 'default') {{
+    document.addEventListener('click', function once() {{
+      Notification.requestPermission();
+      document.removeEventListener('click', once);
+    }}, {{ once: true }});
+  }}
+
   if ('serviceWorker' in navigator) {{
     navigator.serviceWorker.register('sw.js');
   }}
@@ -800,19 +1019,29 @@ MANIFEST_JSON = """{
   ]
 }"""
 
-SW_JS = """// Simple service worker for offline caching
-const CACHE_NAME = 'ai-invest-v1';
-const ASSETS = ['./', 'index.html', 'manifest.json'];
+SW_JS = """// Service worker — network-first with offline fallback, pre-caches recent pages
+const CACHE = 'ai-invest-v3';
+const PRE = ['./', 'index.html', 'index_cn.html', 'manifest.json'];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRE).catch(() => {})));
+  self.skipWaiting();
 });
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    fetch(e.request).then(r => {
+      if (r.ok && r.type === 'basic') {
+        const clone = r.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return r;
+    }).catch(() => caches.match(e.request))
   );
 });
 """
@@ -839,8 +1068,16 @@ def main() -> None:
     print(f"    Found {len(tracked)} companies")
 
     # 2. Generate files
+    # 3.5 Fetch live prices and mega events
+    print("  [3.5/6] Fetching live prices + mega events...")
+    tickers_p = [c["ticker"] for c in tracked]
+    prices = fetch_live_prices(tickers_p)
+    print(f"    {len(prices)} live prices")
+    mega_events = extract_mega_events(calendar)
+    print(f"    {len(mega_events)} mega events")
+
     print("  [4/6] Generating docs/index.html...")
-    index_html = build_index_html(reports, calendar, tracked)
+    index_html = build_index_html(reports, calendar, tracked, prices=prices, mega_events=mega_events)
     (DOCS_DIR / "index.html").write_text(index_html, encoding="utf-8")
     print(f"    docs/index.html ({len(index_html):,} bytes)")
 
@@ -918,7 +1155,7 @@ def main() -> None:
     index_path.write_text(index_content, encoding="utf-8")
 
     # Generate Chinese portal — proper CN build with CN report links
-    index_cn_html = build_index_html(reports, calendar, tracked, lang="cn")
+    index_cn_html = build_index_html(reports, calendar, tracked, lang="cn", prices=prices, mega_events=mega_events)
     (DOCS_DIR / "index_cn.html").write_text(index_cn_html, encoding="utf-8")
     print("    docs/index_cn.html (Chinese portal with CN report links)")
 
