@@ -237,6 +237,16 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
     --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
     --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
     --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }}
+  [data-theme="light"] {{
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
   }}
   * {{ margin:0; padding:0; box-sizing:border-box; }}
   body {{
@@ -245,17 +255,28 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
     max-width: 720px; margin: 0 auto; padding: 16px;
     line-height: 1.6;
   }}
-  h1 {{ font-size:1.4em; color:#fff; margin:16px 0 8px; }}
-  h2 {{ font-size:1.15em; color:#e0e0e0; margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }}
-  h3 {{ font-size:1em; color:#d0d0d0; margin:14px 0 4px; }}
+  /* Theme toggle */
+  .theme-toggle {{
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }}
+  .theme-toggle:active {{ transform: scale(0.9); }}
+  h1 {{ font-size:1.4em; color:var(--h1); margin:16px 0 8px; }}
+  h2 {{ font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }}
+  h3 {{ font-size:1em; color:var(--h2); margin:14px 0 4px; }}
   h4, h5, h6 {{ font-size:0.9em; color:var(--muted); margin:10px 0 4px; }}
   p {{ margin:6px 0; }}
   a {{ color: var(--accent); text-decoration: none; }}
   a:hover {{ text-decoration: underline; }}
-  strong {{ color: #fff; }}
-  em {{ color: #d0d0d0; }}
-  code {{ background:#1c2333; padding:1px 5px; border-radius:3px; font-size:0.85em; }}
-  pre {{ background:#1c2333; padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }}
+  strong {{ color: var(--strong); }}
+  em {{ color: var(--muted); }}
+  code {{ background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }}
+  pre {{ background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }}
   pre code {{ background:none; padding:0; }}
   blockquote {{ border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }}
   hr {{ border:none; border-top:1px solid var(--border); margin:16px 0; }}
@@ -264,10 +285,10 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
 
   /* Tables */
   .md-table {{ width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }}
-  .md-table th {{ background:var(--card); color:#fff; padding:8px 10px; text-align:left;
+  .md-table th {{ background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
     border:1px solid var(--border); font-weight:600; }}
   .md-table td {{ padding:6px 10px; border:1px solid var(--border); }}
-  .md-table tr:nth-child(even) {{ background:#0d1117; }}
+  .md-table tr:nth-child(even) {{ background:var(--bg); }}
 
   /* Callouts */
   .callout {{
@@ -278,9 +299,12 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
   .callout-body {{ font-size:0.88em; }}
   .callout-body p {{ margin:4px 0; }}
   .callout-body ul, .callout-body ol {{ margin:4px 0; padding-left:20px; }}
-  .callout-warning {{ background:#2a1a0a; }}
-  .callout-tip, .callout-success {{ background:#1a2a1a; }}
-  .callout-quote {{ background:#1a1a2a; font-style:italic; }}
+  .callout-warning {{ background:var(--callout-warning); }}
+  .callout-tip, .callout-success {{ background:var(--callout-tip); }}
+  .callout-quote {{ background:var(--callout-quote); font-style:italic; }}
+  .callout-abstract {{ background:var(--callout-abstract); }}
+  .callout-info {{ background:var(--callout-info); }}
+  .callout-example {{ background:var(--callout-info); }}
 
   /* Metadata header */
   .meta-header {{
@@ -304,6 +328,7 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
 </style>
 </head>
 <body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
 <a class="back-link" href="../index.html">← Back to Portal</a>
 <div class="meta-header">
   <span><strong>{ticker}</strong></span>
@@ -313,6 +338,29 @@ def _md_to_html(md_text: str, file_path: str = "") -> str:
 </div>
 {html_body}
 <a class="back-link" href="../index.html" style="margin-top:24px;display:block;">← Back to Portal</a>
+
+<script>
+  (function() {{
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {{
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }}
+  }})();
+  function toggleTheme() {{
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {{
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    }} else {{
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }}
+  }}
+</script>
+
 </body>
 </html>"""
 
@@ -543,6 +591,14 @@ def build_index_html(
     --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
     --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
     --mega: #f78166; --large: #d2a850;
+    --h1: #fff; --h2: #e0e0e0;
+  }}
+  [data-theme="light"] {{
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --mega: #cf222e; --large: #bf8700;
+    --h1: #1f2328; --h2: #2f3640;
   }}
   * {{ margin:0; padding:0; box-sizing:border-box; }}
   body {{
@@ -551,9 +607,20 @@ def build_index_html(
     max-width: 600px; margin: 0 auto; padding: 16px;
     -webkit-font-smoothing: antialiased;
   }}
-  header {{ text-align: center; padding: 24px 0 12px; }}
-  header h1 {{ font-size: 1.3em; color: #fff; }}
+  header {{ text-align: center; padding: 24px 0 12px; position:relative; }}
+  header h1 {{ font-size: 1.3em; color: var(--h1); }}
   header .sub {{ font-size: 0.8em; color: var(--muted); margin-top: 4px; }}
+  /* Theme toggle */
+  .theme-toggle {{
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }}
+  .theme-toggle:active {{ transform: scale(0.9); }}
 
   .section-title {{
     font-size: 0.85em; font-weight: 600; color: var(--muted);
@@ -571,7 +638,7 @@ def build_index_html(
   .quick-card:active {{ background: #1c2333; transform: scale(0.99); }}
   .qc-icon {{ font-size: 1.6em; margin-right: 14px; }}
   .qc-text {{ flex:1; }}
-  .qc-title {{ font-size: 0.95em; color: #fff; font-weight: 600; }}
+  .qc-title {{ font-size: 0.95em; color: var(--h1); font-weight: 600; }}
   .qc-sub {{ font-size: 0.78em; color: var(--muted); margin-top: 2px; }}
   .qc-arrow {{ color: var(--muted); font-size: 1.2em; }}
 
@@ -625,6 +692,8 @@ def build_index_html(
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+
 <header>
   <h1>📊 {SITE_TITLE}</h1>
   <div class="sub">{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}<br>Build {datetime.now().strftime('%Y%m%d%H%M%S')}</div>
@@ -676,6 +745,25 @@ def build_index_html(
 </div>
 
 <script>
+  (function() {{
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {{
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }}
+  }})();
+  function toggleTheme() {{
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {{
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    }} else {{
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }}
+  }}
   if ('serviceWorker' in navigator) {{
     navigator.serviceWorker.register('sw.js');
   }}

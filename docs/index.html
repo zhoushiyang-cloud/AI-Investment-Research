@@ -20,6 +20,14 @@
     --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
     --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
     --mega: #f78166; --large: #d2a850;
+    --h1: #fff; --h2: #e0e0e0;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --mega: #cf222e; --large: #bf8700;
+    --h1: #1f2328; --h2: #2f3640;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -28,9 +36,20 @@
     max-width: 600px; margin: 0 auto; padding: 16px;
     -webkit-font-smoothing: antialiased;
   }
-  header { text-align: center; padding: 24px 0 12px; }
-  header h1 { font-size: 1.3em; color: #fff; }
+  header { text-align: center; padding: 24px 0 12px; position:relative; }
+  header h1 { font-size: 1.3em; color: var(--h1); }
   header .sub { font-size: 0.8em; color: var(--muted); margin-top: 4px; }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
 
   .section-title {
     font-size: 0.85em; font-weight: 600; color: var(--muted);
@@ -48,7 +67,7 @@
   .quick-card:active { background: #1c2333; transform: scale(0.99); }
   .qc-icon { font-size: 1.6em; margin-right: 14px; }
   .qc-text { flex:1; }
-  .qc-title { font-size: 0.95em; color: #fff; font-weight: 600; }
+  .qc-title { font-size: 0.95em; color: var(--h1); font-weight: 600; }
   .qc-sub { font-size: 0.78em; color: var(--muted); margin-top: 2px; }
   .qc-arrow { color: var(--muted); font-size: 1.2em; }
 
@@ -102,9 +121,11 @@
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+
 <header>
   <h1>📊 AI Investment Research</h1>
-  <div class="sub">Updated: 2026-07-23 10:11 · 17 reports · 18 companies tracked<br>Build 20260723101121</div>
+  <div class="sub">Updated: 2026-07-23 10:18 · 17 reports · 18 companies tracked<br>Build 20260723101811</div>
 </header>
 
 <!-- Mega-Cap Earnings Alert -->
@@ -339,11 +360,30 @@
 </section>
 
 <div class="footer">
-  AI Investment Research System · Generated 2026-07-23 10:11<br>
+  AI Investment Research System · Generated 2026-07-23 10:18<br>
   <a href="https://github.com" style="color:var(--accent)">View on GitHub</a>
 </div>
 
 <script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
