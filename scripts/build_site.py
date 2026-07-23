@@ -405,7 +405,7 @@ def scan_calendar() -> dict | None:
         result["calendar_html"] = calendars[0].relative_to(PROJECT_ROOT).as_posix()
         result["calendar_month"] = calendars[0].stem.replace("_calendar", "")
     if predictions:
-        result["predictions_md"] = predictions[0].relative_to(PROJECT_ROOT).as_posix()
+        result["predictions_md"] = predictions[0].relative_to(PROJECT_ROOT).as_posix().replace(".md", ".html")
     return result if result else None
 
 
@@ -494,8 +494,8 @@ def build_index_html(
           <div class="quick-card">
             <div class="qc-icon">📅</div>
             <div class="qc-text">
-              <div class="qc-title">Earnings Calendar</div>
-              <div class="qc-sub">{calendar.get('calendar_month', 'Current')}</div>
+              <div class="qc-title">{T('Earnings Calendar', '财报日历')}</div>
+              <div class="qc-sub">{calendar.get('calendar_month', T('Current', '当前'))}</div>
             </div>
             <div class="qc-arrow">→</div>
           </div>
@@ -506,8 +506,8 @@ def build_index_html(
           <div class="quick-card">
             <div class="qc-icon">🔮</div>
             <div class="qc-text">
-              <div class="qc-title">AI Predictions</div>
-              <div class="qc-sub">DeepSeek-generated forecasts</div>
+              <div class="qc-title">{T('AI Predictions', 'AI预测')}</div>
+              <div class="qc-sub">{T('DeepSeek-generated forecasts', 'DeepSeek AI 生成预测')}</div>
             </div>
             <div class="qc-arrow">→</div>
           </div>
@@ -627,14 +627,14 @@ def build_index_html(
 
 <header>
   <h1>📊 {SITE_TITLE}</h1>
-  <div class="sub">Updated: {now} · {len(latest_reports)} reports · {len(tracked)} companies tracked<br>Build {datetime.now().strftime('%Y%m%d%H%M%S')}</div>
+  <div class="sub">{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}<br>Build {datetime.now().strftime('%Y%m%d%H%M%S')}</div>
 </header>
 
 <!-- Mega-Cap Earnings Alert -->
 <section>
-  <div class="section-title">🔥 Mega-Cap Earnings This Week</div>
+  <div class="section-title">🔥 {T('Mega-Cap Earnings This Week', '本周重磅财报')}</div>
   <div class="alert">
-    <div class="alert-title">⚠️ High-Impact Events</div>
+    <div class="alert-title">⚠️ {T('High-Impact Events', '高影响力事件')}</div>
     <div class="alert-items">
       <a href="companies/INTC.html" class="alert-chip">INTC Jul 23</a>
       <a href="companies/GOOGL.html" class="alert-chip">GOOGL Jul 22 ✅</a>
@@ -650,13 +650,13 @@ def build_index_html(
 
 <!-- Calendar + Predictions -->
 <section>
-  <div class="section-title">📅 Calendar & Predictions</div>
+  <div class="section-title">📅 {T('Calendar & Predictions', '日历与预测')}</div>
   {econ_html}
 </section>
 
 <!-- Latest Reports -->
 <section>
-  <div class="section-title">📑 Latest Research Reports</div>
+  <div class="section-title">📑 {T('Latest Research Reports', '最新研究报告')}</div>
   <div class="report-grid">
     {report_cards}
   </div>
@@ -664,7 +664,7 @@ def build_index_html(
 
 <!-- Tracked Companies -->
 <section>
-  <div class="section-title">🏢 Tracked Companies ({len(tracked)})</div>
+  <div class="section-title">🏢 {T('Tracked Companies', '追踪公司')} ({len(tracked)})</div>
   <div class="chip-row">
     {tracked_html}
   </div>
@@ -672,7 +672,7 @@ def build_index_html(
 
 <div class="footer">
   AI Investment Research System · Generated {now}<br>
-  <a href="https://github.com" style="color:var(--accent)">View on GitHub</a>
+  <a href="https://github.com" style="color:var(--accent)">{T('View on GitHub', '在 GitHub 上查看')}</a>
 </div>
 
 <script>
@@ -817,38 +817,10 @@ def main() -> None:
     index_content = index_content.replace('.md"', '.html"')
     index_path.write_text(index_content, encoding="utf-8")
 
-    # Generate Chinese portal — replace UI text BETWEEN HTML tags only (not in attributes)
-    def _cn_replace(html: str) -> str:
-        """Replace English UI strings with Chinese, preserving HTML tags/links."""
-        replacements = [
-            # (English, Chinese) — only replace when followed by < or at sentence boundary
-            (">AI Investment Research<", ">AI投资研究<"),
-            (">AI Investment Research System<", ">AI投资研究系统<"),
-            (">Updated:", ">更新："),
-            (" reports</div>", " 份报告</div>"),
-            (" companies tracked", " 家公司追踪"),
-            (">Mega-Cap Earnings This Week<", ">本周重磅财报<"),
-            (">High-Impact Events<", ">高影响力事件<"),
-            (">Calendar &amp; Predictions<", ">日历与预测<"),
-            (">Earnings Calendar<", ">财报日历<"),
-            (">AI Predictions<", ">AI预测<"),
-            ("DeepSeek-generated forecasts", "DeepSeek AI生成预测"),
-            (">Latest Research Reports<", ">最新研究报告<"),
-            (">Tracked Companies<", ">追踪公司<"),
-            (">View on GitHub<", ">在GitHub上查看<"),
-            ("Back to Portal", "返回门户"),
-            ("This Week's Mega-Caps", "本周重磅"),
-            ("Current", "当前"),
-            (" reports · ", " 份报告 · "),
-        ]
-        result = html
-        for en, cn in replacements:
-            result = result.replace(en, cn)
-        return result
-
-    cn_content = _cn_replace(index_content)
-    (DOCS_DIR / "index_cn.html").write_text(cn_content, encoding="utf-8")
-    print("    docs/index_cn.html (Chinese portal)")
+    # Generate Chinese portal — proper CN build with CN report links
+    index_cn_html = build_index_html(reports, calendar, tracked, lang="cn")
+    (DOCS_DIR / "index_cn.html").write_text(index_cn_html, encoding="utf-8")
+    print("    docs/index_cn.html (Chinese portal with CN report links)")
 
     print(f"\n[Done] Site built in docs/\n")
     print("  Next: git add docs/ && git commit && git push")
