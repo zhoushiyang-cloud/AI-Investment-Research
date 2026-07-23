@@ -85,7 +85,7 @@ def extract_report_meta(path: Path) -> dict | None:
         "date": meta.get("date", "?"),
         "rating": rating,
         "target": target,
-        "path": str(path.relative_to(PROJECT_ROOT)),
+        "path": path.relative_to(PROJECT_ROOT).as_posix(),
         "is_cn": "_cn" in path.stem,
     }
 
@@ -110,10 +110,10 @@ def scan_calendar() -> dict | None:
 
     result = {}
     if calendars:
-        result["calendar_html"] = str(calendars[0].relative_to(PROJECT_ROOT))
+        result["calendar_html"] = calendars[0].relative_to(PROJECT_ROOT).as_posix()
         result["calendar_month"] = calendars[0].stem.replace("_calendar", "")
     if predictions:
-        result["predictions_md"] = str(predictions[0].relative_to(PROJECT_ROOT))
+        result["predictions_md"] = predictions[0].relative_to(PROJECT_ROOT).as_posix()
     return result if result else None
 
 
@@ -130,7 +130,7 @@ def scan_tracked_companies() -> list[dict]:
         companies.append({
             "ticker": ticker,
             "name": first_line.replace(f"# {ticker} — ", "").strip() or ticker,
-            "path": str(f.relative_to(PROJECT_ROOT)),
+            "path": f.relative_to(PROJECT_ROOT).as_posix(),
         })
     return companies
 
