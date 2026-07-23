@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVGO — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>AVGO</strong></span>
+  <span>Broadcom Inc.</span>
+  <span>Technology</span>
+  <span>2026-07-23</span>
+</div>
+<hr>
+
+<h1>📊 AVGO — Broadcom Inc.</h1>
+<blockquote><em>Investment Research Report · July 23, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/AVGO.html">AVGO</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/AVGO Valuation.html">AVGO Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Broadcom (<a href="../companies/AVGO.html">AVGO</a>)</strong> is a diversified semiconductor and infrastructure software giant with a market cap of ~$1.89T, trading at $396.81, down ~20% from its 52-week high of $495.00.</li></p>
+<p><li><strong>FY2025 revenue surged to $63.9B</strong> (up 24% YoY from $51.6B in FY2024), driven by the VMware acquisition and organic growth in networking/AI silicon.</li></p>
+<p><li><strong>Operating margins expanded dramatically</strong> to 39.9% in FY2025 (vs 26.1% in FY2024), reflecting the high-margin software portfolio and operational leverage.</li></p>
+<p><li><strong>Free cash flow generation is robust</strong> at ~$27.5B in FY2025, supporting a growing dividend ($2.54 annualized, ~0.6% yield) and aggressive debt reduction.</li></p>
+<p><li><strong>Valuation appears reasonable</strong> at ~19x trailing EPS ($4.77 diluted) on a P/E basis, but the massive $61.9B in long-term debt warrants caution despite strong cash flows.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Broadcom Inc. is a global leader in both <strong>semiconductor solutions</strong> and <strong>infrastructure software</strong>, headquartered in Palo Alto, CA. The company operates through four primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>Wired Infrastructure</strong> – Networking chips, switches, routers for enterprise/data center (largest segment, ~40% of revenue)</li></p>
+<p><li><strong>Wireless Communications</strong> – RF front-end components for mobile phones (primarily Apple) (~20%)</li></p>
+<p><li><strong>Enterprise Storage</strong> – Storage adapters, controllers for data centers (~15%)</li></p>
+<p><li><strong>Industrial & Other</strong> – Power generation, automation, displays (~10%)</li></p>
+<p><li><strong>Software</strong> (now the largest profit contributor post-VMware) – Virtualization, mainframe, cybersecurity, and Broadcom's acquired portfolio (~15% of revenue but ~30% of profits)</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: Broadcom holds dominant positions in networking ASICs (custom chips for hyperscalers like <a href="../companies/GOOGL.html">GOOGL</a> and <a href="../companies/META.html">META</a>), RF filters, and enterprise storage. The VMware acquisition (closed FY2024) transformed the company into a hybrid cloud software powerhouse. CEO Hock Tan's "acquire and integrate" strategy has consistently delivered margin expansion. Key competitive advantages include sticky customer relationships, proprietary IP, and a diversified revenue base across cyclical and secular growth markets.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Growth</strong>: FY2025 revenue of <strong>$63.9B</strong> represents a <strong>23.9% YoY increase</strong> from FY2024's $51.6B, which itself was up 44% from FY2023's $35.8B. The growth is a combination of organic AI-related chip demand and the VMware acquisition.</p></p>
+
+<p><p><strong>Margins</strong>: Gross margin improved to <strong>67.8%</strong> in FY2025 (from 63.0% in FY2024 and 68.9% in FY2023). More impressively, <strong>operating income surged to $25.5B</strong> (39.9% margin) vs $13.5B (26.1%) in FY2024, driven by software's high incremental margins and cost synergies. R&D spending rose to <strong>$11.0B</strong> (17.2% of revenue), reflecting heavy investment in AI networking.</p></p>
+
+<p><p><strong>Cash Flow</strong>: Operating cash flow was <strong>$27.5B</strong> in FY2025, up from $20.0B in FY2024. CapEx was modest at <strong>$623M</strong>, yielding <strong>~$26.9B in free cash flow</strong> — a staggering 42% FCF margin. This funds the dividend ($2.36/share paid in FY2025) and debt reduction.</p></p>
+
+<p><p><strong>Balance Sheet</strong>: Total assets of <strong>$171.1B</strong> (up from $165.6B in FY2024) include <strong>$97.8B in goodwill</strong> (from VMware) and <strong>$32.3B in intangibles</strong>. Total debt is <strong>$62.0B</strong> (long-term) plus $3.2B current portion, for net debt of ~$48.5B (net of $16.2B cash). The debt load is manageable given $27.5B in operating cash flow. <strong>Share count fell</strong> from 4.78B diluted shares in FY2024 to 4.85B in FY2025, indicating modest buyback activity.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>P/E (trailing)</strong>: $396.81 / $4.77 diluted EPS = <strong>~83x</strong> (FY2025). This appears very high, but note FY2025 EPS includes significant amortization from acquisitions. Adjusted EPS (excluding amortization) would be much higher.</li></p>
+<p><li><strong>EV/EBITDA</strong>: Enterprise Value = $1.89T market cap + $62.0B debt - $16.2B cash = <strong>~$1.94T</strong>. EBITDA = Operating Income ($25.5B) + D&A ($8.6B) = <strong>$34.1B</strong>. EV/EBITDA = <strong>~57x</strong>.</li></p>
+<p><li><strong>P/S</strong>: $1.89T / $63.9B = <strong>~30x</strong>.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>: <a href="../companies/AVGO.html">AVGO</a> trades at a premium to <a href="../companies/ADI.html">ADI</a> (P/E ~25x) and <a href="../companies/MU.html">MU</a> (P/E ~15x) but below <a href="../companies/ASML.html">ASML</a> (P/E ~40x) and <a href="../companies/TSM.html">TSM</a> (P/E ~30x). The premium reflects the software component and AI exposure.</p></p>
+
+<p><p><strong>Historical Context</strong>: The current P/E is elevated vs AVGO's 5-year average of ~25x, but this is distorted by the VMware amortization. On an adjusted basis, the P/E is closer to 25-30x, which is in line with history. The stock is 20% off its 52-week high, suggesting the market is pricing in a cyclical slowdown.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Debt Overhang and Interest Rate Sensitivity</strong> <code>#critical</code></li></p>
+<p><p>Total debt of <strong>$62.0B</strong> (including current portion) with interest expense of <strong>$3.95B</strong> in FY2024 (data not available for FY2025). Rising rates or a recession could pressure coverage ratios. The company repaid $18.5B in debt in FY2025, but leverage remains high.</p></p>
+<p><li><strong>VMware Integration and Customer Churn</strong> <code>#critical</code></li></p>
+<p><p>The VMware acquisition added significant goodwill ($97.8B). If customers balk at new licensing terms (Broadcom shifted to subscription), revenue could disappoint. Any goodwill impairment would be a major negative.</p></p>
+<p><li><strong>Cyclical Semiconductor Downturn</strong> <code>#medium</code></li></p>
+<p><p>Broadcom's semiconductor revenue is tied to enterprise and telecom capex. A macro slowdown could reduce demand for networking and storage chips. FY2025 revenue growth of 24% may decelerate sharply.</p></p>
+<p><li><strong>Customer Concentration (Apple)</strong> <code>#medium</code></li></p>
+<p><p>The Wireless segment (~20% of revenue) is heavily dependent on <a href="../companies/AAPL.html">AAPL</a> for RF components. Any loss of share or volume cuts would materially impact results.</p></p>
+<p><li><strong>Insider Selling Activity</strong> <code>#low</code></li></p>
+<p><p>Recent insider sales at prices between $373 and $401 (multiple transactions) suggest management may see limited near-term upside. However, these could be for tax planning.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Networking Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>Broadcom's custom AI accelerators (TPUs for <a href="../companies/GOOGL.html">GOOGL</a>, Trainium for <a href="../companies/AMZN.html">AMZN</a>) and networking silicon (Tomahawk, Jericho) are key beneficiaries of hyperscaler AI buildouts. FY2025 revenue of $63.9B could see upside from AI-related wins.</p></p>
+<p><li><strong>VMware Subscription Transition</strong> <code>#near-term</code></li></p>
+<p><p>As VMware shifts from perpetual licenses to subscription/SaaS, recurring revenue will grow. The $9.5B in deferred revenue on the balance sheet (FY2025) indicates strong backlog.</p></p>
+<p><li><strong>Debt Reduction and Share Buybacks</strong> <code>#medium-term</code></li></p>
+<p><p>With $27.5B in operating cash flow, Broadcom can rapidly deleverage. The company repurchased $2.45B in stock in FY2025. Accelerated buybacks could support EPS growth.</p></p>
+<p><li><strong>Dividend Growth</strong> <code>#medium-term</code></li></p>
+<p><p>The annualized dividend of $2.54 (up from $2.36 paid in FY2025) represents a ~0.6% yield. With a payout ratio of ~10% of FCF, there is ample room for increases.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>HOLD</strong> (Conviction: Medium)</p></p>
+
+<p><p><strong>12-Month Price Target</strong>: <strong>$440</strong> (11% upside from $396.81)</p></p>
+
+<p><p><strong>Thesis</strong>: Broadcom is a high-quality compounder with dominant positions in AI networking and infrastructure software. The FY2025 results demonstrate exceptional margin expansion and cash flow generation. However, the stock has already priced in much of this optimism, trading at ~57x EV/EBITDA. The massive debt load ($62B) and cyclical semiconductor exposure create downside risk in a recession. We see limited upside catalysts in the near term beyond AI momentum, but the dividend and buyback provide a floor. We recommend holding for long-term investors but not adding at current levels. A better entry point would be below $350 (20% downside from here).</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>AVGO — Broadcom Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-23 11:09</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>AVGO</td></tr></p>
+<p><tr><td>Name</td><td>Broadcom Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>33,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-11-02</td><td>63887000000.0</td><td>25484000000.0</td><td>23126000000.0</td><td>4.8</td></tr></p>
+<p><tr><td>2024-11-03</td><td>51574000000.0</td><td>13463000000.0</td><td>5895000000.0</td><td>1.2</td></tr></p>
+<p><tr><td>2023-10-29</td><td>35819000000.0</td><td>16207000000.0</td><td>14082000000.0</td><td>3.3</td></tr></p>
+<p><tr><td>2022-10-30</td><td>33203000000.0</td><td>14225000000.0</td><td>11495000000.0</td><td>26.5</td></tr></p>
+<p><tr><td>2021-10-31</td><td>27450000000.0</td><td>8519000000.0</td><td>6736000000.0</td><td>15.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-11-02</td><td>171092000000.0</td><td>89800000000.0</td><td>81292000000.0</td><td>16178000000.0</td></tr></p>
+<p><tr><td>2024-11-03</td><td>165645000000.0</td><td>97967000000.0</td><td>67678000000.0</td><td>9348000000.0</td></tr></p>
+<p><tr><td>2023-10-29</td><td>72861000000.0</td><td>48873000000.0</td><td>23988000000.0</td><td>14189000000.0</td></tr></p>
+<p><tr><td>2022-10-30</td><td>73249000000.0</td><td>50540000000.0</td><td>22709000000.0</td><td>12416000000.0</td></tr></p>
+<p><tr><td>2021-10-31</td><td>75570000000.0</td><td>50581000000.0</td><td>24962000000.0</td><td>12163000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-11-02</td><td>27537000000.0</td><td>8636000000.0</td></tr></p>
+<p><tr><td>2024-11-03</td><td>19962000000.0</td><td>9860000000.0</td></tr></p>
+<p><tr><td>2023-10-29</td><td>18085000000.0</td><td>3749000000.0</td></tr></p>
+<p><tr><td>2022-10-30</td><td>16736000000.0</td><td>529000000.0</td></tr></p>
+<p><tr><td>2021-10-31</td><td>13764000000.0</td><td>539000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-09</td><td>402.2</td><td>407.5</td><td>387.9</td><td>401.1</td><td>28,073,957</td></tr></p>
+<p><tr><td>2026-07-10</td><td>398.5</td><td>402.4</td><td>395.7</td><td>400.0</td><td>14,595,928</td></tr></p>
+<p><tr><td>2026-07-13</td><td>393.5</td><td>395.7</td><td>383.4</td><td>384.1</td><td>21,294,509</td></tr></p>
+<p><tr><td>2026-07-14</td><td>395.7</td><td>397.3</td><td>384.6</td><td>389.1</td><td>20,118,722</td></tr></p>
+<p><tr><td>2026-07-15</td><td>396.1</td><td>399.0</td><td>386.7</td><td>394.3</td><td>16,324,127</td></tr></p>
+<p><tr><td>2026-07-16</td><td>384.5</td><td>386.7</td><td>371.9</td><td>374.4</td><td>23,407,244</td></tr></p>
+<p><tr><td>2026-07-17</td><td>366.0</td><td>377.4</td><td>357.8</td><td>370.8</td><td>23,272,208</td></tr></p>
+<p><tr><td>2026-07-20</td><td>378.8</td><td>383.6</td><td>376.0</td><td>378.2</td><td>14,420,450</td></tr></p>
+<p><tr><td>2026-07-21</td><td>390.2</td><td>390.6</td><td>379.2</td><td>386.5</td><td>17,291,139</td></tr></p>
+<p><tr><td>2026-07-22</td><td>380.2</td><td>398.6</td><td>380.0</td><td>396.8</td><td>16,966,188</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-14</td></tr></p>
+<p><tr><td>2026-07-14</td></tr></p>
+<p><tr><td>2026-07-10</td></tr></p>
+<p><tr><td>2026-07-10</td></tr></p>
+<p><tr><td>2026-07-06</td></tr></p>
+<p><tr><td>2026-07-01</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-26</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='TSM' name='Taiwan Semiconductor Manufacturing Company Limited' price=421.21 market_cap=2184597240800, symbol='META' name='Meta Platforms, Inc.' price=627.17 market_cap=1592022989980, symbol='MU' name='Micron Technology, Inc.' price=959.48 market_cap=1083627117200, symbol='AMD' name='Advanced Micro Devices, Inc.' price=552.33 market_cap=900629298000, symbol='ASML' name='ASML Holding N.V.' price=1801.86 market_cap=694469261263, symbol='ADI' name='Analog Devices, Inc.' price=386.73 market_cap=188371162858, symbol='SMTC' name='Semtech Corporation' price=136.93 market_cap=12755189434, symbol='FORM' name='FormFactor, Inc.' price=113.39 market_cap=8839291597, symbol='QRVO' name='Qorvo, Inc.' price=89.48 market_cap=7893746640, symbol='POWI' name='Power Integrations, Inc.' price=72.49 market_cap=4039141640</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-23 11:09</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-23 11:09 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/AVGO.html">AVGO</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
