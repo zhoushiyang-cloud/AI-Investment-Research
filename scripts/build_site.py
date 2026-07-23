@@ -492,27 +492,27 @@ def scan_tracked_companies() -> list[dict]:
 # ── Live Prices ──────────────────────────────────────────────────────────────
 
 def fetch_live_prices(tickers: list[str]) -> dict[str, dict]:
-    """Get real-time quotes from FMP for all tracked tickers."""
-    from src.config import load_config as _lc
-    config = _lc()
-    api_key = config.get("fmp", {}).get("api_key", "")
-    if not api_key:
+    """Get real-time quotes via data_engine (OpenBB FMP integration)."""
+    import warnings
+    warnings.filterwarnings("ignore")
+    try:
+        from src.data_engine import get_quote
+    except Exception:
         return {}
     prices: dict[str, dict] = {}
-    try:
-        symbols = ",".join(tickers[:20])
-        url = f"https://financialmodelingprep.com/api/v3/quote/{symbols}?apikey={api_key}"
-        r = requests.get(url, timeout=15)
-        if r.status_code == 200:
-            for q in r.json():
-                prices[q["symbol"]] = {
-                    "price": q.get("price", 0),
-                    "change_pct": q.get("changesPercentage", 0),
-                    "change": q.get("change", 0),
-                    "market_cap": q.get("marketCap", 0),
+    for t in tickers[:18]:
+        try:
+            q = get_quote(t)
+            if not q.empty:
+                row = q.iloc[0]
+                chg_pct_raw = row.get("change_percent", 0) or 0
+                prices[t] = {
+                    "price": row.get("last_price", 0) or 0,
+                    "change_pct": round(float(chg_pct_raw) * 100, 2),
+                    "market_cap": row.get("market_cap", 0) or 0,
                 }
-    except Exception:
-        pass
+        except Exception:
+            pass
     return prices
 
 
@@ -656,13 +656,14 @@ def build_index_html(
         chg_str = f"<span class='rc-chg {'up' if chg >= 0 else 'down'}'>{chg:+.1f}%</span>" if p else ""
         mcap = p.get("market_cap", 0)
         mcap_str = f"${mcap/1e9:.0f}B" if mcap > 0 else ""
+        cn_href = r["path"].replace(".html", "_cn.html")
         report_cards += f"""
-        <a href="{r['path']}" class="report-card">
+        <a href="{r['path']}" class="report-card" data-en-href="{r['path']}" data-cn-href="{cn_href}">
           <div class="rc-header">
             <span class="rc-ticker">{r['ticker']}</span>
             <span class="rc-price">{price_str}</span>
           </div>
-          <div class="rc-name">{r['company'][:30]}</div>
+          <div class="rc-name" data-en="{r['company'][:30]}" data-cn="">{r['company'][:30]}</div>
           <div class="rc-meta">
             <span class="rating {rating_class}">{r['rating']}</span>
             <span class="target">🎯 ${r['target']}</span>
@@ -744,8 +745,16 @@ def build_index_html(
   body {{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg); color: var(--text);
-    max-width: 600px; margin: 0 auto; padding: 16px;
+    max-width: 1200px; margin: 0 auto; padding: 16px;
     -webkit-font-smoothing: antialiased;
+  }}
+  @media (min-width: 900px) {{
+    body {{ padding: 24px 32px; }}
+    .report-grid {{ grid-template-columns: repeat(3, 1fr); }}
+    .quick-card {{ max-width: 500px; }}
+  }}
+  @media (min-width: 600px) and (max-width: 899px) {{
+    .report-grid {{ grid-template-columns: repeat(2, 1fr); }}
   }}
   header {{ text-align: center; padding: 24px 0 12px; position:relative; }}
   header h1 {{ font-size: 1.3em; color: var(--h1); }}
@@ -761,6 +770,19 @@ def build_index_html(
     transition: transform 0.2s;
   }}
   .theme-toggle:active {{ transform: scale(0.9); }}
+
+  /* Lang Toggle */
+  .lang-toggle {{
+    position: absolute; top: 8px; left: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); padding: 4px 10px; border-radius: 16px;
+    font-size: 0.75em; cursor: pointer; z-index: 10;
+    transition: background 0.2s;
+  }}
+  .lang-toggle:active {{ background: var(--border); }}
+  @media (max-width: 400px) {{
+    .lang-toggle {{ font-size: 0.7em; padding: 3px 8px; }}
+  }}
 
   .section-title {{
     font-size: 0.85em; font-weight: 600; color: var(--muted);
@@ -881,8 +903,15 @@ def build_index_html(
 <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
 
 <header>
-  <h1>📊 {SITE_TITLE}</h1>
-  <div class="sub">{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}</div>
+  <h1 data-en="📊 {SITE_TITLE}" data-cn="📊 AI投资研究">📊 {SITE_TITLE}</h1>
+  <div class="sub" data-en="{T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}"
+       data-cn="更新：{now} · {len(latest_reports)} 份报告 · {len(tracked)} 家公司追踪">
+    {T('Updated:', '更新：')} {now} · {len(latest_reports)} {T('reports', '份报告')} · {len(tracked)} {T('companies tracked', '家公司追踪')}
+  </div>
+  <!-- Language Toggle -->
+  <button class="lang-toggle" onclick="toggleLang()" id="langBtn" title="Switch language">
+    <span class="lang-flag">🇨🇳</span> <span data-en="中文" data-cn="English">中文</span>
+  </button>
 </header>
 
 <!-- Search Bar -->
@@ -894,13 +923,13 @@ def build_index_html(
 
 <!-- Dynamic Mega-Cap Earnings Alert -->
 <section>
-  <div class="section-title">🔥 {T('Mega-Cap Earnings This Week', '本周重磅财报')}</div>
+  <div class="section-title" data-en="🔥 Mega-Cap Earnings This Week" data-cn="🔥 本周重磅财报">🔥 {T('Mega-Cap Earnings This Week', '本周重磅财报')}</div>
   {_build_mega_alert(mega_events, prices, T)}
 </section>
 
 <!-- Mini Calendar: This Week -->
 <section>
-  <div class="section-title">📅 {T('This Week', '本周')}</div>
+  <div class="section-title" data-en="📅 This Week" data-cn="📅 本周">📅 {T('This Week', '本周')}</div>
   {_build_mini_calendar(calendar, T)}
 </section>
 
@@ -911,7 +940,7 @@ def build_index_html(
 
 <!-- Latest Reports -->
 <section>
-  <div class="section-title">📑 {T('Latest Research Reports', '最新研究报告')}</div>
+  <div class="section-title" data-en="📑 Latest Research Reports" data-cn="📑 最新研究报告">📑 {T('Latest Research Reports', '最新研究报告')}</div>
   <div class="report-grid" id="reportGrid">
     {report_cards}
   </div>
@@ -919,7 +948,7 @@ def build_index_html(
 
 <!-- Tracked Companies -->
 <section>
-  <div class="section-title">🏢 {T('Tracked Companies', '追踪公司')} ({len(tracked)})</div>
+  <div class="section-title" data-en="🏢 Tracked Companies ({len(tracked)})" data-cn="🏢 追踪公司 ({len(tracked)})">🏢 {T('Tracked Companies', '追踪公司')} ({len(tracked)})</div>
   <div class="chip-row" id="chipRow">
     {tracked_html}
   </div>
@@ -941,14 +970,14 @@ def build_index_html(
     <span class="nav-icon">🔮</span>
     <span class="nav-label">{T('Predict', '预测')}</span>
   </a>
-  <a href="{T('index.html', 'index_cn.html')}" class="nav-item">
-    <span class="nav-icon">{T('🇺🇸', '🇨🇳')}</span>
-    <span class="nav-label">{T('EN', '中文')}</span>
+  <a href="javascript:toggleLang()" class="nav-item" id="navLang">
+    <span class="nav-icon" id="langIcon">🇨🇳</span>
+    <span class="nav-label" id="langLabel" data-en="中文" data-cn="English">中文</span>
   </a>
 </nav>
 
 <div class="footer">
-  AI Investment Research System · Generated {now}<br>
+  <span data-en="AI Investment Research System" data-cn="AI投资研究系统">AI Investment Research System</span> · Generated {now}<br>
   <a href="https://github.com" style="color:var(--accent)">{T('View on GitHub', '在 GitHub 上查看')}</a>
 </div>
 
@@ -965,6 +994,40 @@ def build_index_html(
       c.style.opacity = (q.length > 0 && !c.textContent.toUpperCase().includes(q)) ? '0.3' : '1';
     }});
   }}
+
+  // Language toggle
+  var currentLang = localStorage.getItem('lang') || 'en';
+  function applyLang(lang) {{
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    // Toggle all [data-en][data-cn] elements
+    document.querySelectorAll('[data-en][data-cn]').forEach(function(el) {{
+      el.textContent = el.getAttribute('data-' + lang) || el.textContent;
+    }});
+    // Switch report card links
+    document.querySelectorAll('.report-card').forEach(function(card) {{
+      var href = card.getAttribute('data-' + lang + '-href');
+      if (href) card.setAttribute('href', href);
+    }});
+    // Update lang button
+    var btn = document.getElementById('langBtn');
+    var icon = document.getElementById('langIcon');
+    var label = document.getElementById('langLabel');
+    if (lang === 'cn') {{
+      if (btn) btn.innerHTML = '<span class=\"lang-flag\">🇺🇸</span> <span data-en=\"中文\" data-cn=\"English\">English</span>';
+      if (icon) icon.textContent = '🇺🇸';
+      if (label) label.textContent = 'English';
+    }} else {{
+      if (btn) btn.innerHTML = '<span class=\"lang-flag\">🇨🇳</span> <span data-en=\"中文\" data-cn=\"English\">中文</span>';
+      if (icon) icon.textContent = '🇨🇳';
+      if (label) label.textContent = '中文';
+    }}
+  }}
+  function toggleLang() {{
+    applyLang(currentLang === 'en' ? 'cn' : 'en');
+  }}
+  // Apply saved language on load
+  if (currentLang === 'cn') applyLang('cn');
 
   // Theme
   (function() {{
@@ -1147,17 +1210,17 @@ def main() -> None:
             _shutil.copy2(str(md_file), str(dest.with_suffix(".md")))
     print(f"    docs/companies/ ({len(list(docs_companies.glob('*.html')))} .html files)")
 
-    # 6. Verify and update index links to .html, generate Chinese portal
-    print("  [6/6] Updating link extensions + CN portal...")
+    # 6. Verify links and create CN redirect
+    print("  [6/6] Updating links + CN redirect...")
     index_path = DOCS_DIR / "index.html"
     index_content = index_path.read_text(encoding="utf-8")
     index_content = index_content.replace('.md"', '.html"')
     index_path.write_text(index_content, encoding="utf-8")
 
-    # Generate Chinese portal — proper CN build with CN report links
-    index_cn_html = build_index_html(reports, calendar, tracked, lang="cn", prices=prices, mega_events=mega_events)
-    (DOCS_DIR / "index_cn.html").write_text(index_cn_html, encoding="utf-8")
-    print("    docs/index_cn.html (Chinese portal with CN report links)")
+    # index_cn.html redirects to index.html with CN language
+    cn_redirect = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0;url=index.html"><script>localStorage.setItem("lang","cn");location.href="index.html";</script></head><body>Redirecting to unified portal...</body></html>'
+    (DOCS_DIR / "index_cn.html").write_text(cn_redirect, encoding="utf-8")
+    print("    docs/index_cn.html (redirect to unified portal)")
 
     print(f"\n[Done] Site built in docs/\n")
     print("  Next: git add docs/ && git commit && git push")

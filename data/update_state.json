@@ -32,7 +32,7 @@
     "success": true
   },
   "NVDA": {
-    "last_updated": "2026-07-19T23:40:22.738786",
+    "last_updated": "2026-07-23T11:13:24.734193",
     "success": true
   },
   "ONDS": {
@@ -65,6 +65,10 @@
   },
   "TSLA": {
     "last_updated": "2026-07-20T16:29:11.866948",
+    "success": true
+  },
+  "AVGO": {
+    "last_updated": "2026-07-23T11:10:34.812748",
     "success": true
   }
 }
