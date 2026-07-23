@@ -1,0 +1,70 @@
+{
+  "ALGM": {
+    "last_updated": "2026-07-20T15:10:14.600376",
+    "success": true
+  },
+  "AMZN": {
+    "last_updated": "2026-07-21T09:12:48.578550",
+    "success": true
+  },
+  "CGNX": {
+    "last_updated": "2026-07-20T14:11:25.899312",
+    "success": true
+  },
+  "CRCL": {
+    "last_updated": "2026-07-22T20:33:03.876625",
+    "success": true
+  },
+  "DELL": {
+    "last_updated": "2026-07-22T20:17:19.739958",
+    "success": true
+  },
+  "GOOGL": {
+    "last_updated": "2026-07-21T08:57:22.141847",
+    "success": true
+  },
+  "MRVL": {
+    "last_updated": "2026-07-21T15:52:58.435755",
+    "success": true
+  },
+  "MSFT": {
+    "last_updated": "2026-07-20T16:26:01.776015",
+    "success": true
+  },
+  "NVDA": {
+    "last_updated": "2026-07-19T23:40:22.738786",
+    "success": true
+  },
+  "ONDS": {
+    "last_updated": "2026-07-22T20:52:05.777797",
+    "success": true
+  },
+  "ORCL": {
+    "last_updated": "2026-07-20T09:11:08.836264",
+    "success": true
+  },
+  "PLTR": {
+    "last_updated": "2026-07-22T20:38:44.956707",
+    "success": true
+  },
+  "RKLB": {
+    "last_updated": "2026-07-21T09:20:21.234935",
+    "success": true
+  },
+  "SKHYV": {
+    "last_updated": "2026-07-21T16:42:32.222198",
+    "success": true
+  },
+  "SMCI": {
+    "last_updated": "2026-07-22T22:54:10.733789",
+    "success": true
+  },
+  "SPCX": {
+    "last_updated": "2026-07-21T16:20:30.795275",
+    "success": true
+  },
+  "TSLA": {
+    "last_updated": "2026-07-20T16:29:11.866948",
+    "success": true
+  }
+}

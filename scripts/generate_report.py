@@ -17,37 +17,54 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.data_engine import fetch_all_for_ticker
+from src.data_engine import fetch_all_for_ticker, get_price_targets
 from src.markdown import generate_report_md
 from src.config import load_config
 
 
 def build_analysis_prompt(ticker: str, data: dict) -> str:
-    """Build a comprehensive analysis prompt from live data.
+    """Build a comprehensive analysis prompt from ALL available live data.
+
+    Uses EVERY data source from fetch_all_for_ticker() — profile, metrics, ratios,
+    financial statements, estimates, price targets, K-line price history,
+    SEC filings, insider trades, news, peers, and current quote.
 
     Args:
         ticker: Stock ticker symbol.
         data: Full data dict from fetch_all_for_ticker().
 
     Returns:
-        Prompt string ready for an LLM.
+        Prompt string ready for an LLM, packed with all available data.
     """
     profile = data.get("profile")
     metrics = data.get("metrics")
+    ratios = data.get("ratios")
     income = data.get("income")
     balance = data.get("balance")
     cashflow = data.get("cashflow")
     estimates = data.get("estimates")
+    price_targets = data.get("price_targets")
     news = data.get("news")
+    filings = data.get("filings")
+    insider = data.get("insider_trades")
+    price_history = data.get("price_history")
+    quote = data.get("quote")
     peers = data.get("peers", [])
 
-    # Build a data-rich but concise context block
+    # Build a data-rich context block
     prompt = f"""You are a senior equity research analyst. Write a professional investment memo for {ticker}.
 
 ## Available Data
 
-### Company Profile
+### Current Quote
 """
+    if quote is not None and not quote.empty:
+        for col in quote.columns:
+            val = quote.iloc[0][col]
+            if val is not None:
+                prompt += f"- {col}: {val}\n"
+
+    prompt += "\n### Company Profile\n"
     if profile is not None and not profile.empty:
         for col in profile.columns:
             val = profile.iloc[0][col]
@@ -59,6 +76,14 @@ def build_analysis_prompt(ticker: str, data: dict) -> str:
         m = metrics.iloc[0]
         for col in metrics.columns:
             val = m[col]
+            if val is not None:
+                prompt += f"- {col}: {val}\n"
+
+    if ratios is not None and not ratios.empty:
+        prompt += "\n### Financial Ratios (Latest)\n"
+        r = ratios.iloc[0]
+        for col in ratios.columns:
+            val = r[col]
             if val is not None:
                 prompt += f"- {col}: {val}\n"
 
@@ -74,12 +99,47 @@ def build_analysis_prompt(ticker: str, data: dict) -> str:
     if estimates is not None and not estimates.empty:
         prompt += f"\n### Analyst Estimates\n{estimates.to_string()}\n"
 
+    if price_targets is not None and not price_targets.empty:
+        prompt += f"\n### Price Targets\n{price_targets.to_string()}\n"
+
+    if price_history is not None and not price_history.empty:
+        prompt += "\n### Recent Price History (K-Line, last 10 days)\n"
+        prompt += f"{price_history.tail(10).to_string()}\n"
+        # Add price trend summary
+        if len(price_history) >= 10:
+            recent = price_history.tail(10)
+            if "close" in recent.columns:
+                first_close = recent.iloc[0]["close"]
+                last_close = recent.iloc[-1]["close"]
+                high_val = recent["high"].max()
+                low_val = recent["low"].min()
+                change_pct = ((last_close - first_close) / first_close) * 100
+                prompt += f"Price trend: {first_close:.2f} → {last_close:.2f} ({change_pct:+.1f}%), "
+                prompt += f"high ${high_val:.2f}, low ${low_val:.2f}\n"
+
     if news is not None and not news.empty:
         prompt += "\n### Recent News Headlines\n"
-        for _, a in news.head(10).iterrows():
+        for _, a in news.head(15).iterrows():
             title = a.get("title", "N/A")
             source = a.get("source", "")
-            prompt += f"- {title} ({source})\n"
+            date_str = str(a.get("date", ""))[:10] if a.get("date") is not None else "?"
+            prompt += f"- [{date_str}] {title} ({source})\n"
+
+    if filings is not None and not filings.empty:
+        prompt += "\n### Recent SEC Filings\n"
+        for _, f in filings.head(10).iterrows():
+            filing_date = str(f.get("filing_date", "?"))[:10]
+            form = f.get("form_type", f.get("type", "?"))
+            prompt += f"- {filing_date}: {form}\n"
+
+    if insider is not None and not insider.empty:
+        prompt += "\n### Recent Insider Trading\n"
+        for _, t in insider.head(10).iterrows():
+            name = t.get("name", t.get("reporting_person", "?"))
+            tran_type = t.get("transaction_type", t.get("type", "?"))
+            shares = t.get("shares", t.get("shares_traded", "?"))
+            price = t.get("price", t.get("transaction_price", "?"))
+            prompt += f"- {name}: {tran_type} {shares} shares @ ${price}\n"
 
     if peers:
         prompt += f"\n### Peers\n{', '.join(str(p) for p in peers)}\n"
@@ -113,7 +173,8 @@ Write a comprehensive investment memo. **Use Obsidian callout syntax** throughou
 IMPORTANT:
 - Output ONLY the callout blocks above, filled with analysis. No preamble, no sign-off.
 - Use [[wikilinks]] when referencing other companies: [[NVDA]], [[AVGO]], etc.
-- Cite specific numbers: "$215.9B revenue, 74.1% gross margin" not "strong revenue"
+- **Cite specific numbers from the data above.** NEVER invent or hallucinate financial figures.
+- If a data section above is empty/missing, say "data not available" — do NOT guess.
 - For Risks, use this format:
   ```
   > [!warning] Risks
@@ -262,6 +323,10 @@ def main() -> None:
                         help="LLM provider (default: deepseek)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show prompt without calling LLM")
+    parser.add_argument("--sync", action="store_true", default=True,
+                        help="Auto-sync portal after report generation (default: True)")
+    parser.add_argument("--no-sync", action="store_true",
+                        help="Skip portal sync after report generation")
     args = parser.parse_args()
 
     tracked = ["NVDA", "AVGO", "ORCL"]
@@ -284,11 +349,15 @@ def main() -> None:
         print(f"  Generating Report: {ticker}")
         print(f"{'='*60}")
 
-        # Fetch all data
-        print(f"  [Data] Fetching financials, metrics, news...")
-        data = fetch_all_for_ticker(ticker)
+        # Fetch all data (30 days news for richer context)
+        print(f"  [Data] Fetching financials, metrics, news (30d), filings, insider trades, K-line...")
+        data = fetch_all_for_ticker(ticker, days_of_news=30)
 
-        # Build prompt
+        # Also try fetching price targets from Benzinga/FMP
+        print(f"  [Data] Fetching analyst price targets (Benzinga/FMP)...")
+        data["price_targets"] = get_price_targets(ticker)
+
+        # Build enriched prompt
         prompt = build_analysis_prompt(ticker, data)
 
         if args.dry_run:
@@ -318,6 +387,19 @@ def main() -> None:
         print(f"  [OK]Report saved to {report_path}")
 
     print(f"\n[Done] Report generation complete.")
+
+    # Auto-sync portal if enabled
+    if not args.dry_run and args.sync and not args.no_sync:
+        print(f"\n{'='*60}")
+        print(f"  Auto-syncing portal to GitHub Pages...")
+        print(f"{'='*60}")
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parent / "sync_portal.py")],
+            capture_output=False,
+        )
+        if result.returncode != 0:
+            print("  [WARN] Portal sync had issues — run 'python scripts/sync_portal.py' manually.")
 
 
 if __name__ == "__main__":
