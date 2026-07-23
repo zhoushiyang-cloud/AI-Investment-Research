@@ -433,19 +433,40 @@ def build_index_html(
     reports: list[dict],
     calendar: dict | None,
     tracked: list[dict],
+    lang: str = "en",
 ) -> str:
-    """Generate the mobile-first portal index.html."""
+    """Generate the mobile-first portal index.html.
+
+    Args:
+        lang: 'en' for English, 'cn' for Chinese UI.
+    """
+    C = lang == "cn"  # Chinese mode
+    T = lambda en, cn: cn if C else en
+
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    # Group reports: only latest EN version per ticker
+    # Group reports: use appropriate language versions
     ticker_latest: dict[str, dict] = {}
     for r in reports:
-        if r["is_cn"]:
-            continue
+        if C:
+            if not r["is_cn"]:
+                continue
+        else:
+            if r["is_cn"]:
+                continue
         t = r["ticker"]
         if t not in ticker_latest:
             ticker_latest[t] = r
     latest_reports = sorted(ticker_latest.values(), key=lambda x: x["date"], reverse=True)
+    if not latest_reports and C:
+        # Fallback to EN reports if no CN reports available
+        for r in reports:
+            if r["is_cn"]:
+                continue
+            t = r["ticker"]
+            if t not in ticker_latest:
+                ticker_latest[t] = r
+        latest_reports = sorted(ticker_latest.values(), key=lambda x: x["date"], reverse=True)
 
     # Build report cards HTML
     report_cards = ""
@@ -786,13 +807,45 @@ def main() -> None:
             _shutil.copy2(str(md_file), str(dest.with_suffix(".md")))
     print(f"    docs/companies/ ({len(list(docs_companies.glob('*.html')))} .html files)")
 
-    # 6. Verify and update index links to .html
-    print("  [6/6] Updating link extensions...")
+    # 6. Verify and update index links to .html, generate Chinese portal
+    print("  [6/6] Updating link extensions + CN portal...")
     index_path = DOCS_DIR / "index.html"
     index_content = index_path.read_text(encoding="utf-8")
-    # Replace .md links with .html links
     index_content = index_content.replace('.md"', '.html"')
     index_path.write_text(index_content, encoding="utf-8")
+
+    # Generate Chinese portal — replace UI text BETWEEN HTML tags only (not in attributes)
+    def _cn_replace(html: str) -> str:
+        """Replace English UI strings with Chinese, preserving HTML tags/links."""
+        replacements = [
+            # (English, Chinese) — only replace when followed by < or at sentence boundary
+            (">AI Investment Research<", ">AI投资研究<"),
+            (">AI Investment Research System<", ">AI投资研究系统<"),
+            (">Updated:", ">更新："),
+            (" reports</div>", " 份报告</div>"),
+            (" companies tracked", " 家公司追踪"),
+            (">Mega-Cap Earnings This Week<", ">本周重磅财报<"),
+            (">High-Impact Events<", ">高影响力事件<"),
+            (">Calendar &amp; Predictions<", ">日历与预测<"),
+            (">Earnings Calendar<", ">财报日历<"),
+            (">AI Predictions<", ">AI预测<"),
+            ("DeepSeek-generated forecasts", "DeepSeek AI生成预测"),
+            (">Latest Research Reports<", ">最新研究报告<"),
+            (">Tracked Companies<", ">追踪公司<"),
+            (">View on GitHub<", ">在GitHub上查看<"),
+            ("Back to Portal", "返回门户"),
+            ("This Week's Mega-Caps", "本周重磅"),
+            ("Current", "当前"),
+            (" reports · ", " 份报告 · "),
+        ]
+        result = html
+        for en, cn in replacements:
+            result = result.replace(en, cn)
+        return result
+
+    cn_content = _cn_replace(index_content)
+    (DOCS_DIR / "index_cn.html").write_text(cn_content, encoding="utf-8")
+    print("    docs/index_cn.html (Chinese portal)")
 
     print(f"\n[Done] Site built in docs/\n")
     print("  Next: git add docs/ && git commit && git push")
