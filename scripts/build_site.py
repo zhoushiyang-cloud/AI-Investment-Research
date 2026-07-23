@@ -436,6 +436,10 @@ def main() -> None:
     (DOCS_DIR / "sw.js").write_text(SW_JS, encoding="utf-8")
     print("    docs/sw.js")
 
+    # .nojekyll — disable Jekyll processing so .md files are served as-is
+    (DOCS_DIR / ".nojekyll").write_text("")
+    print("    docs/.nojekyll")
+
     # 5. Copy reports, companies, and calendar into docs/ so links work on GitHub Pages
     print("  [5/6] Copying reports and companies into docs/...")
     import shutil
