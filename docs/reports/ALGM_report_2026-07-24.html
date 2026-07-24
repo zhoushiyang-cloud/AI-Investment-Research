@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALGM — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ALGM</strong></span>
+  <span>Allegro MicroSystems, Inc.</span>
+  <span>Technology</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 ALGM — Allegro MicroSystems, Inc.</h1>
+<blockquote><em>Investment Research Report · July 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ALGM.html">ALGM</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ALGM Valuation.html">ALGM Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Allegro MicroSystems (ALGM)</strong> is a pure-play analog & sensor semiconductor company heavily exposed to the automotive and industrial end markets, with a specific focus on motion control and energy efficiency.</li></p>
+<p><li><strong>Financial performance has deteriorated sharply.</strong> Revenue declined from $1.05B (FY24) to $725M (FY25), and the company swung from a $153M net profit to a $73M net loss. The current FY26 (trailing twelve months) shows a net loss of -$14.7M on $890M in revenue.</li></p>
+<p><li><strong>The balance sheet is a key strength.</strong> Despite operating losses, the company holds $169M in cash and equivalents with manageable long-term debt of $286M, providing a liquidity buffer.</li></p>
+<p><li><strong>The stock is down ~30% from its 52-week high</strong> ($71.77) and has experienced significant volatility, recently trading at $50.07. The beta of 1.9 indicates high correlation with market swings.</li></p>
+<p><li><strong>Recommendation: HOLD.</strong> The company is in a cyclical downturn with no clear near-term catalyst for a recovery in end-market demand. The valuation is not compelling enough to justify a Buy given the negative earnings trajectory, but the balance sheet and strategic position in automotive electrification prevent a Sell.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><ul></p>
+<p><li><strong>Core Business:</strong> Allegro designs and sells high-performance analog and mixed-signal ICs. Their primary focus is on <strong>magnetic sensor ICs</strong> (position, speed, current sensing) and <strong>power management ICs</strong> (motor drivers, voltage regulators, LED drivers). They also have a smaller presence in photonics and 3D sensing for LiDAR.</li></p>
+<p><li><strong>End-Market Exposure:</strong> The company is <strong>heavily weighted toward automotive</strong> (estimated >60% of revenue), serving applications like ADAS, electric vehicle (EV) powertrain, and engine management. The remainder is industrial (factory automation, robotics) and a small portion of other markets.</li></p>
+<p><li><strong>Competitive Position:</strong> Allegro holds a strong niche in magnetic sensing, competing with companies like <a href="../companies/ST.html">ST</a> (Sensata), <a href="../companies/SLAB.html">SLAB</a> (Silicon Labs), and <a href="../companies/CRUS.html">CRUS</a> (Cirrus Logic). Their moat lies in their proprietary sensor technology and deep integration with automotive Tier-1 suppliers. They are a subsidiary of Sanken Electric, which provides a stable ownership structure but limits strategic flexibility.</li></p>
+<p><li><strong>Key Segments:</strong> The company does not break out revenue by segment in the provided data, but the product lines are Sensor ICs (magnetic, photonic) and Power ICs (motor drivers, regulators). The long description confirms a focus on motion control and energy-saving applications.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><ul></p>
+<p><li><strong>Revenue Trends:</strong> Revenue has been in a severe cyclical decline. From a peak of <strong>$1.05B in FY24</strong>, it fell to <strong>$725M in FY25</strong> (-31% YoY). The trailing twelve months (FY26) show a partial recovery to <strong>$890M</strong>, but this is still well below the FY24 peak.</li></p>
+<p><li><strong>Profitability & Margins:</strong> Gross margin has compressed significantly. Gross profit fell from <strong>$577M (55% margin) in FY24</strong> to <strong>$322M (44% margin) in FY25</strong>, indicating pricing pressure and unfavorable product mix. The company swung from an operating income of <strong>$196M in FY24</strong> to an operating loss of <strong>-$19.8M in FY25</strong>. Net income went from <strong>$153M (EPS $0.78) in FY24</strong> to a net loss of <strong>-$73M (EPS -$0.39) in FY25</strong>.</li></p>
+<p><li><strong>Cash Flow:</strong> Operating cash flow has remained positive but weakened. It dropped from <strong>$182M in FY24</strong> to <strong>$62M in FY25</strong>, before recovering to <strong>$163M in the trailing FY26 period</strong>. This recovery is a positive sign, suggesting working capital management is improving.</li></p>
+<p><li><strong>Balance Sheet:</strong> The balance sheet is solid. As of the latest period (FY26), the company has <strong>$169M in cash</strong> against <strong>$286M in long-term debt</strong>, for a net debt position of ~$117M. Total assets are <strong>$1.42B</strong> vs total liabilities of <strong>$460M</strong>, leaving a healthy equity base of <strong>$955M</strong>. The company has <strong>no annualized dividend</strong>, preserving cash for reinvestment.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><ul></p>
+<p><li><strong>Current Multiples:</strong> The stock trades at <strong>$50.07</strong>, giving a market cap of <strong>$9.33B</strong>. Based on the trailing FY26 net loss of -$14.7M, the P/E is <strong>not meaningful (negative)</strong>. Based on the FY26 operating income of $18.5M, the EV/EBIT is extremely high (~$9.5B / $18.5M = ~513x), indicating the market is pricing in a significant future recovery.</li></p>
+<p><li><strong>Peer Comparison:</strong> Peers like <a href="../companies/CRUS.html">CRUS</a> (Cirrus Logic, $6.7B cap) and <a href="../companies/SLAB.html">SLAB</a> (Silicon Labs, $7.1B cap) also have cyclical exposure. However, ALGM's current negative earnings make it difficult to compare on a P/E basis. On an EV/Sales basis, ALGM trades at ~10.7x (EV $9.5B / Sales $890M), which is a premium to many analog peers that trade at 4-6x sales, suggesting the market is already pricing in a return to peak profitability.</li></p>
+<p><li><strong>Historical Context:</strong> The stock's 52-week range is <strong>$22.41 - $71.77</strong>. The current price of $50.07 is near the midpoint. The valuation is not justified by current earnings but is supported by the expectation of a cyclical recovery in automotive and industrial end markets.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Cyclical Downturn in Automotive & Industrial</strong> <code>#critical</code></li></p>
+<p><p>ALGM's core markets are in a deep downturn. Revenue fell 31% in FY25. A prolonged recovery or further deterioration in auto production or industrial capex would delay a return to profitability and could force further write-downs.</p></p>
+<p><li><strong>Customer Concentration & Supply Chain Risk</strong> <code>#medium</code></li></p>
+<p><p>The company sells primarily to OEMs and Tier-1 suppliers. A bankruptcy or major production cut at a key customer (e.g., a large EV maker) would have an outsized impact on revenue. The data shows a recent impairment charge of $13.2M in FY24, indicating past customer issues.</p></p>
+<p><li><strong>High Valuation on Depressed Earnings</strong> <code>#medium</code></li></p>
+<p><p>With a negative P/E and an EV/EBIT of >500x, the stock is pricing in a perfect recovery. Any disappointment in the pace of the recovery (e.g., a "lower for longer" downturn) could lead to a sharp de-rating.</p></p>
+<p><li><strong>Insider Selling</strong> <code>#low</code></li></p>
+<p><p>Recent insider trading filings show multiple open-market sales at prices between $41.56 and $52.72. While not alarming in isolation, consistent insider selling during a period of stock price weakness is a negative signal.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Automotive Production Recovery</strong> <code>#near-term</code></li></p>
+<p><p>A rebound in global auto production, particularly in EVs, would directly drive demand for ALGM's sensor and power management ICs. Any positive commentary from major auto OEMs or Tier-1 suppliers would be a strong catalyst.</p></p>
+<p><li><strong>New Product Wins in ADAS & LiDAR</strong> <code>#medium-term</code></li></p>
+<p><p>The company's photonic and 3D sensing components for LiDAR are a growth vector. A design win announcement with a major autonomous driving platform (e.g., <a href="../companies/NVDA.html">NVDA</a> or <a href="../companies/AVGO.html">AVGO</a>-based systems) could re-rate the stock.</p></p>
+<p><li><strong>Margin Recovery & Cost Cutting</strong> <code>#near-term</code></li></p>
+<p><p>The company's gross margin has fallen from 55% to 44%. If management can execute on cost reductions and the revenue mix shifts back to higher-margin sensor products, a return to 50%+ gross margins would be a significant earnings catalyst.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>HOLD (Low Conviction)</strong></p></p>
+<p><ul></p>
+<p><li><strong>Price Target:</strong> $55 (12-month forward)</li></p>
+<p><li><strong>Thesis:</strong> ALGM is a high-quality analog franchise caught in a severe cyclical downturn. The balance sheet is strong, and the company is well-positioned for the long-term secular trends of vehicle electrification and automation. However, current earnings are deeply negative, and the valuation is pricing in a recovery that has not yet materialized. We see limited upside from current levels until concrete evidence of a demand recovery emerges. We recommend holding for existing shareholders but do not see a compelling entry point for new buyers.</li></p>
+<p></ul></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>ALGM — Allegro MicroSystems, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 14:32</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>ALGM</td></tr></p>
+<p><tr><td>Name</td><td>Allegro MicroSystems, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>4,250</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2026-03-27</td><td>890096000.0</td><td>18487000.0</td><td>-14653000.0</td><td>-0.1</td></tr></p>
+<p><tr><td>2025-03-28</td><td>725006000.0</td><td>-19802000.0</td><td>-72763000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2024-03-29</td><td>1049367000.0</td><td>196244000.0</td><td>152888000.0</td><td>0.8</td></tr></p>
+<p><tr><td>2023-03-31</td><td>973653000.0</td><td>203307000.0</td><td>187494000.0</td><td>1.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>768674000.0</td><td>136650000.0</td><td>119555000.0</td><td>0.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2026-03-27</td><td>1416175000.0</td><td>459730000.0</td><td>954747000.0</td><td>168753000.0</td></tr></p>
+<p><tr><td>2025-03-28</td><td>1420961000.0</td><td>489861000.0</td><td>929555000.0</td><td>121334000.0</td></tr></p>
+<p><tr><td>2024-03-29</td><td>1530603000.0</td><td>398887000.0</td><td>1130435000.0</td><td>212143000.0</td></tr></p>
+<p><tr><td>2023-03-31</td><td>1181155000.0</td><td>214340000.0</td><td>965628000.0</td><td>351576000.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>892620000.0</td><td>157257000.0</td><td>734207000.0</td><td>282383000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2026-03-27</td><td>163069000.0</td><td>67593000.0</td></tr></p>
+<p><tr><td>2025-03-28</td><td>61913000.0</td><td>64502000.0</td></tr></p>
+<p><tr><td>2024-03-29</td><td>181715000.0</td><td>71382000.0</td></tr></p>
+<p><tr><td>2023-03-31</td><td>193206000.0</td><td>50808000.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>156129000.0</td><td>48527000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>56.0</td><td>56.0</td><td>53.5</td><td>54.9</td><td>2,326,643</td></tr></p>
+<p><tr><td>2026-07-13</td><td>52.2</td><td>52.6</td><td>50.2</td><td>50.9</td><td>1,561,218</td></tr></p>
+<p><tr><td>2026-07-14</td><td>54.2</td><td>54.4</td><td>51.2</td><td>52.3</td><td>1,839,040</td></tr></p>
+<p><tr><td>2026-07-15</td><td>53.1</td><td>53.4</td><td>48.0</td><td>50.0</td><td>2,018,134</td></tr></p>
+<p><tr><td>2026-07-16</td><td>48.0</td><td>48.9</td><td>46.5</td><td>47.1</td><td>1,994,670</td></tr></p>
+<p><tr><td>2026-07-17</td><td>44.3</td><td>48.1</td><td>44.1</td><td>46.5</td><td>1,588,969</td></tr></p>
+<p><tr><td>2026-07-20</td><td>46.3</td><td>48.5</td><td>46.0</td><td>46.4</td><td>1,928,358</td></tr></p>
+<p><tr><td>2026-07-21</td><td>49.2</td><td>50.0</td><td>47.7</td><td>49.4</td><td>1,292,635</td></tr></p>
+<p><tr><td>2026-07-22</td><td>47.8</td><td>50.6</td><td>47.8</td><td>49.9</td><td>1,190,182</td></tr></p>
+<p><tr><td>2026-07-23</td><td>49.1</td><td>51.9</td><td>49.0</td><td>50.1</td><td>3,114,452</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-06-24</td></tr></p>
+<p><tr><td>2026-06-24</td></tr></p>
+<p><tr><td>2026-06-24</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-04</td></tr></p>
+<p><tr><td>2026-05-29</td></tr></p>
+<p><tr><td>2026-05-26</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='ONTO' name='Onto Innovation Inc.' price=291.27 market_cap=14488808760, symbol='SMTC' name='Semtech Corporation' price=138.68 market_cap=12918203978, symbol='FORM' name='FormFactor, Inc.' price=112.75 market_cap=8789400543, symbol='CAMT' name='Camtek Ltd.' price=155.19 market_cap=7240622235, symbol='SLAB' name='Silicon Laboratories Inc.' price=216.76 market_cap=7149139953, symbol='INGM' name='Ingram Micro Holding Corporation' price=29.57 market_cap=6849787892, symbol='CRUS' name='Cirrus Logic, Inc.' price=133.53 market_cap=6736951435, symbol='ST' name='Sensata Technologies Holding plc' price=45.62 market_cap=6634609939, symbol='PI' name='Impinj, Inc.' price=126.82 market_cap=3862833842, symbol='BMI' name='Badger Meter, Inc.' price=123.2 market_cap=3595662224</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 14:32</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 14:32 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ALGM.html">ALGM</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
