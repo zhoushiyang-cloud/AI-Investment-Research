@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCL — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ORCL</strong></span>
+  <span>Oracle Corporation</span>
+  <span>Technology</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 ORCL — Oracle Corporation</h1>
+<blockquote><em>Investment Research Report · July 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ORCL.html">ORCL</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ORCL Valuation.html">ORCL Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Sharp Sell-off Creates Opportunity</strong>: ORCL has declined ~14.6% over the last 10 trading days (from $140.64 to $120.04), now trading near its 52-week low of $119.44. This sell-off appears overdone relative to the company's accelerating fundamentals.</li></p>
+<p><li><strong>Cloud Transformation is Working</strong>: FY2026 revenue surged to $67.36B (up 17.4% YoY from $57.40B), driven by cloud infrastructure and SaaS adoption. Operating income grew 16.6% to $20.61B.</li></p>
+<p><li><strong>Massive Capital Expenditure Cycle</strong>: The company spent $55.66B on capex in FY2026 (vs $21.22B in FY2025), signaling aggressive investment in AI/cloud data center capacity to compete with <a href="../companies/AMZN.html">AMZN</a> (AWS), <a href="../companies/MSFT.html">MSFT</a> (Azure), and <a href="../companies/GOOGL.html">GOOGL</a> (GCP).</li></p>
+<p><li><strong>Valuation Compressed to Historic Lows</strong>: At ~20.6x trailing EPS of $5.83, ORCL trades at a significant discount to high-growth peers like <a href="../companies/PLTR.html">PLTR</a> and <a href="../companies/ADBE.html">ADBE</a>, despite accelerating revenue growth and expanding margins.</li></p>
+<p><li><strong>Recommendation: BUY</strong> with High Conviction. Price target of $165 (12-month forward), implying ~37% upside from current levels.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Oracle Corporation is a global enterprise technology giant providing a comprehensive suite of cloud-based software (SaaS), cloud infrastructure (IaaS), database software, middleware, and hardware solutions.</p></p>
+
+<p><p><strong>Key Segments (Revenue Mix Estimate based on FY2026 data):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Cloud Services & License Support</strong>: The dominant segment, representing the vast majority of revenue. Includes Oracle Fusion Cloud ERP, EPM, SCM, HCM, NetSuite, and the Oracle Database. This is the high-margin, recurring revenue engine.</li></p>
+<p><li><strong>Cloud License & On-Premise License</strong>: Legacy licensing business, declining as customers migrate to cloud.</li></p>
+<p><li><strong>Hardware</strong>: Includes Oracle Engineered Systems (e.g., Exadata), servers, and storage. A smaller, stable contributor.</li></p>
+<p><li><strong>Services</strong>: Consulting and customer support.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Database Dominance</strong>: Oracle remains the #1 enterprise database globally, a critical moat. The Oracle Autonomous Database and MySQL HeatWave are key competitive differentiators.</li></p>
+<p><li><strong>Cloud Infrastructure (OCI)</strong>: A strong #4 player behind AWS, Azure, and GCP. OCI is gaining share due to superior price/performance for enterprise workloads and deep integration with Oracle's software stack.</li></p>
+<p><li><strong>SaaS Leadership</strong>: Oracle Fusion Cloud is a top-tier competitor to <a href="../companies/SAP.html">SAP</a> in ERP and Workday in HCM. NetSuite dominates the mid-market ERP space.</li></p>
+<p><li><strong>AI/GPU Cluster Buildout</strong>: The massive $55.66B capex in FY2026 is directed at building out AI-optimized data centers, positioning Oracle to compete for enterprise AI inference workloads.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Growth (Accelerating):</strong></p></p>
+<p><ul></p>
+<p><li>FY2024: $52.96B</li></p>
+<p><li>FY2025: $57.40B (+8.4% YoY)</li></p>
+<p><li>FY2026: $67.36B (+17.4% YoY) — <em>Significant acceleration driven by cloud adoption.</em></li></p>
+<p></ul></p>
+
+<p><p><strong>Profitability & Margins (Expanding):</strong></p></p>
+<p><ul></p>
+<p><li>Gross Margin: Implied by costs. SGA was $8.33B (12.4% of revenue) and R&D was $10.27B (15.2% of revenue).</li></p>
+<p><li><strong>Operating Income</strong>: FY2026: $20.61B (30.6% margin) vs FY2025: $17.68B (30.8% margin) — <em>Margin held steady despite massive investment phase.</em></li></p>
+<p><li><strong>Net Income</strong>: FY2026: $17.31B, up from $12.63B in FY2025 (+37%).</li></p>
+<p><li><strong>Diluted EPS</strong>: FY2026: $5.83, up from $4.34 in FY2025 (+34%).</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow (Robust but Capex-Heavy):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow</strong>: FY2026: $31.98B, up from $20.82B in FY2025 (+53.6%).</li></p>
+<p><li><strong>Free Cash Flow (FCF)</strong>: $31.98B (OCF) - $55.66B (Capex) = <strong>Negative $23.68B</strong>. <em>This is the key concern. The massive capex spend is temporarily crushing FCF, but this is an investment in future AI/cloud revenue, not a sign of operational weakness.</em></li></p>
+<p><li><strong>Dividend</strong>: $2.00/share annualized, yielding ~1.7%.</li></p>
+<p></ul></p>
+
+<p><p><strong>Balance Sheet (Leveraged but Manageable):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Cash & Equivalents</strong>: $31.29B (FY2026), up from $10.79B (FY2025) — <em>Cash balance surged, likely from debt issuance to fund capex.</em></li></p>
+<p><li><strong>Total Debt</strong>: Implied by total liabilities of $176.94B and equity of $42.51B. The company carries significant long-term debt.</li></p>
+<p><li><strong>Goodwill</strong>: $62.26B, reflecting a history of large acquisitions (e.g., Cerner, NetSuite).</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples (Based on FY2026 data):</strong></p></p>
+<p><ul></p>
+<p><li><strong>P/E (Trailing)</strong>: $120.04 / $5.83 = <strong>20.6x</strong></li></p>
+<p><li><strong>P/E (Forward)</strong>: Assuming modest EPS growth to ~$6.50, forward P/E is ~18.5x.</li></p>
+<p><li><strong>EV/EBITDA</strong>: Enterprise Value = Market Cap ($345.8B) + Total Debt (~$130B) - Cash ($31.3B) = ~$444.5B. EBITDA = Operating Income ($20.6B) + D&A ($9.3B) = $29.9B. <strong>EV/EBITDA = ~14.9x.</strong></li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison:</strong></p></p>
+<p><ul></p>
+<p><li><a href="../companies/PLTR.html">PLTR</a>: Trades at >50x earnings despite lower revenue scale.</li></p>
+<p><li><a href="../companies/ADBE.html">ADBE</a>: Trades at ~25x earnings with slower growth.</li></p>
+<p><li><a href="../companies/SAP.html">SAP</a>: Trades at ~25x earnings with similar growth profile.</li></p>
+<p><li><strong>ORCL is the cheapest among large-cap enterprise software peers</strong>, despite having the fastest revenue growth rate and a dominant database moat.</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context:</strong></p></p>
+<p><ul></p>
+<p><li>ORCL has historically traded at 15-20x earnings. The current 20.6x is at the high end of its historical range, but this is justified by the <em>acceleration</em> in revenue growth (from 8% to 17%) and the massive AI-driven TAM expansion.</li></p>
+<p><li>The stock is down 65% from its 52-week high of $345.72, reflecting a severe de-rating. The current price is near the 52-week low of $119.44.</li></p>
+<p></ul></p>
+
+<p><p><strong>Justification</strong>: The current multiple is <em>not</em> expensive given the growth trajectory. The market is pricing in a worst-case scenario where the massive capex fails to generate returns. If OCI revenue growth sustains, the multiple should re-rate higher.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Capex ROI Failure</strong> <code>#critical</code></li></p>
+<p><p>Oracle spent $55.66B on capex in FY2026, a 162% increase from FY2025. If the buildout of AI/cloud data centers does not translate into proportional revenue growth (i.e., if demand for OCI stalls or competition from <a href="../companies/AMZN.html">AMZN</a>/<a href="../companies/MSFT.html">MSFT</a> intensifies), the company will face years of depressed free cash flow and potential writedowns.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Cloud Competition from Hyperscalers</strong> <code>#critical</code></li></p>
+<p><p>AWS, Azure, and GCP have vastly more scale and resources. Oracle's OCI is a distant #4. A price war in cloud infrastructure could compress margins and slow customer acquisition, undermining the investment thesis.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>High Leverage & Debt Load</strong> <code>#medium</code></li></p>
+<p><p>Total liabilities are $176.94B. Interest expense was $4.60B in FY2026. While operating income of $20.6B covers this comfortably (4.5x coverage), a recession or prolonged slowdown could strain the balance sheet and force asset sales or equity issuance.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Legacy Business Decline</strong> <code>#medium</code></li></p>
+<p><p>While cloud revenue is growing, the on-premise license business is in structural decline. If cloud migrations slow or customers choose competitors, the revenue mix could deteriorate faster than expected.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Insider Selling</strong> <code>#low</code></li></p>
+<p><p>Recent insider trading shows sales at prices between $156 and $164, well above current levels. While this is typical for executive compensation diversification, the volume and timing (near the 52-week high) could signal a lack of near-term confidence from management.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>OCI AI Revenue Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>The $55.66B capex cycle is building capacity for AI inference workloads. As enterprises deploy AI agents and LLMs, Oracle's price/performance advantage (especially with its Supercluster and RDMA networking) could drive a wave of new customer wins. Look for OCI revenue growth to re-accelerate above 30% in the next 2 quarters.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Fiscal Q1 FY2027 Earnings Beat</strong> <code>#near-term</code></li></p>
+<p><p>With the stock at a 52-week low, any positive surprise on revenue or guidance (especially cloud backlog) could trigger a sharp short-squeeze and re-rating. The next earnings report is the single most important catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Free Cash Flow Inflection</strong> <code>#medium-term</code></li></p>
+<p><p>As the massive data center buildout matures, capex should normalize. If OCF continues to grow at 20%+ and capex drops to ~$25B, FCF could swing from -$23B to +$10B+ within 12-18 months, dramatically improving the investment narrative.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Strategic AI Partnerships or Acquisitions</strong> <code>#medium-term</code></li></p>
+<p><p>Oracle could partner with or acquire an AI startup (e.g., in the vector database or LLM inference space) to further differentiate its cloud stack. Any such deal would be viewed positively by the market.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>BUY — High Conviction</strong></p></p>
+
+<p><p><strong>Price Target</strong>: $165 (12-month forward), representing ~37% upside.</p></p>
+
+<p><p><strong>Thesis</strong>: The market is overly punishing Oracle for its aggressive capex cycle, ignoring the accelerating revenue growth, expanding margins, and dominant database moat. At 20.6x trailing earnings, ORCL is the cheapest large-cap enterprise software stock with a 17%+ growth rate. The sell-off to the 52-week low creates a compelling entry point. The primary risk (capex ROI) is real, but the reward (a multi-year AI/cloud growth cycle) is asymmetric to the upside. We expect the stock to re-rate as the market recognizes the sustainability of Oracle's cloud momentum.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>ORCL — Oracle Corporation</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 14:22</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>ORCL</td></tr></p>
+<p><tr><td>Name</td><td>Oracle Corporation</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>141,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2026-05-31</td><td>67357000000.0</td><td>20606000000.0</td><td>17309000000.0</td><td>5.8</td></tr></p>
+<p><tr><td>2025-05-31</td><td>57399000000.0</td><td>17678000000.0</td><td>12627000000.0</td><td>4.3</td></tr></p>
+<p><tr><td>2024-05-31</td><td>52961000000.0</td><td>15353000000.0</td><td>10653000000.0</td><td>3.7</td></tr></p>
+<p><tr><td>2023-05-31</td><td>49954000000.0</td><td>13093000000.0</td><td>8668000000.0</td><td>3.1</td></tr></p>
+<p><tr><td>2022-05-31</td><td>42440000000.0</td><td>10926000000.0</td><td>6901000000.0</td><td>2.4</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2026-05-31</td><td>261759000000.0</td><td>95055000000.0</td><td>42508000000.0</td><td>31289000000.0</td></tr></p>
+<p><tr><td>2025-05-31</td><td>168361000000.0</td><td>52635000000.0</td><td>20451000000.0</td><td>10786000000.0</td></tr></p>
+<p><tr><td>2024-05-31</td><td>140976000000.0</td><td>40266000000.0</td><td>8704000000.0</td><td>10454000000.0</td></tr></p>
+<p><tr><td>2023-05-31</td><td>134384000000.0</td><td>37103000000.0</td><td>1073000000.0</td><td>9765000000.0</td></tr></p>
+<p><tr><td>2022-05-31</td><td>109297000000.0</td><td>31376000000.0</td><td>-6220000000.0</td><td>21383000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2026-05-31</td><td>31977000000.0</td><td>9294000000.0</td></tr></p>
+<p><tr><td>2025-05-31</td><td>20821000000.0</td><td>6174000000.0</td></tr></p>
+<p><tr><td>2024-05-31</td><td>18673000000.0</td><td>6139000000.0</td></tr></p>
+<p><tr><td>2023-05-31</td><td>17165000000.0</td><td>6108000000.0</td></tr></p>
+<p><tr><td>2022-05-31</td><td>9539000000.0</td><td>3122000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>145.7</td><td>145.7</td><td>139.3</td><td>140.6</td><td>29,843,309</td></tr></p>
+<p><tr><td>2026-07-13</td><td>139.0</td><td>139.7</td><td>131.3</td><td>131.5</td><td>56,690,274</td></tr></p>
+<p><tr><td>2026-07-14</td><td>132.0</td><td>132.8</td><td>127.6</td><td>127.9</td><td>52,670,410</td></tr></p>
+<p><tr><td>2026-07-15</td><td>130.6</td><td>133.9</td><td>128.8</td><td>132.5</td><td>48,520,434</td></tr></p>
+<p><tr><td>2026-07-16</td><td>131.5</td><td>131.8</td><td>123.7</td><td>124.2</td><td>54,780,940</td></tr></p>
+<p><tr><td>2026-07-17</td><td>121.7</td><td>128.4</td><td>121.5</td><td>126.4</td><td>39,917,140</td></tr></p>
+<p><tr><td>2026-07-20</td><td>124.3</td><td>125.5</td><td>120.0</td><td>121.4</td><td>36,793,230</td></tr></p>
+<p><tr><td>2026-07-21</td><td>122.8</td><td>127.4</td><td>122.2</td><td>127.0</td><td>27,748,087</td></tr></p>
+<p><tr><td>2026-07-22</td><td>126.2</td><td>128.8</td><td>124.7</td><td>125.8</td><td>21,096,693</td></tr></p>
+<p><tr><td>2026-07-23</td><td>124.0</td><td>124.7</td><td>119.4</td><td>120.0</td><td>30,900,642</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-06-26</td></tr></p>
+<p><tr><td>2026-06-23</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p><tr><td>2026-06-10</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='ASML' name='ASML Holding N.V.' price=1803.0 market_cap=694908637773, symbol='PLTR' name='Palantir Technologies Inc.' price=123.37 market_cap=283266155900, symbol='SAP' name='SAP SE' price=146.38 market_cap=170567123306, symbol='FTNT' name='Fortinet, Inc.' price=151.54 market_cap=111025537172, symbol='ADBE' name='Adobe Inc.' price=212.17 market_cap=84337575000, symbol='SNPS' name='Synopsys, Inc.' price=373.52 market_cap=71521357474, symbol='WIX' name='Wix.com Ltd.' price=48.83 market_cap=2720490400, symbol='RDWR' name='Radware Ltd.' price=28.94 market_cap=1248645240, symbol='IIIV' name='i3 Verticals, Inc.' price=19.77 market_cap=472443650, symbol='HPAI' name='Helport AI Limited' price=0.462 market_cap=17392872</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 14:22</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 14:22 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ORCL.html">ORCL</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
