@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KO — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>KO</strong></span>
+  <span>The Coca-Cola Company</span>
+  <span>Consumer Defensive</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 KO — The Coca-Cola Company</h1>
+<blockquote><em>Investment Research Report · July 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/KO.html">KO</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Consumer Defensive.html">Sector — Consumer Defensive</a></td><td><strong>Market Cap:</strong> $349.2B</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/KO Valuation.html">KO Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Consumer Defensive.html">Sector — Consumer Defensive</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Defensive Quality at a Premium:</strong> Coca-Cola (<a href="../companies/KO.html">KO</a>) is a high-quality consumer staple with a 0.35 beta, a 2.56% dividend yield, and a 61.7% gross margin. However, the stock trades at a 25.4x P/E and 19.9x EV/EBITDA, reflecting a significant premium to its own history and peers.</li></p>
+<p><li><strong>Strong Margins, Weak Growth:</strong> TTM net profit margin is a robust 27.8%, but revenue growth is tepid (FY2025 revenue of $47.9B vs $47.1B in FY2024, a ~1.7% increase). The company is a cash flow machine ($7.4B in operating cash flow in FY2025), but top-line expansion is reliant on pricing and mix, not volume.</li></p>
+<p><li><strong>Balance Sheet is Levered:</strong> Net debt to EBITDA stands at 1.73x, and debt-to-equity is 1.30x. While manageable, this leverage limits financial flexibility for large M&A or aggressive buybacks in a rising-rate environment.</li></p>
+<p><li><strong>Verdict: Hold.</strong> The stock offers a safe harbor with a reliable dividend, but the current valuation leaves little room for error. Upside is capped by a consensus target of $88 (8.4% upside), while downside is protected by the defensive business model.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>The Coca-Cola Company is the world's largest non-alcoholic beverage company, operating a highly capital-light franchise model. It produces concentrate and syrup, which it sells to a network of independent bottling partners.</p></p>
+<p><ul></p>
+<p><li><strong>Core Business:</strong> Sparkling soft drinks (Trademark Coca-Cola, Sprite, Fanta) remain the core, but the company is diversifying into water (Dasani, smartwater), sports drinks (Powerade, BODYARMOR), coffee (Costa), and dairy (fairlife).</li></p>
+<p><li><strong>Competitive Moat:</strong> The brand is one of the most valuable in the world. The distribution network is unparalleled, and the franchise model generates high returns on invested capital (ROIC of 13.9%).</li></p>
+<p><li><strong>Key Segments (Revenue Share - estimated from filings):</strong> The company reports by operating segments, but the data provided does not break out revenue by segment. However, based on the product portfolio, sparkling soft drinks likely represent ~60-65% of revenue, with hydration, sports, coffee, and tea making up the remainder.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><ul></p>
+<p><li><strong>Revenue & Margins:</strong> FY2025 revenue was $47.94B, up from $47.06B in FY2024 (1.9% growth). Gross margin is exceptional at 61.7%, and operating margin is 29.3%. Net income for FY2025 was $13.1B, up from $10.6B in FY2024, a 23.6% jump driven by operational leverage and lower non-operating charges.</li></p>
+<p><li><strong>Cash Flow & Capital Allocation:</strong> TTM operating cash flow is $7.4B, with free cash flow of $5.3B (FCF yield of 3.6%). The company returned $8.8B to shareholders via dividends in FY2025, resulting in a dividend payout ratio of 80.1%. This high payout ratio is a risk if earnings decline.</li></p>
+<p><li><strong>Balance Sheet:</strong> Total debt is $45.5B against cash of $10.3B, resulting in net debt of $35.2B. The current ratio is 1.36x, and the cash conversion cycle is a negative -160 days, a testament to its strong working capital management (collects cash from customers long before paying suppliers).</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><ul></p>
+<p><li><strong>Current Multiples:</strong> P/E of 25.4x, EV/EBITDA of 19.9x, and P/B of 10.4x. These are all at the high end of the company's 5-year historical range.</li></p>
+<p><li><strong>Peer Comparison:</strong> KO trades at a premium to <a href="../companies/PEP.html">PEP</a> (P/E ~22x) and <a href="../companies/KDP.html">KDP</a> (P/E ~18x). The premium is justified by KO's superior brand strength and global distribution, but it leaves the stock vulnerable to multiple compression.</li></p>
+<p><li><strong>Justification:</strong> The valuation is not justified by growth (PEG ratio of 0.92x based on past earnings, but forward PEG is 3.8x). The market is paying for safety and the dividend. The consensus target of $88 implies a forward P/E of ~27x, suggesting limited upside from current levels.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Valuation Compression</strong> <code>#critical</code></li></p>
+<p><p>At 25.4x P/E, the stock is pricing in perfection. A shift in investor sentiment away from defensive stocks or a rise in interest rates could compress the multiple to 22x, implying a ~13% downside to ~$70.</p></p>
+<p><li><strong>Currency & Geopolitical Headwinds</strong> <code>#medium</code></li></p>
+<p><p>With significant international exposure, a strengthening US dollar (DXY) can materially impact reported earnings. The company reported a $868M negative impact from "non-operating income excluding interest" in FY2025, partly due to currency.</p></p>
+<p><li><strong>Commodity & Input Cost Inflation</strong> <code>#medium</code></li></p>
+<p><p>While KO has pricing power, sustained inflation in aluminum, sugar, and PET plastic can pressure gross margins. The 61.7% gross margin is strong, but any compression would be a negative catalyst.</p></p>
+<p><li><strong>High Dividend Payout Ratio</strong> <code>#low</code></li></p>
+<p><p>The 80.1% dividend payout ratio leaves little room for reinvestment or error. If free cash flow declines, the dividend could be at risk, which would be a major negative for income-focused holders.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Accelerated Revenue Growth from Innovation</strong> <code>#medium-term</code></li></p>
+<p><p>Continued success of brands like fairlife (high-protein milk) and BODYARMOR (sports drink) could drive a re-rating if they begin to materially contribute to top-line growth.</p></p>
+<p><li><strong>Interest Rate Cuts</strong> <code>#near-term</code></li></p>
+<p><p>A pivot by the Federal Reserve to a more dovish stance would lower the discount rate applied to KO's stable cash flows, making the stock more attractive and potentially driving the price toward the consensus target of $88.</p></p>
+<p><li><strong>Share Buyback Acceleration</strong> <code>#medium-term</code></li></p>
+<p><p>The company repurchased only $67M in stock in FY2025 (net of issuances). A meaningful increase in buyback authorization, funded by free cash flow, would be a positive signal.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>HOLD</td><td>Conviction: Medium</strong></td></tr></p>
+<p></table></p>
+<p><p><strong>12-Month Price Target: $85</strong> (based on 26x FY2026E EPS of ~$3.27)</p></p>
+<p><p><strong>Thesis:</strong> Coca-Cola is a world-class business with a bulletproof balance sheet and a growing dividend. However, the current valuation (25.4x P/E) already reflects its defensive qualities and offers a limited margin of safety. We see the stock as fairly valued. We recommend holding for the dividend and waiting for a pullback to the $75-$78 range (22x-23x P/E) before adding to positions. The risk/reward is balanced, not compelling.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>KO — The Coca-Cola Company</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 14:16</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>KO</td></tr></p>
+<p><tr><td>Name</td><td>The Coca-Cola Company</td></tr></p>
+<p><tr><td>Sector</td><td>Consumer Defensive</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>$349.2B</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>$382.5B</td></tr></p>
+<p><tr><td>Employees</td><td>65,900</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics (TTM)</h2></p>
+
+<p><h3>Valuation & Profitability</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>P/E Ratio</td><td>25.4</td></tr></p>
+<p><tr><td>P/B Ratio</td><td>10.4</td></tr></p>
+<p><tr><td>P/S Ratio</td><td>7.1</td></tr></p>
+<p><tr><td>P/FCF Ratio</td><td>27.8</td></tr></p>
+<p><tr><td>PEG Ratio</td><td>0.9</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>19.9</td></tr></p>
+<p><tr><td>EV/Sales</td><td>7.8</td></tr></p>
+<p><tr><td>ROE</td><td>43.6%</td></tr></p>
+<p><tr><td>ROA</td><td>13.1%</td></tr></p>
+<p><tr><td>ROIC</td><td>13.9%</td></tr></p>
+<p><tr><td>Gross Margin</td><td>61.7%</td></tr></p>
+<p><tr><td>Operating Margin</td><td>29.3%</td></tr></p>
+<p><tr><td>Net Margin</td><td>27.8%</td></tr></p>
+<p><tr><td>EBITDA Margin</td><td>39.0%</td></tr></p>
+<p><tr><td>Debt/Equity</td><td>1.3</td></tr></p>
+<p><tr><td>Current Ratio</td><td>1.4</td></tr></p>
+<p><tr><td>Dividend Yield</td><td>2.6%</td></tr></p>
+<p><tr><td>Earnings Yield</td><td>3.9%</td></tr></p>
+<p><tr><td>FCF Yield</td><td>3.6%</td></tr></p>
+<p></table></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>gross_profit</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th><th>ebitda</th><th>cost_of_revenue</th><th>r_and_d</th></tr></p>
+<p><tr><td>2025-12-31</td><td>47,941,000,000</td><td>29,544,000,000</td><td>13,762,000,000</td><td>13,107,000,000</td><td>3.0</td><td>18,702,000,000</td><td>18,397,000,000</td><td>0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>47,061,000,000</td><td>28,737,000,000</td><td>9,992,000,000</td><td>10,631,000,000</td><td>2.5</td><td>15,817,000,000</td><td>18,324,000,000</td><td>0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>45,754,000,000</td><td>27,234,000,000</td><td>11,311,000,000</td><td>10,714,000,000</td><td>2.5</td><td>15,607,000,000</td><td>18,520,000,000</td><td>0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>43,004,000,000</td><td>25,004,000,000</td><td>10,909,000,000</td><td>9,542,000,000</td><td>2.2</td><td>13,828,000,000</td><td>18,000,000,000</td><td>0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>38,655,000,000</td><td>23,298,000,000</td><td>10,308,000,000</td><td>9,771,000,000</td><td>2.2</td><td>15,474,000,000</td><td>15,357,000,000</td><td>0</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>total_debt</th><th>net_debt</th><th>cash_and_equivalents</th><th>goodwill_intangibles</th></tr></p>
+<p><tr><td>2025-12-31</td><td>104,816,000,000</td><td>70,541,000,000</td><td>32,169,000,000</td><td>45,492,000,000</td><td>35,222,000,000</td><td>10,270,000,000</td><td>28,022,000,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>100,549,000,000</td><td>74,177,000,000</td><td>24,856,000,000</td><td>45,735,000,000</td><td>34,907,000,000</td><td>10,828,000,000</td><td>31,440,000,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>97,703,000,000</td><td>70,223,000,000</td><td>25,941,000,000</td><td>43,426,000,000</td><td>34,060,000,000</td><td>9,366,000,000</td><td>33,223,000,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>92,763,000,000</td><td>66,937,000,000</td><td>24,105,000,000</td><td>40,603,000,000</td><td>31,084,000,000</td><td>9,519,000,000</td><td>33,631,000,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>94,354,000,000</td><td>69,494,000,000</td><td>22,999,000,000</td><td>44,232,000,000</td><td>34,548,000,000</td><td>9,684,000,000</td><td>34,613,000,000</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>capital_expenditure</th><th>free_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>7,408,000,000</td><td>-2,112,000,000</td><td>5,296,000,000</td><td>1,050,000,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>6,805,000,000</td><td>-2,064,000,000</td><td>4,741,000,000</td><td>1,075,000,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>11,599,000,000</td><td>-1,852,000,000</td><td>9,747,000,000</td><td>1,128,000,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>11,018,000,000</td><td>-1,484,000,000</td><td>9,534,000,000</td><td>1,260,000,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>12,625,000,000</td><td>-1,367,000,000</td><td>11,258,000,000</td><td>1,452,000,000</td></tr></p>
+<p></table></p>
+
+<p><h2>Current Price</h2></p>
+
+<p><h3>Quote</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Last Price</td><td>$81.2</td></tr></p>
+<p><tr><td>Open</td><td>$81.7</td></tr></p>
+<p><tr><td>High</td><td>$81.9</td></tr></p>
+<p><tr><td>Low</td><td>$80.9</td></tr></p>
+<p><tr><td>Previous Close</td><td>$82.2</td></tr></p>
+<p><tr><td>Change %</td><td>-1.3%</td></tr></p>
+<p><tr><td>Volume</td><td>13,653,065</td></tr></p>
+<p><tr><td>52-Week High</td><td>$85.7</td></tr></p>
+<p><tr><td>52-Week Low</td><td>$65.3</td></tr></p>
+<p><tr><td>50-Day MA</td><td>$81.3</td></tr></p>
+<p><tr><td>200-Day MA</td><td>$75.5</td></tr></p>
+<p><tr><td>Market Cap</td><td>$349.2B</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>82.7</td><td>83.7</td><td>82.4</td><td>83.5</td><td>10,694,617</td></tr></p>
+<p><tr><td>2026-07-13</td><td>83.9</td><td>84.7</td><td>83.7</td><td>84.2</td><td>12,085,800</td></tr></p>
+<p><tr><td>2026-07-14</td><td>84.2</td><td>84.6</td><td>83.1</td><td>83.1</td><td>13,775,400</td></tr></p>
+<p><tr><td>2026-07-15</td><td>82.9</td><td>83.2</td><td>82.2</td><td>82.5</td><td>18,383,800</td></tr></p>
+<p><tr><td>2026-07-16</td><td>83.5</td><td>85.0</td><td>83.3</td><td>84.9</td><td>17,889,900</td></tr></p>
+<p><tr><td>2026-07-17</td><td>85.4</td><td>85.6</td><td>80.8</td><td>81.6</td><td>32,903,000</td></tr></p>
+<p><tr><td>2026-07-20</td><td>81.5</td><td>82.4</td><td>81.3</td><td>82.1</td><td>14,967,200</td></tr></p>
+<p><tr><td>2026-07-21</td><td>82.0</td><td>82.4</td><td>81.3</td><td>82.0</td><td>12,949,406</td></tr></p>
+<p><tr><td>2026-07-22</td><td>82.8</td><td>82.9</td><td>82.0</td><td>82.2</td><td>11,701,300</td></tr></p>
+<p><tr><td>2026-07-23</td><td>81.7</td><td>81.9</td><td>80.9</td><td>81.2</td><td>13,653,065</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Analyst Estimates</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>symbol</th><th>target_high</th><th>target_low</th><th>target_consensus</th><th>target_median</th></tr></p>
+<p><tr><td>KO</td><td>98.0</td><td>83.0</td><td>88.0</td><td>87.5</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-06-25</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-12</td></tr></p>
+<p><tr><td>2026-06-11</td></tr></p>
+<p><tr><td>2026-06-10</td></tr></p>
+<p><tr><td>2026-06-09</td></tr></p>
+<p><tr><td>2026-06-08</td></tr></p>
+<p><tr><td>2026-05-19</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='PG' name='The Procter & Gamble Company' price=146.86 market_cap=341978196000, symbol='PM' name='Philip Morris International Inc.' price=191.12 market_cap=297871987200, symbol='PEP' name='PepsiCo, Inc.' price=134.95 market_cap=184341700000, symbol='BUD' name='Anheuser-Busch InBev SA/NV' price=80.48 market_cap=155453297806, symbol='UL' name='Unilever PLC' price=60.21 market_cap=129707994600, symbol='MNST' name='Monster Beverage Corporation' price=93.56 market_cap=91502438772, symbol='CCEP' name='Coca-Cola Europacific Partners PLC' price=103.62 market_cap=45926249160, symbol='KDP' name='Keurig Dr Pepper Inc.' price=29.67 market_cap=40367799505, symbol='KOF' name='Coca-Cola FEMSA, S.A.B. de C.V.' price=102.48 market_cap=21529329840, symbol='COKE' name='Coca-Cola Consolidated, Inc.' price=178.44 market_cap=14016711638</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 14:16</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 14:16 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/KO.html">KO</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
