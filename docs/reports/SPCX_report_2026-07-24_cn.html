@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPCX — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>SPCX</strong></span>
+  <span>SPCX</span>
+  <span>未知</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 SPCX — SPCX</h1>
+<blockquote><em>投资研究报告 · 2026年7月24日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码:</strong> <a href="../companies/SPCX.html">SPCX</a></td><td><strong>行业:</strong> <a href="../companies/行业 — 未知.html">行业 — 未知</a></td><td><strong>市值:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/投资仪表盘.html">投资仪表盘</a></td><td><a href="../companies/同业比较.html">同业比较</a></td><td><a href="../companies/SPCX估值.html">SPCX估值</a></td></tr></p>
+<p><tr><td>- <a href="../companies/行业 — 未知.html">行业 — 未知</a></td><td><a href="../companies/经济指标.html">经济指标</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>SPCX在过去10个交易日经历了18.6%的严重下跌</strong>，从$145.30暴跌至$118.24，盘中低点触及$110.85——表明可能存在恐慌性抛售或基本面冲击。</li></p>
+<p><li><strong>内部人活动喜忧参半但令人担忧</strong>：一次以$105.318（低于当前价格）进行的公开市场卖出表明看跌信念，而多次授予/奖励则表明留任努力。一笔$0.0的“善意赠与”可能表明遗产规划或税务动机的转移。</li></p>
+<p><li><strong>成交量急剧飙升</strong>，7月22日（收盘价为$115.26当天）达到92.7M股，几乎是10天平均成交量的两倍——与强制卖出或投降事件一致。</li></p>
+<p><li><strong>提供的数据集中没有基本面财务数据（收入、盈利、利润率）</strong>，使得传统估值无法进行。投资论点完全依赖于价格行为、内部人信号和行业背景。</li></p>
+<p><li><strong>建议：持有，低确信度</strong>——该股处于自由落体状态，底部不明，但内部人以$105卖出表明该水平附近可能存在一个潜在底部。在没有基本面确认的情况下，不要摊低成本。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><ul></p>
+<p><li><strong>公司</strong>：Space Exploration Technologies Corp (SPCX) —— 一家航空航天/国防领域的私营或上市公司，可能专注于太空发射、卫星服务或探索技术。</li></p>
+<p><li><strong>竞争地位</strong>：数据不可用，无法确定精确市场份额。可能与<a href="../companies/SPCE.html">SPCE</a>、<a href="../companies/ASTS.html">ASTS</a>以及传统国防巨头竞争。极端的股价波动表明其要么是高增长、尚未盈利的概况，要么是陷入困境的局面。</li></p>
+<p><li><strong>关键业务板块</strong>：数据不可用。典型的太空公司板块包括发射服务、卫星制造、政府合同和太空旅游。未提供收入份额细分。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><ul></p>
+<p><li><strong>收入趋势</strong>：数据不可用。数据集中未提供收入数字、增长率或板块细分。</li></p>
+<p><li><strong>利润率</strong>：数据不可用。不存在毛利率、营业利润率或净利润率数据。</li></p>
+<p><li><strong>现金流与资产负债表</strong>：数据不可用。未包含现金、债务或自由现金流数据。</li></p>
+<p><li><strong>价格行为（关键数字）</strong>：</li></p>
+<p><li>10天跌幅：$145.30 → $118.24 (-18.6%)</li></p>
+<p><li>10天区间：最高$150.57，最低$110.85</li></p>
+<p><li>成交量飙升：7月22日92.7M股（对比7月14日的46.8M股）——换手率增长98%</li></p>
+<p><li>连续下跌日：10个交易日中有7个交易日收盘走低</li></p>
+<p><li><strong>内部人信号</strong>：一次以$105.318进行的公开市场卖出——这是唯一披露了价格的交易，并且该价格<strong>低于当前的$118.24</strong>，表明内部人预期进一步下跌或在困境水平需要流动性。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><ul></p>
+<p><li><strong>当前倍数</strong>：数据不可用。没有盈利或账面价值，无法计算市盈率、EV/EBITDA、市销率或市净率。</li></p>
+<p><li><strong>同业比较</strong>：在没有基本面数据的情况下无法进行。然而，10天内18.6%的跌幅相对于大盘（同期<a href="../companies/SPY.html">SPY</a>可能持平或小幅下跌）来说是极端的。</li></p>
+<p><li><strong>历史背景</strong>：该股已跌破其10天低点$110.85，该水平可能充当技术支撑位。内部人以$105.318卖出提供了一个潜在底部，但这只是推测。</li></p>
+<p><li><strong>理由</strong>：没有盈利或现金流，估值纯粹是技术性的。当前价格$118.24比内部人卖出价$105.318高出12.4%，暗示要么是复苏，要么是进一步下跌至该水平。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>内部人在困境水平卖出</strong> <code>#critical</code></li></p>
+<p><p>一名内部人以$105.318卖出股票，该价格低于当前价格。这可能表明其知晓即将到来的坏消息（例如，合同损失、现金消耗、监管问题）或个人财务困境。由于未披露卖出股数，严重程度难以衡量。</p></p>
+<p><li><strong>未识别的基本面冲击</strong> <code>#critical</code></li></p>
+<p><p>10天内18.6%的跌幅伴随着巨大成交量，表明存在一个催化剂（例如，盈利不及预期、发射失败、政府调查），但可用数据中未捕捉到该信息。没有财务报表，进一步下跌的风险无法量化。</p></p>
+<p><li><strong>流动性和强制卖出风险</strong> <code>#medium</code></li></p>
+<p><p>7月22日成交量飙升至92.7M股，几乎是10天平均成交量的两倍。这可能是追加保证金、ETF再平衡或大股东退出所致。持续的抛售压力可能将股价推低至$110.85以下。</p></p>
+<p><li><strong>没有基本面数据来锚定估值</strong> <code>#medium</code></li></p>
+<p><p>缺乏收入、盈利或资产负债表数据意味着任何投资都是对价格动量的盲目押注。这不适用于需要基本面尽职调查的机构投资指令。</p></p>
+<p><li><strong>赠与交易的不确定性</strong> <code>#low</code></li></p>
+<p><p>一笔$0.0的“善意赠与”可能表明内部人将股份转让给信托或家庭成员，这本身并非看跌，但增加了内部人情绪的不确定性。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ol></p>
+<p><li><strong>从$105支撑位技术性反弹</strong> <code>#near-term</code></li></p>
+<p><p>内部人以$105.318卖出可能充当心理底部。如果股价保持在$110以上，空头回补可能推动10-15%的反弹，回到$130附近。</p></p>
+<p><li><strong>盈利或运营更新</strong> <code>#near-term</code></li></p>
+<p><p>如果抛售是由暂时性冲击（例如，发射延迟）驱动的，那么积极的新闻稿或合同赢得可能迅速扭转情绪。关注未来2周内的文件提交。</p></p>
+<p><li><strong>来自<a href="../companies/NASA.html">NASA</a>或<a href="../companies/DoD.html">DoD</a>预算的行业顺风</strong> <code>#medium-term</code></li></p>
+<p><p>太空探索是两党优先事项。任何关于政府支出增加或重大商业合同（例如，Starlink竞争对手、月球着陆器）的消息都可能重新评估该股。</p></p>
+<p><li><strong>内部人在当前水平买入</strong> <code>#near-term</code></li></p>
+<p><p>如果内部人开始在公开市场购买股票（尤其是在$105以上），这将表明信心并可能引发反弹。每日监控Form 4文件。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 建议</div><div class="callout-body"><p><strong>持有 — 低确信度</strong></p></p>
+<p><ul></p>
+<p><li><strong>目标价</strong>：$105（下行）至$135（上行）—— 宽幅区间反映了极度的不确定性。</li></p>
+<p><li><strong>12个月论点</strong>：该股处于技术性自由落体状态，没有基本面数据支持买入。内部人以$105.318卖出表明一个潜在底部，但缺乏财务数据使其成为投机性交易，而非投资。不要建立新头寸。如果你已经持有，在基本面数据（例如，10-Q、盈利发布）确认业务完好之前，不要摊低成本。跌破$105将触发卖出信号。</li></p>
+<p><li><strong>确信度</strong>：低 —— 这是一个数据不足的情况。在下一次盈利或内部人文件提交后重新审视。</li></p>
+<p></ul></p>
+<p></div></div>---</p>
+
+<hr>
+
+<h2>📝 更新日志</h2>
+
+<h3>2026-07-24</h3>
+
+<table class="md-table">
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td><strong>价格</strong></td><td>$118.24</td></tr>
+<tr><td><strong>1周</strong></td><td>-9.8%</td></tr>
+<tr><td><strong>1个月</strong></td><td>-24.9%</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 近期动态</div><div class="callout-body"><ul></p>
+<p><li><strong>价格行为：</strong> SPCX在过去两周内暴跌22.3%，仅上周就下跌9.8%，在广泛的抛售压力下，目前交易于7月区间（$110.85 - $171.74）的底部附近。</li></p>
+<p><li><strong>关键新闻：</strong> 未发现近期新闻；大幅下跌似乎是由技术因素或行业整体疲软驱动，而非公司特定催化剂。</li></p>
+<p><li><strong>同业/行业背景：</strong> 鉴于SPCX缺乏独立新闻，特种化学品或材料行业的同业可能面临类似压力。</li></p>
+<p><li><strong>短期展望：</strong> 关注7月低点$110.85附近的潜在支撑；跌破该水平可能加速抛售，而稳定在该水平之上可能预示着短期反弹。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 评级状态</div><div class="callout-body"><p><strong>维持“不适用”</strong> — 没有正式评级，投资论点未定义；需要催化剂或更清晰的价格趋势才能建立评级。</p></p>
+<p><p>下一个催化剂：关注宏观和行业趋势。</p></p>
+<p></div></div></p>
+<h2>📝 Update Log</h2>
+
+<h3>2026-07-24</h3>
+
+<table class="md-table">
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td><strong>Price</strong></td><td>$118.24</td></tr>
+<tr><td><strong>1-Week</strong></td><td>-9.8%</td></tr>
+<tr><td><strong>1-Month</strong></td><td>-24.9%</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Recent Developments</div><div class="callout-body"><ul></p>
+<p><li><strong>Price Action:</strong> SPCX has plunged 22.3% over the past two weeks, with a 9.8% drop in the last week alone, now trading near the bottom of its July range ($110.85 - $171.74) amid broad selling pressure.</li></p>
+<p><li><strong>Key News:</strong> No recent news found; the sharp decline appears driven by technical factors or sector-wide weakness rather than company-specific catalysts.</li></p>
+<p><li><strong>Peer/Sector Context:</strong> Peers in the specialty chemicals or materials sector are likely under similar pressure, given the lack of isolated news for SPCX.</li></p>
+<p><li><strong>Short-Term Outlook:</strong> Watch for potential support near the July low of $110.85; a break below could accelerate selling, while stabilization above that level may signal a short-term bounce.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Rating Status</div><div class="callout-body"><p><strong>N/A Maintained</strong> — Without a formal rating, the thesis is undefined; a catalyst or clearer price trend would be needed to establish a rating.</p></p>
+<p><p>Next catalyst: Monitor macro and sector trends.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>SPCX — SPCX</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 15:29</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>SPCX</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>150.1</td><td>150.6</td><td>145.1</td><td>145.3</td><td>46,825,995</td></tr></p>
+<p><tr><td>2026-07-13</td><td>144.7</td><td>144.9</td><td>136.8</td><td>139.1</td><td>71,456,511</td></tr></p>
+<p><tr><td>2026-07-14</td><td>140.9</td><td>143.3</td><td>135.5</td><td>136.1</td><td>46,694,833</td></tr></p>
+<p><tr><td>2026-07-15</td><td>137.5</td><td>139.3</td><td>132.2</td><td>135.3</td><td>58,040,919</td></tr></p>
+<p><tr><td>2026-07-16</td><td>135.0</td><td>137.8</td><td>130.7</td><td>131.1</td><td>58,725,579</td></tr></p>
+<p><tr><td>2026-07-17</td><td>127.4</td><td>130.3</td><td>122.1</td><td>124.0</td><td>83,706,220</td></tr></p>
+<p><tr><td>2026-07-20</td><td>125.3</td><td>125.7</td><td>119.7</td><td>119.8</td><td>57,337,250</td></tr></p>
+<p><tr><td>2026-07-21</td><td>122.1</td><td>129.9</td><td>120.4</td><td>123.5</td><td>79,718,078</td></tr></p>
+<p><tr><td>2026-07-22</td><td>123.3</td><td>124.8</td><td>115.2</td><td>115.3</td><td>92,731,796</td></tr></p>
+<p><tr><td>2026-07-23</td><td>115.2</td><td>118.5</td><td>110.8</td><td>118.2</td><td>75,246,453</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 15:29</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 15:29 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/SPCX.html">SPCX</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>(点击展开)</em></div><div class="callout-body"></p>
+<p><h1>SPCX — SPCX</h1></p>
+
+<p><blockquote><em>自动生成: 2026-07-24 15:29</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>SPCX</td></tr></p>
+<p><tr><td>名称</td><td>—</td></tr></p>
+<p><tr><td>行业</td><td>—</td></tr></p>
+<p><tr><td>板块</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工数</td><td>—</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>指标数据不可用。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h2>价格历史（K线图）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>日期</th><th>开盘</th><th>最高</th><th>最低</th><th>收盘</th><th>成交量</th></tr></p>
+<p><tr><td>2026-07-10</td><td>150.1</td><td>150.6</td><td>145.1</td><td>145.3</td><td>46,825,995</td></tr></p>
+<p><tr><td>2026-07-13</td><td>144.7</td><td>144.9</td><td>136.8</td><td>139.1</td><td>71,456,511</td></tr></p>
+<p><tr><td>2026-07-14</td><td>140.9</td><td>143.3</td><td>135.5</td><td>136.1</td><td>46,694,833</td></tr></p>
+<p><tr><td>2026-07-15</td><td>137.5</td><td>139.3</td><td>132.2</td><td>135.3</td><td>58,040,919</td></tr></p>
+<p><tr><td>2026-07-16</td><td>135.0</td><td>137.8</td><td>130.7</td><td>131.1</td><td>58,725,579</td></tr></p>
+<p><tr><td>2026-07-17</td><td>127.4</td><td>130.3</td><td>122.1</td><td>124.0</td><td>83,706,220</td></tr></p>
+<p><tr><td>2026-07-20</td><td>125.3</td><td>125.7</td><td>119.7</td><td>119.8</td><td>57,337,250</td></tr></p>
+<p><tr><td>2026-07-21</td><td>122.1</td><td>129.9</td><td>120.4</td><td>123.5</td><td>79,718,078</td></tr></p>
+<p><tr><td>2026-07-22</td><td>123.3</td><td>124.8</td><td>115.2</td><td>115.3</td><td>92,731,796</td></tr></p>
+<p><tr><td>2026-07-23</td><td>115.2</td><td>118.5</td><td>110.8</td><td>118.2</td><td>75,246,453</td></tr></p>
+<p></table></p>
+
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手的冲击？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管护城河？<br>4. <strong>成本优势</strong> — 与同行相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否自然受限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>头寸：</strong> [多头 / 中性 / 规避]<br>- <strong>公允价值估计：</strong> $___ (安全边际: ___%)<br>- <strong>当前定价中包含的关键假设：</strong> ___<br>- <strong>什么会改变我的想法：</strong> ___</blockquote></p>
+
+<p><p><em>上次数据刷新: 2026-07-24 15:29</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-07-24 15:29 · AI投资系统</em></p>
+<p><em>相关: <a href="../companies/SPCX.html">SPCX</a> · <a href="../companies/同业比较.html">同业比较</a> · <a href="../companies/投资仪表盘.html">投资仪表盘</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
