@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSFT — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>MSFT</strong></span>
+  <span>MSFT</span>
+  <span>Unknown</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 MSFT — MSFT</h1>
+<blockquote><em>Investment Research Report · July 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/MSFT.html">MSFT</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/MSFT Valuation.html">MSFT Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Microsoft delivered a stellar FY2025</strong>, with total revenue of $281.7B (+14.9% YoY) and operating income of $128.5B (+17.5% YoY), driven by continued strength in Azure and AI services.</li></p>
+<p><li><strong>Diluted EPS grew to $13.64</strong> (up from $11.80 in FY2024), supported by robust operating leverage and a $24.1B share buyback program.</li></p>
+<p><li><strong>Free cash flow remains a fortress</strong>, generating $136.2B in operating cash flow and $71.6B in FCF after $64.6B in capex, underscoring the company's ability to fund AI infrastructure investments.</li></p>
+<p><li><strong>The balance sheet is pristine</strong>, with $94.6B in cash & short-term investments against $40.2B in long-term debt, providing ample strategic flexibility.</li></p>
+<p><li><strong>Current price of $381.58</strong> reflects a ~28x P/E on trailing EPS, a premium to historical averages but justified by accelerating growth, AI monetization, and a dominant competitive moat.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Microsoft is a global technology leader operating across three primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>Intelligent Cloud (est. ~45% of revenue)</strong>: Azure, GitHub, SQL Server, and enterprise services. Azure continues to gain share as enterprises migrate workloads and adopt AI solutions.</li></p>
+<p><li><strong>Productivity and Business Processes (est. ~30% of revenue)</strong>: Office 365, LinkedIn, Dynamics 365. Recurring subscription revenue provides high visibility and margin.</li></p>
+<p><li><strong>More Personal Computing (est. ~25% of revenue)</strong>: Windows, Xbox, Surface, and search advertising. This segment is more cyclical but benefits from Windows 11 upgrade cycles and gaming.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: Microsoft holds a #2 position in cloud infrastructure behind <a href="../companies/AMZN.html">AMZN</a> AWS but is the clear leader in enterprise software (Office, Teams, Dynamics). Its partnership with <a href="../companies/NVDA.html">NVDA</a> and investment in OpenAI positions it as the primary platform for enterprise AI adoption. The company benefits from high switching costs, a massive installed base, and a diversified revenue model.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Trends</strong>: FY2025 total revenue of $281.7B, up from $245.1B in FY2024 (+14.9%) and $211.9B in FY2023 (+33% over two years). Growth is accelerating as AI workloads drive Azure consumption.</p></p>
+
+<p><p><strong>Margins</strong>: Gross margin improved to 68.8% (FY2025) from 69.8% (FY2024) due to higher AI infrastructure costs, but operating margin expanded to 45.6% from 44.6% as SG&A and R&D grew slower than revenue. R&D spend of $32.5B (11.5% of revenue) reflects heavy AI investment.</p></p>
+
+<p><p><strong>Cash Flow</strong>: Operating cash flow of $136.2B in FY2025, up from $118.5B in FY2024. Capex surged to $64.6B (from $44.5B) to build AI data centers, resulting in free cash flow of $71.6B. The company returned $42.5B to shareholders via buybacks ($24.1B) and dividends ($24.1B).</p></p>
+
+<p><p><strong>Balance Sheet</strong>: Total assets of $619.0B, with $94.6B in cash/short-term investments. Total debt of $40.2B (long-term) plus $4.6B in capital leases. Net cash position of ~$50B provides significant firepower for M&A or further buybacks.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong> (based on FY2025 data):</p></p>
+<p><ul></p>
+<p><li>P/E (trailing): $381.58 / $13.64 = <strong>28.0x</strong></li></p>
+<p><li>EV/EBITDA: EV = $381.58 * 7.465B shares = $2.85T - $94.6B cash + $44.8B debt = ~$2.80T; EBITDA = $128.5B + $28.0B D&A = $156.5B → <strong>17.9x</strong></li></p>
+<p><li>P/S: $2.85T / $281.7B = <strong>10.1x</strong></li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context</strong>: Microsoft's 5-year average P/E is ~32x. The current 28x represents a discount to that average, likely due to elevated capex concerns and macro uncertainty. Compared to mega-cap peers: <a href="../companies/NVDA.html">NVDA</a> trades at ~45x, <a href="../companies/AVGO.html">AVGO</a> at ~30x, <a href="../companies/AAPL.html">AAPL</a> at ~30x. Microsoft's premium to its own history is justified by:</p></p>
+<p><ul></p>
+<p><li>AI revenue acceleration (Azure AI revenue growing >100% YoY)</li></p>
+<p><li>Expanding operating margins despite heavy investment</li></p>
+<p><li>Recurring revenue base (70%+ of revenue is subscription/annuity)</li></p>
+<p></ul></p>
+
+<p><p><strong>Conclusion</strong>: At 28x earnings, MSFT is fairly valued relative to its growth trajectory. A 30-32x multiple is achievable if AI monetization exceeds expectations.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Capex Overinvestment</strong> <code>#critical</code></li></p>
+<p><p>Capex surged to $64.6B in FY2025 (23% of revenue). If AI demand growth slows or competitors like <a href="../companies/GOOGL.html">GOOGL</a> and <a href="../companies/AMZN.html">AMZN</a> erode Azure's market share, these investments may not generate adequate returns, pressuring margins and FCF.</p></p>
+<p><li><strong>Regulatory Scrutiny</strong> <code>#medium</code></li></p>
+<p><p>Microsoft faces ongoing antitrust investigations in the EU and US regarding its cloud bundling practices and OpenAI partnership. A forced breakup or restrictions on AI partnerships could impair growth.</p></p>
+<p><li><strong>Azure Growth Deceleration</strong> <code>#medium</code></li></p>
+<p><p>Azure revenue growth, while strong, may decelerate as the base effect grows and enterprises optimize cloud spend. FY2025 saw Azure accelerate, but any slowdown would compress the multiple.</p></p>
+<p><li><strong>Cybersecurity & Data Privacy</strong> <code>#low</code></li></p>
+<p><p>As a critical infrastructure provider, any major breach (like the 2024 CrowdStrike incident affecting Windows) could lead to customer churn and reputational damage.</p></p>
+<p><li><strong>Currency Headwinds</strong> <code>#low</code></li></p>
+<p><p>With ~50% of revenue outside the US, a strengthening dollar (as seen in recent price action) could reduce reported revenue and EPS by 1-3%.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Azure AI Revenue Inflection</strong> <code>#near-term</code></li></p>
+<p><p>AI services contributed ~$20B+ to Azure revenue in FY2025. As enterprises move from pilots to production, this could accelerate to $40B+ in FY2026, driving a re-rating.</p></p>
+<p><li><strong>Copilot Monetization</strong> <code>#near-term</code></li></p>
+<p><p>Microsoft 365 Copilot (AI assistant) is still in early adoption. With 400M+ Office 365 seats, even 10% penetration at $30/user/month adds $14B+ in annual revenue.</p></p>
+<p><li><strong>Windows 11 Upgrade Cycle</strong> <code>#medium-term</code></li></p>
+<p><p>Windows 10 end-of-life in October 2025 will force enterprise upgrades, boosting More Personal Computing revenue and margins in FY2026.</p></p>
+<p><li><strong>Share Buyback Acceleration</strong> <code>#medium-term</code></li></p>
+<p><p>With $50B+ net cash, Microsoft could increase its buyback program, providing EPS tailwinds. FY2025 saw $24.1B in buybacks; a $30B+ program would be accretive.</p></p>
+<p><li><strong>Gaming Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>Activision Blizzard integration is still in early stages. Game Pass subscriber growth and mobile gaming (Candy Crush, Call of Duty Mobile) could add $5B+ in annual revenue.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>BUY — High Conviction</strong></p></p>
+<p><p><strong>Price Target: $450 (12-month forward)</strong></p></p>
+
+<p><p><strong>Thesis</strong>: Microsoft is the best-positioned mega-cap for the AI era, with a unique combination of cloud infrastructure, enterprise software, and AI platform capabilities. The current 28x P/E is a discount to its 5-year average of 32x and fails to price in the accelerating AI revenue cycle. We see FY2026 EPS of ~$15.50-$16.00, supported by:</p></p>
+<p><ul></p>
+<p><li>Azure AI revenue doubling to $40B+</li></p>
+<p><li>Operating margin expansion to 47%+</li></p>
+<p><li>$25B+ in buybacks</li></p>
+<p></ul></p>
+
+<p><p><strong>Upside</strong>: $450 (18% upside) implies ~29x FY2026 EPS of $15.50. <strong>Downside</strong>: $340 (if AI capex disappoints or macro recession hits). Risk/reward is favorable for long-term investors.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>MSFT — MSFT</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 14:39</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>MSFT</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-06-30</td><td>281724000000.0</td><td>128528000000.0</td><td>101832000000.0</td><td>13.6</td></tr></p>
+<p><tr><td>2024-06-30</td><td>245122000000.0</td><td>109433000000.0</td><td>88136000000.0</td><td>11.8</td></tr></p>
+<p><tr><td>2023-06-30</td><td>211915000000.0</td><td>88523000000.0</td><td>72361000000.0</td><td>9.7</td></tr></p>
+<p><tr><td>2022-06-30</td><td>198270000000.0</td><td>83383000000.0</td><td>72738000000.0</td><td>9.7</td></tr></p>
+<p><tr><td>2021-06-30</td><td>168088000000.0</td><td>69916000000.0</td><td>61271000000.0</td><td>8.1</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-06-30</td><td>619003000000.0</td><td>275524000000.0</td><td>343479000000.0</td><td>30242000000.0</td></tr></p>
+<p><tr><td>2024-06-30</td><td>512163000000.0</td><td>243686000000.0</td><td>268477000000.0</td><td>18315000000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>411976000000.0</td><td>205753000000.0</td><td>206223000000.0</td><td>34704000000.0</td></tr></p>
+<p><tr><td>2022-06-30</td><td>364840000000.0</td><td>198298000000.0</td><td>166542000000.0</td><td>13931000000.0</td></tr></p>
+<p><tr><td>2021-06-30</td><td>333779000000.0</td><td>191791000000.0</td><td>141988000000.0</td><td>14224000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-06-30</td><td>136162000000.0</td><td>28000000000.0</td></tr></p>
+<p><tr><td>2024-06-30</td><td>118548000000.0</td><td>20000000000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>87582000000.0</td><td>13500000000.0</td></tr></p>
+<p><tr><td>2022-06-30</td><td>89035000000.0</td><td>14600000000.0</td></tr></p>
+<p><tr><td>2021-06-30</td><td>76740000000.0</td><td>10900000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>387.8</td><td>391.9</td><td>381.5</td><td>385.1</td><td>24,644,605</td></tr></p>
+<p><tr><td>2026-07-13</td><td>387.7</td><td>393.6</td><td>384.1</td><td>391.0</td><td>28,914,877</td></tr></p>
+<p><tr><td>2026-07-14</td><td>382.8</td><td>388.2</td><td>378.6</td><td>384.9</td><td>27,863,916</td></tr></p>
+<p><tr><td>2026-07-15</td><td>387.8</td><td>399.0</td><td>386.4</td><td>395.6</td><td>36,253,745</td></tr></p>
+<p><tr><td>2026-07-16</td><td>398.3</td><td>406.0</td><td>392.1</td><td>401.1</td><td>37,047,443</td></tr></p>
+<p><tr><td>2026-07-17</td><td>394.9</td><td>398.4</td><td>389.4</td><td>393.8</td><td>33,049,842</td></tr></p>
+<p><tr><td>2026-07-20</td><td>391.4</td><td>403.2</td><td>389.6</td><td>402.3</td><td>27,915,762</td></tr></p>
+<p><tr><td>2026-07-21</td><td>398.8</td><td>401.5</td><td>396.3</td><td>397.8</td><td>24,126,632</td></tr></p>
+<p><tr><td>2026-07-22</td><td>399.6</td><td>401.0</td><td>387.0</td><td>390.3</td><td>28,142,511</td></tr></p>
+<p><tr><td>2026-07-23</td><td>390.0</td><td>391.8</td><td>377.4</td><td>381.6</td><td>30,351,752</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 14:39</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 14:39 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/MSFT.html">MSFT</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
