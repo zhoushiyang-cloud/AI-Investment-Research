@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVDA — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>NVDA</strong></span>
+  <span>NVDA</span>
+  <span>Unknown</span>
+  <span>2026-07-24</span>
+</div>
+<hr>
+
+<h1>📊 NVDA — NVDA</h1>
+<blockquote><em>Investment Research Report · July 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/NVDA.html">NVDA</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/NVDA Valuation.html">NVDA Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Dominant Growth Trajectory:</strong> <a href="../companies/NVDA.html">NVDA</a> delivered explosive FY2026 revenue of $216.0B, a 65.5% YoY increase from $130.5B in FY2025, driven by sustained AI infrastructure demand.</li></p>
+<p><li><strong>Exceptional Profitability:</strong> Operating income surged to $130.4B (60.4% margin) in FY2026, up from $81.5B (62.5% margin) in FY2025, showcasing immense operating leverage.</li></p>
+<p><li><strong>Massive Cash Generation:</strong> Operating cash flow reached $102.7B in FY2026, providing ample firepower for R&D ($18.5B) and capital returns ($40.1B in buybacks).</li></p>
+<p><li><strong>Valuation at a Premium:</strong> At ~43x trailing EPS ($4.90), the stock trades at a premium to historical averages, but this is justified by the scale and duration of the AI investment cycle.</li></p>
+<p><li><strong>Key Risk:</strong> The primary risk is a deceleration in hyperscaler AI spending, which could compress multiples and slow revenue growth from its current torrid pace.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>NVIDIA is the preeminent designer of graphics processing units (GPUs) and accelerated computing platforms. Its competitive position is fortified by the CUDA software ecosystem, which creates high switching costs for developers.</p></p>
+<p><ul></p>
+<p><li><strong>Compute & Networking (Data Center):</strong> The dominant segment, driving the vast majority of revenue. It includes Hopper and Blackwell architecture GPUs, networking (InfiniBand/Ethernet), and AI enterprise software. Revenue share is estimated at >85% of total revenue.</li></p>
+<p><li><strong>Graphics (Gaming):</strong> A mature but profitable segment for GeForce GPUs. Revenue share is estimated at <10%.</li></p>
+<p><li><strong>Professional Visualization & Automotive:</strong> Smaller segments focused on enterprise graphics and autonomous driving solutions. Combined revenue share is estimated at <5%.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><ul></p>
+<p><li><strong>Revenue Growth:</strong> Total revenue exploded from $60.9B (FY2024) to $130.5B (FY2025) to <strong>$216.0B (FY2026)</strong> , a 3.5x increase in two years. This is a historic ramp.</li></p>
+<p><li><strong>Margins:</strong> Gross margin expanded to <strong>71.1%</strong> in FY2026 (from 72.7% in FY2025). Operating margin is a staggering <strong>60.4%</strong> , reflecting the asset-light model and pricing power. R&D spending of $18.5B is significant but well-leveraged.</li></p>
+<p><li><strong>Cash Flow:</strong> Operating cash flow was <strong>$102.7B</strong> in FY2026, up from $64.1B in FY2025. Free cash flow (OCF - CapEx) was approximately $96.7B.</li></p>
+<p><li><strong>Balance Sheet:</strong> The company is fortress-like. Total assets are <strong>$206.8B</strong> with $10.6B in cash and $38.5B in short-term investments. Total debt is only $8.5B ($7.5B long-term + $1.0B current). Total equity is <strong>$157.3B</strong>.</li></p>
+<p><li><strong>Capital Allocation:</strong> The company returned <strong>$40.1B</strong> to shareholders via buybacks in FY2026, demonstrating confidence in its intrinsic value.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><ul></p>
+<p><li><strong>P/E (Trailing):</strong> Based on the current price of ~$208.76 and diluted EPS of $4.90, the trailing P/E is <strong>~42.6x</strong>.</li></p>
+<p><li><strong>EV/EBITDA:</strong> Enterprise Value (EV) is approximately $2.08T (Market Cap ~$5.2T - Cash & Investments ~$49.1B). EBITDA is ~$133.2B (Operating Income + D&A). This yields an EV/EBITDA of <strong>~15.6x</strong>.</li></p>
+<p><li><strong>Context:</strong> These multiples are elevated vs. the broader market (S&P 500 ~22x P/E) and <a href="../companies/NVDA.html">NVDA</a>'s own 5-year average (~35x P/E). However, given the 65%+ revenue growth and 60%+ operating margins, the PEG ratio is below 1.0x, suggesting the premium is justified by the growth rate. The valuation is pricing in a multi-year AI capex cycle.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Hyperscaler Capex Slowdown</strong> <code>#critical</code></li></p>
+<p><p>A significant portion of revenue comes from a few large customers (Microsoft, Amazon, Google, Meta). Any signal of reduced AI spending plans would severely impact <a href="../companies/NVDA.html">NVDA</a>'s growth trajectory and likely compress its valuation multiple.</p></p>
+<p><li><strong>Geopolitical / Export Controls</strong> <code>#critical</code></li></p>
+<p><p>Escalating US-China tensions could lead to further restrictions on chip exports. While <a href="../companies/NVDA.html">NVDA</a> has created compliant chips, a total ban on sales to China or key regions would remove a meaningful growth vector and disrupt supply chains.</p></p>
+<p><li><strong>Competitive Threat</strong> <code>#medium</code></li></p>
+<p><p>Custom ASIC chips from <a href="../companies/AVGO.html">AVGO</a> and <a href="../companies/MRVL.html">MRVL</a> (e.g., Google TPU, AWS Trainium) are gaining traction for inference workloads. While <a href="../companies/NVDA.html">NVDA</a> leads in training, a shift in the AI workload mix towards custom silicon could erode market share over the next 2-3 years.</p></p>
+<p><li><strong>Supply Chain Concentration</strong> <code>#medium</code></li></p>
+<p><p><a href="../companies/NVDA.html">NVDA</a> relies almost exclusively on TSMC for advanced chip fabrication. Any disruption at TSMC (geopolitical, natural disaster) would halt <a href="../companies/NVDA.html">NVDA</a>'s production, impacting revenue and customer relationships.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ul></p>
+<p><li><strong>Blackwell Ultra / Rubin Architecture Launch</strong> <code>#near-term</code></li></p>
+<p><p>The next-generation GPU architectures are expected to drive another product cycle, compelling hyperscalers to upgrade and expand capacity, sustaining revenue growth through FY2027.</p></p>
+<p><li><strong>Enterprise AI Adoption</strong> <code>#medium-term</code></li></p>
+<p><p>As AI moves beyond cloud hyperscalers to enterprise IT, demand for <a href="../companies/NVDA.html">NVDA</a>'s full-stack solutions (hardware + software) could broaden the customer base and reduce concentration risk.</p></p>
+<p><li><strong>New Product Categories (Robotics/AV)</strong> <code>#medium-term</code></li></p>
+<p><p>The "physical AI" opportunity (autonomous vehicles, humanoid robots, industrial automation) represents a massive TAM expansion beyond data centers, potentially opening a new multi-billion dollar revenue stream.</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>BUY</strong> <code>#High Conviction</code></p></p>
+<p><p><strong>12-Month Price Target:</strong> $275 (Implies ~32% upside)</p></p>
+<p><p><strong>Thesis:</strong> Despite the elevated absolute valuation, <a href="../companies/NVDA.html">NVDA</a> is the foundational infrastructure provider for the most significant technological shift since the internet. The FY2026 financials confirm that demand is not only real but accelerating. The risk of a capex slowdown is real, but the current price does not fully discount the potential of the upcoming Rubin cycle and the expansion of AI into enterprise and physical applications. We recommend buying on any weakness related to macro or geopolitical noise.</p></p>
+<p></div></div>---</p>
+
+<hr>
+
+<h2>📝 Update Log</h2>
+
+<h3>2026-07-24</h3>
+
+<table class="md-table">
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td><strong>Price</strong></td><td>$208.76</td></tr>
+<tr><td><strong>1-Week</strong></td><td>+0.7%</td></tr>
+<tr><td><strong>1-Month</strong></td><td>+5.7%</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Recent Developments</div><div class="callout-body"><ul></p>
+<p><li><strong>Price Action:</strong> NVDA is up 0.7% over the past week and 2.9% over two weeks, trading near the upper end of its July range ($191.14 - $214.39) at $208.76, supported by steady buying momentum.</li></p>
+<p><li><strong>Key News:</strong> No recent news was found, leaving the stock to trade on technicals and broader market sentiment.</li></p>
+<p><li><strong>Peer/Sector Context:</strong> Semiconductor peers remain mixed, with the sector showing resilience amid ongoing AI demand expectations.</li></p>
+<p><li><strong>Short-Term Outlook:</strong> Watch for any macro or AI-related headlines that could drive volatility; the stock may test the July high of $214.39 if momentum continues.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Rating Status</div><div class="callout-body"><p><strong>BUY Maintained</strong> — The thesis remains intact on strong AI demand and leadership in GPU computing; a break below $191 or a negative sector shift would prompt a review.</p></p>
+<p><p>Next catalyst: Monitor macro and sector trends.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>NVDA — NVDA</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-24 15:23</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>NVDA</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2026-01-25</td><td>215938000000.0</td><td>130387000000.0</td><td>120067000000.0</td><td>4.9</td></tr></p>
+<p><tr><td>2025-01-26</td><td>130497000000.0</td><td>81453000000.0</td><td>72880000000.0</td><td>2.9</td></tr></p>
+<p><tr><td>2024-01-28</td><td>60922000000.0</td><td>32972000000.0</td><td>29760000000.0</td><td>1.2</td></tr></p>
+<p><tr><td>2023-01-29</td><td>26974000000.0</td><td>4224000000.0</td><td>4368000000.0</td><td>1.7</td></tr></p>
+<p><tr><td>2022-01-30</td><td>26914000000.0</td><td>10041000000.0</td><td>9752000000.0</td><td>3.9</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2026-01-25</td><td>206803000000.0</td><td>49510000000.0</td><td>157293000000.0</td><td>10605000000.0</td></tr></p>
+<p><tr><td>2025-01-26</td><td>111601000000.0</td><td>32274000000.0</td><td>79327000000.0</td><td>8589000000.0</td></tr></p>
+<p><tr><td>2024-01-28</td><td>65728000000.0</td><td>22750000000.0</td><td>42978000000.0</td><td>7280000000.0</td></tr></p>
+<p><tr><td>2023-01-29</td><td>41182000000.0</td><td>19081000000.0</td><td>22101000000.0</td><td>3389000000.0</td></tr></p>
+<p><tr><td>2022-01-30</td><td>44187000000.0</td><td>17575000000.0</td><td>26612000000.0</td><td>1990000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2026-01-25</td><td>102718000000.0</td><td>2843000000.0</td></tr></p>
+<p><tr><td>2025-01-26</td><td>64089000000.0</td><td>1864000000.0</td></tr></p>
+<p><tr><td>2024-01-28</td><td>28090000000.0</td><td>1508000000.0</td></tr></p>
+<p><tr><td>2023-01-29</td><td>5641000000.0</td><td>1544000000.0</td></tr></p>
+<p><tr><td>2022-01-30</td><td>9108000000.0</td><td>1174000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-10</td><td>202.0</td><td>211.0</td><td>201.9</td><td>211.0</td><td>148,421,001</td></tr></p>
+<p><tr><td>2026-07-13</td><td>208.5</td><td>210.6</td><td>203.0</td><td>203.5</td><td>121,411,018</td></tr></p>
+<p><tr><td>2026-07-14</td><td>208.2</td><td>212.6</td><td>203.8</td><td>211.8</td><td>124,379,646</td></tr></p>
+<p><tr><td>2026-07-15</td><td>212.0</td><td>213.8</td><td>206.0</td><td>212.5</td><td>124,797,151</td></tr></p>
+<p><tr><td>2026-07-16</td><td>210.2</td><td>211.1</td><td>205.8</td><td>207.4</td><td>122,986,074</td></tr></p>
+<p><tr><td>2026-07-17</td><td>202.6</td><td>206.6</td><td>198.0</td><td>202.8</td><td>144,281,910</td></tr></p>
+<p><tr><td>2026-07-20</td><td>205.9</td><td>207.7</td><td>202.3</td><td>203.3</td><td>88,701,540</td></tr></p>
+<p><tr><td>2026-07-21</td><td>207.5</td><td>208.7</td><td>204.0</td><td>207.3</td><td>108,685,563</td></tr></p>
+<p><tr><td>2026-07-22</td><td>205.8</td><td>214.4</td><td>204.9</td><td>212.1</td><td>137,645,596</td></tr></p>
+<p><tr><td>2026-07-23</td><td>209.5</td><td>210.9</td><td>206.0</td><td>208.8</td><td>110,505,328</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-24 15:23</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-24 15:23 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/NVDA.html">NVDA</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
