@@ -1,15 +1,15 @@
 {
   "ALGM": {
-    "last_updated": "2026-07-20T15:10:14.600376",
-    "success": true
+    "last_updated": "2026-07-24T14:36:14.127806",
+    "success": false
   },
   "AMZN": {
     "last_updated": "2026-07-21T09:12:48.578550",
     "success": true
   },
   "CGNX": {
-    "last_updated": "2026-07-20T14:11:25.899312",
-    "success": true
+    "last_updated": "2026-07-24T14:30:14.869587",
+    "success": false
   },
   "CRCL": {
     "last_updated": "2026-07-22T20:33:03.876625",
@@ -28,7 +28,7 @@
     "success": true
   },
   "MSFT": {
-    "last_updated": "2026-07-20T16:26:01.776015",
+    "last_updated": "2026-07-24T14:40:38.600813",
     "success": true
   },
   "NVDA": {
@@ -40,8 +40,8 @@
     "success": true
   },
   "ORCL": {
-    "last_updated": "2026-07-20T09:11:08.836264",
-    "success": true
+    "last_updated": "2026-07-24T14:25:20.351530",
+    "success": false
   },
   "PLTR": {
     "last_updated": "2026-07-22T20:38:44.956707",
@@ -69,6 +69,10 @@
   },
   "AVGO": {
     "last_updated": "2026-07-23T11:10:34.812748",
+    "success": true
+  },
+  "KO": {
+    "last_updated": "2026-07-24T14:18:51.987378",
     "success": true
   }
 }
