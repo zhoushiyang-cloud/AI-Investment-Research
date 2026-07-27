@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong></strong></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+<h1>MU — Micron Technology, Inc.</h1>
+
+<blockquote><em>Auto-generated: 2026-07-27 14:40</em></blockquote>
+
+<h2>Company Overview</h2>
+
+<h3>Profile</h3>
+
+<table class="md-table">
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Ticker</td><td>MU</td></tr>
+<tr><td>Name</td><td>Micron Technology, Inc.</td></tr>
+<tr><td>Sector</td><td>Technology</td></tr>
+<tr><td>Industry</td><td>—</td></tr>
+<tr><td>Market Cap</td><td>—</td></tr>
+<tr><td>Enterprise Value</td><td>—</td></tr>
+<tr><td>Employees</td><td>53,000</td></tr>
+<tr><td>Country</td><td>—</td></tr>
+<tr><td>Website</td><td>—</td></tr>
+</table>
+
+<h2>Key Metrics</h2>
+
+<p><em>Metrics data not available.</em></p>
+
+<h2>Financial Statements</h2>
+
+<h3>Income Statement (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr>
+<tr><td>2025-08-28</td><td>37378000000.0</td><td>9770000000.0</td><td>8539000000.0</td><td>7.6</td></tr>
+<tr><td>2024-08-29</td><td>25111000000.0</td><td>1304000000.0</td><td>778000000.0</td><td>0.7</td></tr>
+<tr><td>2023-08-31</td><td>15540000000.0</td><td>-5745000000.0</td><td>-5833000000.0</td><td>-5.3</td></tr>
+<tr><td>2022-09-01</td><td>30758000000.0</td><td>9702000000.0</td><td>8687000000.0</td><td>7.8</td></tr>
+<tr><td>2021-09-02</td><td>27705000000.0</td><td>6283000000.0</td><td>5861000000.0</td><td>5.1</td></tr>
+</table>
+
+<h3>Balance Sheet (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr>
+<tr><td>2025-08-28</td><td>82798000000.0</td><td>28633000000.0</td><td>54165000000.0</td><td>9642000000.0</td></tr>
+<tr><td>2024-08-29</td><td>69416000000.0</td><td>24285000000.0</td><td>45131000000.0</td><td>7041000000.0</td></tr>
+<tr><td>2023-08-31</td><td>64254000000.0</td><td>20134000000.0</td><td>44120000000.0</td><td>8577000000.0</td></tr>
+<tr><td>2022-09-01</td><td>66283000000.0</td><td>16376000000.0</td><td>49907000000.0</td><td>8262000000.0</td></tr>
+<tr><td>2021-09-02</td><td>58849000000.0</td><td>14916000000.0</td><td>43933000000.0</td><td>7763000000.0</td></tr>
+</table>
+
+<h3>Cash Flow (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr>
+<tr><td>2025-08-28</td><td>17525000000.0</td><td>8352000000.0</td></tr>
+<tr><td>2024-08-29</td><td>8507000000.0</td><td>7780000000.0</td></tr>
+<tr><td>2023-08-31</td><td>1559000000.0</td><td>7756000000.0</td></tr>
+<tr><td>2022-09-01</td><td>15181000000.0</td><td>7116000000.0</td></tr>
+<tr><td>2021-09-02</td><td>12468000000.0</td><td>6214000000.0</td></tr>
+</table>
+
+<h2>Price History (K-Line)</h2>
+
+<table class="md-table">
+<tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr>
+<tr><td>2026-07-13</td><td>929.0</td><td>943.5</td><td>902.6</td><td>937.0</td><td>35,536,239</td></tr>
+<tr><td>2026-07-14</td><td>988.4</td><td>994.8</td><td>950.1</td><td>983.1</td><td>30,835,225</td></tr>
+<tr><td>2026-07-15</td><td>975.8</td><td>978.4</td><td>873.6</td><td>904.3</td><td>54,779,242</td></tr>
+<tr><td>2026-07-16</td><td>866.8</td><td>887.7</td><td>840.5</td><td>853.2</td><td>46,718,034</td></tr>
+<tr><td>2026-07-17</td><td>822.5</td><td>904.0</td><td>804.0</td><td>849.0</td><td>63,346,278</td></tr>
+<tr><td>2026-07-20</td><td>885.6</td><td>901.0</td><td>858.9</td><td>865.5</td><td>37,705,237</td></tr>
+<tr><td>2026-07-21</td><td>925.4</td><td>982.9</td><td>916.6</td><td>970.8</td><td>49,369,020</td></tr>
+<tr><td>2026-07-22</td><td>938.2</td><td>982.6</td><td>936.1</td><td>959.5</td><td>31,588,637</td></tr>
+<tr><td>2026-07-23</td><td>975.1</td><td>1011.8</td><td>964.4</td><td>990.2</td><td>40,196,319</td></tr>
+<tr><td>2026-07-24</td><td>959.0</td><td>967.1</td><td>904.0</td><td>921.0</td><td>40,803,073</td></tr>
+</table>
+
+
+<h2>Recent SEC Filings</h2>
+
+<table class="md-table">
+<tr><th>filing_date</th></tr>
+<tr><td>2026-07-17</td></tr>
+<tr><td>2026-07-06</td></tr>
+<tr><td>2026-07-02</td></tr>
+<tr><td>2026-07-02</td></tr>
+<tr><td>2026-07-02</td></tr>
+<tr><td>2026-06-30</td></tr>
+<tr><td>2026-06-30</td></tr>
+<tr><td>2026-06-25</td></tr>
+<tr><td>2026-06-24</td></tr>
+<tr><td>2026-06-11</td></tr>
+</table>
+
+<h2>Peers</h2>
+
+<p>symbol='CSCO' name='Cisco Systems, Inc.' price=114.17 market_cap=449993595703, symbol='AMAT' name='Applied Materials, Inc.' price=536.25 market_cap=425760513750, symbol='LRCX' name='Lam Research Corporation' price=305.21 market_cap=381686469700, symbol='ARM' name='Arm Holdings plc American Depositary Shares' price=260.01 market_cap=276650640000, symbol='KLAC' name='KLA Corporation' price=210.52 market_cap=274998065600, symbol='TXN' name='Texas Instruments Incorporated' price=279.58 market_cap=254443800940, symbol='IBM' name='International Business Machines Corporation' price=214.19 market_cap=201795681460, symbol='SAP' name='SAP SE' price=160.0 market_cap=186437626240, symbol='QCOM' name='QUALCOMM Incorporated' price=166.97 market_cap=175986380000, symbol='CRM' name='Salesforce, Inc.' price=163.66 market_cap=134037540000</p>
+
+<h2>Research Framework</h2>
+
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Moat Assessment</div><div class="callout-body"><p><em>What protects this company from competitors?</em></p></p>
+<p><ol></p>
+<p><li><strong>Switching Costs</strong> — how hard is it for customers to leave?</li></p>
+<p><li><strong>Network Effects</strong> — does each user make it more valuable?</li></p>
+<p><li><strong>Intangible Assets</strong> — patents, brand, regulatory moats?</li></p>
+<p><li><strong>Cost Advantage</strong> — structural cost position vs peers?</li></p>
+<p><li><strong>Efficient Scale</strong> — is the market naturally limited?</li></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><th>#</th><th>Risk</th><th>Severity</th><th>Probability</th></tr></p>
+<p><tr><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><th>#</th><th>Catalyst</th><th>Timeline</th><th>Impact</th></tr></p>
+<p><tr><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-question" style="border-left:3px solid #d2a850"><div class="callout-title">❓ Investment Thesis</div><div class="callout-body"><ul></p>
+<p><li><strong>Position:</strong> [Long / Neutral / Avoiding]</li></p>
+<p><li><strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)</li></p>
+<p><li><strong>Key Assumption Being Priced In:</strong> ___</li></p>
+<p><li><strong>What Would Change My Mind:</strong> ___</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><em>Last data refresh: 2026-07-27 14:40</em></p>
+
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
