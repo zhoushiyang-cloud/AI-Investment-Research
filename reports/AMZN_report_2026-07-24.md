@@ -80,22 +80,22 @@ type: report
 
 ## 📝 Update Log
 
-### 2026-07-27
+### 2026-07-28
 
 | Metric | Value |
 |---|---|
-| **Price** | $232.11 |
-| **1-Week** | -6.1% |
-| **1-Month** | -4.0% |
+| **Price** | $231.39 |
+| **1-Week** | -7.4% |
+| **1-Month** | -4.3% |
 
 > [!tip] Recent Developments
-> - **Price Action:** AMZN fell 6.1% in the past week, now trading near the bottom of its July range ($231.34-$258.08), pressured by broad tech selling and no company-specific news.
-> - **Key News:** No recent news found; the move appears driven by macro rotation out of mega-cap tech and profit-taking after a strong year-to-date run.
-> - **Peer/Sector Context:** Major tech peers (e.g., AAPL, MSFT) have also declined 3-5% this week, reflecting a sector-wide pullback.
-> - **Short-Term Outlook:** Watch for support at the July low (~$231) and any macro catalysts (e.g., Fed commentary, earnings season spillover) that could stabilize or extend the selloff.
+> - **Price Action:** AMZN fell 7.4% over the past week, sliding from the July high of $258.08 to near the monthly low of $230.99, driven by broad tech selling and profit-taking after a strong run.
+> - **Key News:** No company-specific news was released; the decline appears macro-driven amid rotation out of mega-cap tech.
+> - **Peer/Sector Context:** The broader tech sector has also weakened, with peers like MSFT and AAPL seeing similar pullbacks this week.
+> - **Short-Term Outlook:** Watch for support near $230; a break below could accelerate selling, while stabilization above $235 may attract dip buyers ahead of any upcoming macro data.
 
 > [!quote] Rating Status
-> **N/A Maintained** — Without a formal rating, the thesis is neutral; a break below $230 or a recovery above $245 would signal the next directional bias.
+> **N/A Maintained** — No rating is currently assigned; the thesis is neutral pending clearer fundamental or technical signals.
 > Next catalyst: Monitor macro and sector trends.
 
 > [!note]- 📋 Financial Data Appendix *(click to expand)*

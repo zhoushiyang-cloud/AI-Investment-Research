@@ -80,22 +80,22 @@ type: report
 
 ## 📝 Update Log
 
-### 2026-07-27
+### 2026-07-28
 
 | Metric | Value |
 |---|---|
-| **Price** | $63.91 |
-| **1-Week** | -5.5% |
-| **1-Month** | -36.1% |
+| **Price** | $66.94 |
+| **1-Week** | +1.8% |
+| **1-Month** | -33.1% |
 
 > [!tip] Recent Developments
-> - **Price Action:** RKLB has fallen sharply, down 21.1% over two weeks and 5.5% in the past week, now trading near the bottom of its July range ($63.0–$107.6) amid broad risk-off sentiment and no company-specific news.
-> - **Key News:** No recent news found; the selloff appears driven by macro headwinds and profit-taking after the stock's prior rally.
-> - **Peer/Sector Context:** Space and high-growth tech peers have also pulled back, reflecting a rotation out of speculative names.
-> - **Short-Term Outlook:** Watch for a potential bounce at the $63 support level; further downside could test the $60 area if selling pressure persists.
+> - **Price Action:** RKLB fell 12.8% over the past two weeks, recovering slightly with a 1.8% gain this week to $66.94, trading near the lower end of its volatile July range ($63.0–$107.6).
+> - **Key News:** No recent company-specific news was reported; the stock's movement appears driven by broader market rotation and profit-taking after the prior month's rally.
+> - **Peer/Sector Context:** Space and defense peers have also pulled back, reflecting a sector-wide consolidation amid mixed macro sentiment.
+> - **Short-Term Outlook:** Watch for a potential test of the $63 support level; a break below could signal further downside, while a hold near current levels may set up a base for recovery.
 
 > [!quote] Rating Status
-> **HOLD Maintained** — The long-term thesis on RKLB's launch and space systems business remains intact, but the sharp decline warrants patience until a clear catalyst or stabilization emerges.
+> **HOLD Maintained** — The long-term thesis on RKLB's space launch and systems business remains intact, but near-term volatility and lack of catalysts warrant waiting for a clearer entry point.
 > Next catalyst: Monitor macro and sector trends.
 
 > [!note]- 📋 Financial Data Appendix *(click to expand)*

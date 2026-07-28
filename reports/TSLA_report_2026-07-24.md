@@ -88,22 +88,22 @@ For context, [[NVDA]] trades at ~35x earnings with 100%+ revenue growth. [[AVGO]
 
 ## 📝 Update Log
 
-### 2026-07-27
+### 2026-07-28
 
 | Metric | Value |
 |---|---|
-| **Price** | $313.03 |
-| **1-Week** | -17.8% |
-| **1-Month** | -26.4% |
+| **Price** | $309.22 |
+| **1-Week** | -16.3% |
+| **1-Month** | -27.3% |
 
 > [!tip] Recent Developments
-> - **Price Action:** TSLA has plummeted 23.2% over the past two weeks, with the July range collapsing from a high of $432.86 to a current low of $306.51, driven by broad market rotation out of growth stocks and no company-specific catalysts.
-> - **Key News:** No recent news was found, leaving the stock to trade on technicals and macro sentiment.
-> - **Peer/Sector Context:** EV and tech peers are also under pressure, reflecting a risk-off environment across the sector.
-> - **Short-Term Outlook:** Watch for a potential test of the $300 support level; any stabilization will depend on broader market recovery or a catalyst from upcoming delivery updates.
+> - **Price Action:** TSLA has plunged 16.3% in the past week and 21.7% over two weeks, now trading near the bottom of its July range ($304.28) after a sharp sell-off from the $432 high.
+> - **Key News:** No recent company-specific news; the decline appears driven by broader market rotation out of high-beta growth stocks and profit-taking after a strong Q2 rally.
+> - **Peer/Sector Context:** EV and tech peers are also under pressure, with the sector facing headwinds from rising interest rate expectations and a risk-off tone.
+> - **Short-Term Outlook:** Watch for a test of the $304 support level; a break below could accelerate selling, while any macro relief or positive delivery data could trigger a bounce.
 
 > [!quote] Rating Status
-> **N/A Maintained** — Without a rating, the thesis is undefined; a clear catalyst or fundamental shift would be needed to establish a view.
+> **N/A Maintained** — Without a formal rating, the thesis is neutral; a sustained break below $300 or a catalyst like Q3 delivery numbers would shift the outlook.
 > Next catalyst: Monitor macro and sector trends.
 
 > [!note]- 📋 Financial Data Appendix *(click to expand)*
