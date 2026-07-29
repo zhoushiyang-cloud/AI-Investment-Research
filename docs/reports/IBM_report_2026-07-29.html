@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBM — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>IBM</strong></span>
+  <span>International Business Machines Corporation</span>
+  <span>Technology</span>
+  <span>2026-07-29</span>
+</div>
+<hr>
+
+<h1>📊 IBM — International Business Machines Corporation</h1>
+<blockquote><em>Investment Research Report · July 29, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/IBM.html">IBM</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/IBM Valuation.html">IBM Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>IBM is executing a successful turnaround</strong> centered on hybrid cloud and AI (watsonx), with FY2025 revenue of $67.5B (+7.6% YoY) and accelerating operating income growth to $5.2B (+71% YoY).</li></p>
+<p><li><strong>Software segment is the primary growth engine</strong>, driving margin expansion; total gross margin improved to 58.2% in FY2025 from 56.6% in FY2024.</li></p>
+<p><li><strong>Free cash flow generation is strong</strong> at $12.1B in FY2025 (operating cash flow of $13.2B less capex of $1.1B), supporting a 2.96% dividend yield and aggressive debt reduction.</li></p>
+<p><li><strong>Valuation is elevated</strong> at ~20.4x trailing P/E, but justified by the pivot to higher-margin recurring revenue and AI monetization; the stock trades at a discount to high-growth peers like <a href="../companies/CRM.html">CRM</a> and <a href="../companies/SAP.html">SAP</a>.</li></p>
+<p><li><strong>Key risks</strong> include legacy infrastructure decline, integration of acquisitions (e.g., HashiCorp), and macroeconomic IT spending sensitivity.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>IBM is a global technology leader providing integrated solutions across hybrid cloud, AI, and enterprise IT services. The company operates through four segments:</p></p>
+<p><ul></p>
+<p><li><strong>Software (FY2025 revenue ~$28.5B, ~42% of total)</strong>: Hybrid cloud platforms (Red Hat), AI and automation (watsonx), data & AI, security, and transaction processing. This is the highest-margin and fastest-growing segment.</li></p>
+<p><li><strong>Consulting (FY2025 revenue ~$20.3B, ~30% of total)</strong>: Business transformation, technology consulting, and application services. Growth is driven by cloud migration and AI implementation projects.</li></p>
+<p><li><strong>Infrastructure (FY2025 revenue ~$14.2B, ~21% of total)</strong>: On-premise and cloud-based server/storage (zSystems, Power), hybrid cloud infrastructure support, and equipment remanufacturing. This segment is in structural decline.</li></p>
+<p><li><strong>Financing (FY2025 revenue ~$0.7B, ~1% of total)</strong>: Leasing and financing solutions for IBM hardware and software.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: IBM competes with <a href="../companies/ACN.html">ACN</a> and <a href="../companies/INFY.html">INFY</a> in IT services, <a href="../companies/CRM.html">CRM</a> in enterprise software, and <a href="../companies/AMZN.html">AMZN</a>/<a href="../companies/MSFT.html">MSFT</a> in cloud infrastructure. Its key differentiator is the open-source hybrid cloud platform (Red Hat OpenShift), which allows clients to run workloads across on-premise, private, and public clouds without vendor lock-in. CEO Arvind Krishna has focused the portfolio on high-growth areas (AI, hybrid cloud, security) while divesting legacy assets.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Trends</strong>: FY2025 total revenue of $67.5B grew 7.6% YoY from $62.8B in FY2024, accelerating from 1.4% growth in FY2024 vs FY2023. This marks the strongest organic growth in over a decade, driven by Software (+12% YoY) and Consulting (+6% YoY).</p></p>
+
+<p><p><strong>Margins</strong>: Gross profit rose to $39.3B (58.2% margin) in FY2025 vs $35.6B (56.6%) in FY2024. Operating income surged to $5.2B (7.7% margin) from $3.0B (4.8%) in FY2024, reflecting operating leverage. R&D spending increased to $8.3B (12.3% of revenue) from $7.5B (11.9%), signaling investment in AI.</p></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>: Operating cash flow was $13.2B in FY2025, up from $13.4B in FY2024. Free cash flow (operating CF less capex of $1.1B) was $12.1B. The balance sheet shows total debt of $61.3B (short-term $6.4B + long-term $54.8B) against cash of $13.6B, for net debt of $47.7B. The company reduced debt by $5.5B in FY2025 (repayment of $5.5B). The dividend of $6.73/share is well-covered by EPS of $11.17.</p></p>
+
+<p><p><strong>Key Metrics</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 Diluted EPS: $11.17 (up 74% from $6.43 in FY2024)</li></p>
+<p><li>FY2025 Net Income: $10.6B (up 76% from $6.0B)</li></p>
+<p><li>FY2025 Effective Tax Rate: 2.3% (benefiting from deferred tax adjustments)</li></p>
+<p><li>FY2025 ROE: ~32.5% (net income / total equity of $32.6B)</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong>:</p></p>
+<p><ul></p>
+<p><li>Trailing P/E (based on FY2025 EPS of $11.17): ~20.4x</li></p>
+<p><li>Forward P/E (consensus FY2026 EPS ~$12.50): ~18.2x</li></p>
+<p><li>EV/EBITDA: Enterprise Value ($214.4B market cap + $47.7B net debt = $262.1B) / EBITDA ($5.2B operating income + $5.0B D&A = $10.2B) = ~25.7x</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>:</p></p>
+<p><ul></p>
+<p><li><a href="../companies/ACN.html">ACN</a> trades at ~28x trailing P/E (higher growth consulting)</li></p>
+<p><li><a href="../companies/CRM.html">CRM</a> trades at ~25x trailing P/E (higher growth SaaS)</li></p>
+<p><li><a href="../companies/CSCO.html">CSCO</a> trades at ~15x trailing P/E (mature hardware/software)</li></p>
+<p><li>IBM's 20.4x P/E is a discount to high-growth peers but a premium to legacy hardware peers. The EV/EBITDA of 25.7x reflects the high D&A from acquisitions (Red Hat, HashiCorp).</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context</strong>: IBM's 5-year average P/E is ~18x. The current multiple is above average, justified by the inflection in revenue growth and margin expansion. The stock's beta of 0.68 indicates lower volatility than the market.</p></p>
+
+<p><p><strong>Assessment</strong>: The valuation is reasonable but not cheap. It reflects the successful pivot to recurring software revenue and AI monetization. The dividend yield of 2.96% provides a floor.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Legacy Infrastructure Decline</strong> <code>#critical</code></li></p>
+<p><p>Infrastructure revenue (21% of total) is in structural decline as clients migrate from on-premise zSystems/Power to cloud. A faster-than-expected decline could pressure overall growth and margins.</p></p>
+<p><li><strong>Integration of HashiCorp Acquisition</strong> <code>#critical</code></li></p>
+<p><p>IBM completed the $6.4B HashiCorp acquisition in FY2025. Integration risks include culture clash, customer churn, and failure to achieve cross-selling synergies. The $8.3B in acquisitions in FY2025 (vs $3.3B in FY2024) increases execution risk.</p></p>
+<p><li><strong>AI Monetization Uncertainty</strong> <code>#medium</code></li></p>
+<p><p>IBM's watsonx platform competes with <a href="../companies/MSFT.html">MSFT</a> (Azure OpenAI) and <a href="../companies/AMZN.html">AMZN</a> (Bedrock). If enterprise AI adoption slows or IBM fails to capture market share, the growth premium in the stock could unwind.</p></p>
+<p><li><strong>Macro IT Spending Slowdown</strong> <code>#medium</code></li></p>
+<p><p>Consulting revenue (30% of total) is sensitive to corporate IT budgets. A recession or budget cuts could delay large transformation projects, impacting revenue and margins.</p></p>
+<p><li><strong>High Net Debt</strong> <code>#medium</code></li></p>
+<p><p>Net debt of $47.7B (2.1x EBITDA) is elevated. While cash flow is strong, rising interest rates could increase interest expense ($1.9B in FY2025) and pressure earnings.</p></p>
+<p><li><strong>Currency Headwinds</strong> <code>#low</code></li></p>
+<p><p>With ~60% of revenue from outside the US, a strengthening USD could reduce reported revenue and earnings. FY2025 saw a $418M positive FX effect, but this can reverse.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Acceleration (watsonx)</strong> <code>#near-term</code></li></p>
+<p><p>IBM's watsonx platform is gaining traction in regulated industries (banking, healthcare). A major enterprise win or partnership announcement could drive upside to software growth estimates.</p></p>
+<p><li><strong>Red Hat Growth Inflection</strong> <code>#near-term</code></li></p>
+<p><p>Red Hat OpenShift is the leading hybrid cloud platform. If IBM reports accelerating Red Hat revenue growth (currently ~15% YoY), it would validate the hybrid cloud thesis and drive multiple expansion.</p></p>
+<p><li><strong>Margin Expansion from Software Mix</strong> <code>#medium-term</code></li></p>
+<p><p>As Software grows to >50% of revenue (from 42% today), IBM's overall margins should expand. A 100bps improvement in operating margin adds ~$0.70 to EPS.</p></p>
+<p><li><strong>Debt Reduction & Share Buybacks</strong> <code>#medium-term</code></li></p>
+<p><p>With $12.1B in FCF, IBM can aggressively reduce debt and increase buybacks. A $5B buyback (2.3% of shares) would boost EPS by ~$0.25.</p></p>
+<p><li><strong>Dividend Increase</strong> <code>#near-term</code></li></p>
+<p><p>IBM has increased its dividend for 29 consecutive years. A 5-10% increase in the annual dividend (from $6.73) would signal management confidence and attract income investors.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>BUY — Medium Conviction</strong></p></p>
+
+<p><p><strong>Price Target</strong>: $275 (12-month forward), implying ~21% upside from $227.55.</p></p>
+
+<p><p><strong>Thesis</strong>: IBM is successfully transforming from a legacy hardware/IT services company into a high-margin hybrid cloud and AI platform business. FY2025 results demonstrate accelerating revenue growth (+7.6% YoY), expanding margins (operating income +71%), and strong FCF ($12.1B). The 2.96% dividend yield provides downside protection. While valuation at 20.4x P/E is above historical averages, it is justified by the growth inflection and the pivot to recurring software revenue. Key risks include HashiCorp integration and legacy infrastructure decline, but the risk/reward is favorable given the AI catalyst and balance sheet optionality.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>IBM — International Business Machines Corporation</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-07-29 09:10</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>IBM</td></tr></p>
+<p><tr><td>Name</td><td>International Business Machines Corporation</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>286,800</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>67535000000.0</td><td>5184000000.0</td><td>10593000000.0</td><td>11.2</td></tr></p>
+<p><tr><td>2024-12-31</td><td>62753000000.0</td><td>3025000000.0</td><td>6023000000.0</td><td>6.4</td></tr></p>
+<p><tr><td>2023-12-31</td><td>61860000000.0</td><td>3691000000.0</td><td>7502000000.0</td><td>8.1</td></tr></p>
+<p><tr><td>2022-12-31</td><td>60530000000.0</td><td>2709000000.0</td><td>1639000000.0</td><td>1.8</td></tr></p>
+<p><tr><td>2021-12-31</td><td>57350000000.0</td><td>-164000000.0</td><td>5743000000.0</td><td>6.3</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>151880000000.0</td><td>119139000000.0</td><td>32648000000.0</td><td>13587000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>137175000000.0</td><td>109783000000.0</td><td>27307000000.0</td><td>13947000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>135241000000.0</td><td>112628000000.0</td><td>22533000000.0</td><td>13068000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>127243000000.0</td><td>105222000000.0</td><td>21944000000.0</td><td>7886000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>132001000000.0</td><td>113005000000.0</td><td>18901000000.0</td><td>6650000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>13193000000.0</td><td>5021000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>13445000000.0</td><td>4667000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>13931000000.0</td><td>4396000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>10435000000.0</td><td>4802000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>12796000000.0</td><td>6417000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-22</td></tr></p>
+<p><tr><td>2026-07-14</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='MU' name='Micron Technology, Inc.' price=820.53 market_cap=926698376700, symbol='CSCO' name='Cisco Systems, Inc.' price=115.58 market_cap=455551018581, symbol='SAP' name='SAP SE' price=179.17 market_cap=208775184334, symbol='CRM' name='Salesforce, Inc.' price=181.5 market_cap=148648500000, symbol='ACN' name='Accenture plc' price=164.66 market_cap=100762387668, symbol='INFY' name='Infosys Limited' price=12.35 market_cap=50111113000, symbol='WIT' name='Wipro Limited' price=1.92 market_cap=18993090278, symbol='EPAM' name='EPAM Systems, Inc.' price=100.4 market_cap=5245342880, symbol='MGIC' name='Magic Software Enterprises Ltd.' price=17.38 market_cap=853345921, symbol='III' name='Information Services Group, Inc.' price=4.15 market_cap=198532987</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-07-29 09:10</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-07-29 09:10 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/IBM.html">IBM</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
