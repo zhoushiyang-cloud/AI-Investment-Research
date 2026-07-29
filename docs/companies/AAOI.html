@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong></strong></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+<h1>AAOI — AAOI</h1>
+
+<blockquote><em>Auto-generated: 2026-07-29 14:29</em></blockquote>
+
+<h2>Company Overview</h2>
+
+<h3>Profile</h3>
+
+<table class="md-table">
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Ticker</td><td>AAOI</td></tr>
+<tr><td>Name</td><td>—</td></tr>
+<tr><td>Sector</td><td>—</td></tr>
+<tr><td>Industry</td><td>—</td></tr>
+<tr><td>Market Cap</td><td>—</td></tr>
+<tr><td>Enterprise Value</td><td>—</td></tr>
+<tr><td>Employees</td><td>—</td></tr>
+<tr><td>Country</td><td>—</td></tr>
+<tr><td>Website</td><td>—</td></tr>
+</table>
+
+<h2>Key Metrics</h2>
+
+<p><em>Metrics data not available.</em></p>
+
+<h2>Financial Statements</h2>
+
+<h3>Income Statement (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr>
+<tr><td>2025-12-31</td><td>455715000.0</td><td>-54602000.0</td><td>-38228000.0</td><td>-0.6</td></tr>
+<tr><td>2024-12-31</td><td>249365000.0</td><td>-70908000.0</td><td>-186733000.0</td><td>-4.5</td></tr>
+<tr><td>2023-12-31</td><td>217646000.0</td><td>-41349000.0</td><td>-56048000.0</td><td>-1.8</td></tr>
+<tr><td>2022-12-31</td><td>222818000.0</td><td>-58998000.0</td><td>-66397000.0</td><td>-2.4</td></tr>
+<tr><td>2021-12-31</td><td>211565000.0</td><td>-56766000.0</td><td>-54162000.0</td><td>-2.0</td></tr>
+</table>
+
+<h3>Balance Sheet (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr>
+<tr><td>2025-12-31</td><td>1168423000.0</td><td>434505000.0</td><td>733918000.0</td><td>206140000.0</td></tr>
+<tr><td>2024-12-31</td><td>547032000.0</td><td>317920000.0</td><td>229112000.0</td><td>67428000.0</td></tr>
+<tr><td>2023-12-31</td><td>389186000.0</td><td>174317000.0</td><td>214869000.0</td><td>45366000.0</td></tr>
+<tr><td>2022-12-31</td><td>408263000.0</td><td>223593000.0</td><td>184670000.0</td><td>24685000.0</td></tr>
+<tr><td>2021-12-31</td><td>454459000.0</td><td>199889000.0</td><td>254570000.0</td><td>34656000.0</td></tr>
+</table>
+
+<h3>Cash Flow (Annual)</h3>
+
+<table class="md-table">
+<tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr>
+<tr><td>2025-12-31</td><td>-174428000.0</td><td>27600000.0</td></tr>
+<tr><td>2024-12-31</td><td>-69526000.0</td><td>20600000.0</td></tr>
+<tr><td>2023-12-31</td><td>-7929000.0</td><td>20400000.0</td></tr>
+<tr><td>2022-12-31</td><td>-14022000.0</td><td>23200000.0</td></tr>
+<tr><td>2021-12-31</td><td>-11644000.0</td><td>25300000.0</td></tr>
+</table>
+
+<h2>Price History (K-Line)</h2>
+
+<table class="md-table">
+<tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr>
+<tr><td>2026-07-15</td><td>123.8</td><td>124.4</td><td>106.1</td><td>109.1</td><td>10,324,199</td></tr>
+<tr><td>2026-07-16</td><td>105.0</td><td>107.1</td><td>97.9</td><td>100.2</td><td>9,966,557</td></tr>
+<tr><td>2026-07-17</td><td>96.1</td><td>106.2</td><td>91.5</td><td>102.4</td><td>9,637,835</td></tr>
+<tr><td>2026-07-20</td><td>104.9</td><td>107.3</td><td>102.1</td><td>103.0</td><td>5,163,516</td></tr>
+<tr><td>2026-07-21</td><td>107.7</td><td>120.2</td><td>107.4</td><td>119.3</td><td>10,284,718</td></tr>
+<tr><td>2026-07-22</td><td>115.0</td><td>117.5</td><td>110.0</td><td>110.5</td><td>8,072,997</td></tr>
+<tr><td>2026-07-23</td><td>108.6</td><td>119.7</td><td>108.2</td><td>112.0</td><td>6,288,557</td></tr>
+<tr><td>2026-07-24</td><td>109.0</td><td>109.7</td><td>99.5</td><td>100.2</td><td>7,103,569</td></tr>
+<tr><td>2026-07-27</td><td>100.6</td><td>102.9</td><td>92.2</td><td>97.8</td><td>6,662,393</td></tr>
+<tr><td>2026-07-28</td><td>93.0</td><td>93.3</td><td>81.5</td><td>88.1</td><td>10,840,292</td></tr>
+</table>
+
+
+<h2>Research Framework</h2>
+
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Moat Assessment</div><div class="callout-body"><p><em>What protects this company from competitors?</em></p></p>
+<p><ol></p>
+<p><li><strong>Switching Costs</strong> — how hard is it for customers to leave?</li></p>
+<p><li><strong>Network Effects</strong> — does each user make it more valuable?</li></p>
+<p><li><strong>Intangible Assets</strong> — patents, brand, regulatory moats?</li></p>
+<p><li><strong>Cost Advantage</strong> — structural cost position vs peers?</li></p>
+<p><li><strong>Efficient Scale</strong> — is the market naturally limited?</li></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><th>#</th><th>Risk</th><th>Severity</th><th>Probability</th></tr></p>
+<p><tr><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><th>#</th><th>Catalyst</th><th>Timeline</th><th>Impact</th></tr></p>
+<p><tr><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td></tr></p>
+<p><tr><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-question" style="border-left:3px solid #d2a850"><div class="callout-title">❓ Investment Thesis</div><div class="callout-body"><ul></p>
+<p><li><strong>Position:</strong> [Long / Neutral / Avoiding]</li></p>
+<p><li><strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)</li></p>
+<p><li><strong>Key Assumption Being Priced In:</strong> ___</li></p>
+<p><li><strong>What Would Change My Mind:</strong> ___</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><em>Last data refresh: 2026-07-29 14:29</em></p>
+
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
