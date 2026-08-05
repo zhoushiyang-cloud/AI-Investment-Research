@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDS — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ONDS</strong></span>
+  <span>ONDS</span>
+  <span>未知</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 ONDS — ONDS</h1>
+<blockquote><em>投资研究报告 · 2026年8月5日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/ONDS.html">ONDS</a></td><td><strong>行业：</strong> <a href="../companies/行业 — 未知.html">行业 — 未知</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/投资仪表盘.html">投资仪表盘</a></td><td><a href="../companies/同行比较.html">同行比较</a></td><td><a href="../companies/ONDS 估值.html">ONDS 估值</a></td></tr></p>
+<p><tr><td>- <a href="../companies/行业 — 未知.html">行业 — 未知</a></td><td><a href="../companies/经济指标.html">经济指标</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>Ondas Holdings (ONDS) 是一家尚未实现规模化收入、现金充裕的国防/航空航天技术平台</strong>，2025财年营收仅为5070万美元，净亏损达<strong>1.334亿美元</strong>，但在大规模股权融资后持有<strong>5.507亿美元现金</strong>。</li></p>
+<p><li><strong>该股近期大幅重新定价（最近10个交易日上涨10.7%至8.86美元）</strong>，成交量巨大，受国防板块动能和内部人士行权活动推动，但基本面仍处于深度亏损状态。</li></p>
+<p><li><strong>资产负债表是核心资产</strong>：5.507亿美元现金对比6.612亿美元总负债提供了多年运营跑道，但<strong>3.684亿美元的累计亏损</strong>和<strong>1.372亿美元的普通股净亏损</strong>表明现金消耗仍在持续且规模可观。</li></p>
+<p><li><strong>估值具有投机性和前瞻性</strong>；由于没有有意义的EBITDA且每股收益为负，传统估值倍数不适用。市场正在定价国防合同成功放量的预期。</li></p>
+<p><li><strong>建议：持有（高确信度）</strong>。现金头寸消除了短期破产风险，但运营轨迹和内部人士减持模式在收入拐点得到验证之前 warrants 谨慎态度。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p>Ondas Holdings 经营于<strong>国防和航空航天技术领域</strong>，专注于自主系统和安全无线连接解决方案。公司正从开发阶段实体向商业运营商转型。</p></p>
+
+<p><ul></p>
+<p><li><strong>主要分部</strong>：财务报表中<strong>未提供</strong>分部收入明细数据。合并营收<strong>5070万美元（2025财年）</strong>是唯一的收入总额数据。</li></p>
+<p><li><strong>竞争地位</strong>：ONDS 与大型国防主承包商及专业无人机/无人系统企业竞争。其竞争优势在于<strong>专有的软件定义无线电和自主无人机平台</strong>，但在各自市场中缺乏与 <a href="../companies/AVGO.html">AVGO</a> 或 <a href="../companies/NVDA.html">NVDA</a> 等同行相当的规模。</li></p>
+<p><li><strong>商业模式</strong>：公司正为政府和企事业客户推行<strong>硬件加服务模式</strong>。显著的研发支出（2025财年2090万美元）表明公司持续聚焦产品开发而非短期盈利。</li></p>
+<p><li><strong>战略转型</strong>：<strong>5.507亿美元现金余额</strong>（2024财年为3000万美元）表明公司正进行重大战略转向，可能通过股权发行融资以支持收购或大规模合同执行。这是一项高风险、高回报的增长战略。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>营收与盈利能力</strong>：财务数据显示，尽管营收增长，<strong>经营状况仍在恶化</strong>。</p></p>
+<p><ul></p>
+<p><li><strong>营收</strong>：5070万美元（2025财年）对比720万美元（2024财年）——增长约<strong>605%</strong>，但基数极低。2023财年营收为1570万美元。</li></p>
+<p><li><strong>毛利润</strong>：2020万美元（2025财年），<strong>毛利率39.7%</strong>，较2024财年的4.8%显著改善。这表明产品组合有所优化。</li></p>
+<p><li><strong>经营亏损</strong>：<strong>-5840万美元（2025财年）</strong>，较2024财年的-3460万美元亏损扩大，主要受<strong>2090万美元研发费用</strong>和<strong>1320万美元销售及管理费用</strong>驱动。</li></p>
+<p><li><strong>净亏损</strong>：<strong>-1.334亿美元（2025财年）</strong> 对比2024财年的-3800万美元。亏损扩大主要源于<strong>-7450万美元的"其他收入"亏损</strong>（可能为非现金认股权证/衍生品估值费用）和<strong>-1330万美元的利息费用</strong>。</li></p>
+<p></ul></p>
+
+<p><p><strong>现金流与资产负债表</strong>：</p></p>
+<p><ul></p>
+<p><li><strong>经营现金流</strong>：<strong>-3870万美元（2025财年）</strong>，较2024财年的-3350万美元有所改善，但现金消耗仍然显著。</li></p>
+<p><li><strong>投资活动</strong>：<strong>-2.601亿美元（2025财年）</strong>流出，表明大量资本部署（可能为收购或投资）。</li></p>
+<p><li><strong>融资活动</strong>：<strong>+8.627亿美元（2025财年）</strong>流入，确认了大规模股权融资。</li></p>
+<p><li><strong>现金头寸</strong>：2025财年末为<strong>5.507亿美元</strong>，提供充足运营跑道。然而，<strong>总负债为6.612亿美元</strong>，包括7500万美元的应计费用和4180万美元的其他流动负债。</li></p>
+<p><li><strong>股东权益</strong>：<strong>4.378亿美元</strong>为正，但被<strong>-3.684亿美元的留存收益赤字</strong>所抵消。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><p><strong>传统估值指标不适用</strong>，因盈利和EBITDA均为负。</p></p>
+<p><ul></p>
+<p><li><strong>市盈率</strong>：无意义（每股收益为负，-0.62美元）。</li></p>
+<p><li><strong>EV/EBITDA</strong>：无意义（EBITDA为负）。</li></p>
+<p><li><strong>市销率</strong>：基于5070万美元营收和约19亿美元市值（按8.86美元/股、约2.218亿股计算），市销率约为<strong>37倍</strong>。这是极高的溢价，已定价了巨大的未来增长。</li></p>
+<p><li><strong>合理性</strong>：估值完全基于<strong>5.507亿美元现金储备</strong>将被部署到高利润国防合同的预期。市场将该公司的价值视为对未来政府支出的期权，而非当前基本面。与历史水平相比，该股交易价格相对其自身营收轨迹存在显著溢价。</li></p>
+<p><li><strong>同行比较</strong>：暂无直接同行估值倍数数据，但ONDS 的交易价格较典型国防硬件供应商存在大幅溢价，反映了市场对其增长选择权的认可。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>收入规模化能力未经证实</strong> <code>#critical</code></li></p>
+<p><p>从720万美元跃升至5070万美元的营收令人鼓舞，但<strong>1.334亿美元的净亏损</strong>表明，若无大规模营收增长，成本结构不可持续。若收入增长停滞，股价将大幅回落。</p></p>
+<p><li><strong>现金消耗与稀释风险</strong> <code>#critical</code></li></p>
+<p><p>尽管持有5.507亿美元现金，公司在2025财年经营活动中消耗了<strong>-3870万美元</strong>，投资活动中消耗了<strong>-2.601亿美元</strong>。<strong>8.627亿美元的融资流入</strong>表明稀释严重。未来融资可能显著稀释现有股东权益。</p></p>
+<p><li><strong>内部人士减持压力</strong> <code>#medium</code></li></p>
+<p><p>近期内部人士交易显示在<strong>13.43美元和9.83美元</strong>价位进行公开市场卖出，同时伴随股票期权行权。这一模式表明内部人士正在套现股权，可能暗示其对当前股价水平缺乏信心。</p></p>
+<p><li><strong>非现金会计波动</strong> <code>#medium</code></li></p>
+<p><p>2025财年<strong>-7450万美元的"其他收入"亏损</strong>很可能与认股权证负债或衍生品估值有关。这些非现金费用可能导致每股收益剧烈波动，并掩盖真实经营业绩。</p></p>
+<p><li><strong>收购执行风险</strong> <code>#medium</code></li></p>
+<p><p><strong>-2.601亿美元的投资流出</strong>表明重大并购活动。国防领域收购整合复杂，可能导致减值或运营中断。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ul></p>
+<p><li><strong>重大国防合同中标</strong> <code>#near-term</code></li></p>
+<p><p>鉴于其现金头寸和对自主系统的专注，若获得美国国防部或盟国的大规模合同，将验证其商业模式并推动显著上行。</p></p>
+<p><li><strong>收入拐点</strong> <code>#near-term</code></li></p>
+<p><p>若公司能够展示通往<strong>年化营收1亿美元以上</strong>且毛利率持续改善（当前为39.7%）的路径，市场很可能基于远期市销率重新定价该股。</p></p>
+<p><li><strong>战略收购完成</strong> <code>#medium-term</code></li></p>
+<p><p>近期收购的成功整合和交叉销售可能释放协同效应并扩大总可寻址市场，从而支撑高估值。</p></p>
+<p><li><strong>现金消耗收窄</strong> <code>#medium-term</code></li></p>
+<p><p>一条清晰的<strong>经营现金流盈亏平衡</strong>路径（从-3870万美元改善）将是运营成熟的最强信号，并可能在高空头兴趣下触发轧空行情。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 建议</div><div class="callout-body"><p><strong>持有（高确信度）</strong></p></p>
+
+<p><p><strong>12个月目标价：9.50美元</strong>（基于2026财年预期营收约7500万美元、投机性市销率约40倍的假设，前提是持续增长）。</p></p>
+
+<p><p><strong>投资论点</strong>：Ondas 是一个<strong>高风险、高回报的投机性标的</strong>。<strong>5.507亿美元现金余额</strong>提供了堡垒式资产负债表，消除了短期资不抵债风险，这是积极因素。然而，<strong>巨额净亏损</strong>、<strong>内部人士减持</strong>和<strong>极端估值</strong>（37倍市销率）在没有重大运营催化剂的情况下限制了当前价位的上行空间。我们建议高风险承受能力的投资者持有，但不会在此价位新建仓位。该股目前基于动能和现金价值交易，而非基本面。回调至<strong>7.00-7.50美元区间</strong>将提供更具吸引力的风险/回报入场点。</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>(点击展开)</em></div><div class="callout-body"></p>
+<p><h1>ONDS — ONDS</h1></p>
+
+<p><blockquote><em>自动生成：2026-08-05 10:06</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>ONDS</td></tr></p>
+<p><tr><td>名称</td><td>—</td></tr></p>
+<p><tr><td>行业</td><td>—</td></tr></p>
+<p><tr><td>板块</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工数</td><td>—</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>暂无指标数据。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h3>利润表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总营收</th><th>经营利润</th><th>净利润</th><th>摊薄每股收益</th></tr></p>
+<p><tr><td>2025-12-31</td><td>50731000.0</td><td>-58384000.0</td><td>-133380000.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2024-12-31</td><td>7192694.0</td><td>-34609304.0</td><td>-38007757.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2023-12-31</td><td>15691430.0</td><td>-39729300.0</td><td>-44844872.0</td><td>-0.9</td></tr></p>
+<p><tr><td>2022-12-31</td><td>2125817.0</td><td>-69429522.0</td><td>-87092000.0</td><td>-1.7</td></tr></p>
+<p><tr><td>2021-12-31</td><td>2906771.0</td><td>-17973617.0</td><td>-43663000.0</td><td>-0.4</td></tr></p>
+<p></table></p>
+
+<p><h3>资产负债表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总资产</th><th>总负债</th><th>总权益</th><th>现金及现金等价物</th></tr></p>
+<p><tr><td>2025-12-31</td><td>1132841000.0</td><td>661226000.0</td><td>437808000.0</td><td>550744000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>109622288.0</td><td>73677776.0</td><td>16583307.0</td><td>29999321.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>92164682.0</td><td>47108861.0</td><td>33135127.0</td><td>15022000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>97945245.0</td><td>39722338.0</td><td>58222907.0</td><td>29775096.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>117438575.0</td><td>5205743.0</td><td>112232832.0</td><td>40815123.0</td></tr></p>
+<p></table></p>
+
+<p><h3>现金流量表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>经营现金流</th><th>折旧与摊销</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-38746000.0</td><td>946000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-33469623.0</td><td>602000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-34019519.0</td><td>4991925.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-37963076.0</td><td>4019548.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-16895416.0</td><td>1396364.0</td></tr></p>
+<p></table></p>
+
+<p><h2>价格历史（K线）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>日期</th><th>开盘</th><th>最高</th><th>最低</th><th>收盘</th><th>成交量</th></tr></p>
+<p><tr><td>2026-07-22</td><td>7.8</td><td>8.6</td><td>7.7</td><td>8.0</td><td>176,206,947</td></tr></p>
+<p><tr><td>2026-07-23</td><td>7.8</td><td>8.2</td><td>7.7</td><td>7.9</td><td>86,047,632</td></tr></p>
+<p><tr><td>2026-07-24</td><td>8.0</td><td>8.2</td><td>7.5</td><td>7.8</td><td>101,180,976</td></tr></p>
+<p><tr><td>2026-07-27</td><td>7.9</td><td>8.2</td><td>7.6</td><td>8.0</td><td>66,469,828</td></tr></p>
+<p><tr><td>2026-07-28</td><td>7.7</td><td>7.9</td><td>7.4</td><td>7.9</td><td>61,977,198</td></tr></p>
+<p><tr><td>2026-07-29</td><td>7.8</td><td>7.9</td><td>6.8</td><td>6.8</td><td>59,019,415</td></tr></p>
+<p><tr><td>2026-07-30</td><td>7.0</td><td>7.7</td><td>6.8</td><td>7.6</td><td>55,505,844</td></tr></p>
+<p><tr><td>2026-07-31</td><td>7.7</td><td>7.8</td><td>7.1</td><td>7.5</td><td>59,686,641</td></tr></p>
+<p><tr><td>2026-08-03</td><td>7.4</td><td>8.4</td><td>7.2</td><td>8.4</td><td>55,788,311</td></tr></p>
+<p><tr><td>2026-08-04</td><td>8.7</td><td>9.1</td><td>8.6</td><td>8.9</td><td>73,361,652</td></tr></p>
+<p></table></p>
+
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手侵蚀？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管壁垒？<br>4. <strong>成本优势</strong> — 与同行相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [多头 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>市场正在定价的关键假设：</strong> ___<br>- <strong>什么会改变我的看法：</strong> ___</blockquote></p>
+
+<p><p><em>最后数据刷新：2026-08-05 10:06</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-08-05 10:06 · AI 投资系统</em></p>
+<p><em>相关：<a href="../companies/ONDS.html">ONDS</a> · <a href="../companies/同行比较.html">同行比较</a> · <a href="../companies/投资仪表盘.html">投资仪表盘</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
