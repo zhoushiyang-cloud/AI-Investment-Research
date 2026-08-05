@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RKLB — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>RKLB</strong></span>
+  <span>Rocket Lab USA, Inc.</span>
+  <span>Industrials</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 RKLB — Rocket Lab USA, Inc.</h1>
+<blockquote><em>Investment Research Report · August 05, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/RKLB.html">RKLB</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/RKLB Valuation.html">RKLB Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Rocket Lab is a high-growth, vertically integrated space platform</strong> with FY2025 revenue of $601.8M (+38% YoY), driven by launch services and a rapidly scaling Space Systems segment. The company remains pre-profitability, with a net loss of -$198.2M in FY2025.</li></p>
+<p><li><strong>The balance sheet is a key strength.</strong> The company raised significant capital in FY2025 (net $1.07B from financing), ending the year with $828.7M in cash and equivalents and total liquidity (including short-term investments) of over $1.0B, funding the Neutron rocket development and operational expansion.</li></p>
+<p><li><strong>Valuation is extremely demanding.</strong> At a $43.1B market cap, the stock trades at ~71.6x FY2025 revenue, a massive premium to aerospace peers. This pricing implies successful execution of the Neutron program and significant market share gains in a highly competitive launch market.</li></p>
+<p><li><strong>Key catalysts are binary and near-term.</strong> The first launch of the Neutron rocket (currently in development) and continued expansion of the Space Systems backlog are the primary drivers for the stock over the next 12-18 months.</li></p>
+<p><li><strong>We initiate with a HOLD rating.</strong> While the company's strategic position and technology are compelling, the current valuation leaves little room for error. We recommend waiting for a more favorable entry point or evidence of flawless Neutron execution.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Rocket Lab USA, Inc. is a vertically integrated aerospace company providing end-to-end space solutions. The company operates in two primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>Launch Services:</strong> The design, manufacture, and operation of the <em>Electron</em> small-lift launch vehicle. This is the company's flagship product and a proven revenue generator, having completed numerous successful missions. This segment is the current cash engine, though it faces pricing pressure from new entrants like <a href="../companies/SpaceX.html">SpaceX</a>'s rideshare program.</li></p>
+<p><li><strong>Space Systems:</strong> This is the growth engine, encompassing the manufacture of satellites (the <em>Photon</em> platform), spacecraft components, and on-orbit management services. This segment includes the recently acquired and high-margin components business (formerly Sinclair Interplanetary) and the advanced solar power solutions. It also includes the development of the <em>Neutron</em> medium-lift launch vehicle, designed for 8-ton payloads and potential human spaceflight, targeting the growing constellation deployment market.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong> Rocket Lab is the clear #2 in the Western commercial launch market behind <a href="../companies/SpaceX.html">SpaceX</a>. Its competitive advantage lies in its vertical integration (building rockets, satellites, and components in-house), which allows for rapid iteration and cost control. The company serves a diverse clientele, including commercial enterprises, major aerospace contractors (like <a href="../companies/HEI.html">HEI</a> and <a href="../companies/ESLT.html">ESLT</a>), and government entities (NASA, U.S. Space Force). The company's long-term strategy is to become a one-stop shop for space infrastructure, from building the vehicle to operating the satellite constellation.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong> The company is in a high-growth investment phase. Revenue grew from $244.6M in FY2023 to $436.2M in FY2024 (+78%), and further to $601.8M in FY2025 (+38% YoY). This growth is driven by both launch cadence and, more importantly, the Space Systems segment. <strong>Gross margin improved significantly</strong> from 21.0% in FY2023 to 26.6% in FY2024 and 34.4% in FY2025, indicating a favorable mix shift towards higher-margin Space Systems products and improved launch efficiency.</p></p>
+
+<p><p><strong>Operating Performance:</strong> Despite revenue growth, the company remains unprofitable at the operating line. <strong>FY2025 operating loss was -$228.8M</strong>, an improvement from -$189.8M in FY2024. This is driven by heavy investment in R&D ($270.7M in FY2025, up from $174.4M in FY2024) for the Neutron program and scaling of operations. SG&A expenses also grew to $165.3M, reflecting the expanded corporate infrastructure.</p></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong> The company is burning cash to fund its growth. <strong>FY2025 operating cash flow was -$165.5M</strong>, and free cash flow was deeply negative at -$312.8M (operating cash flow + capex of -$156.3M). This is a critical point for a company at this valuation. However, the company successfully raised $1.07B in net financing during FY2025, bolstering its balance sheet. <strong>Cash and equivalents stood at $828.7M as of FY2025</strong>, with additional short-term investments of $187.9M, providing a substantial runway. The company has no significant long-term debt ($1.7M), giving it financial flexibility. The path to profitability is dependent on scaling Neutron and achieving higher production volumes in Space Systems.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples:</strong> Based on the current market cap of $43.1B and FY2025 revenue of $601.8M, the stock trades at an <strong>EV/Revenue multiple of ~71.6x</strong>. This is an exceptionally high multiple, even for a high-growth company.</p></p>
+
+<p><p><strong>Peer Comparison:</strong> This valuation is far above its aerospace & defense peers. For context, established, profitable players like <a href="../companies/HEI.html">HEI</a> trade at a fraction of this multiple, and even high-growth industrial names like <a href="../companies/FIX.html">FIX</a> and <a href="../companies/EME.html">EME</a> trade at significantly lower EV/Revenue ratios. The market is pricing in a future where Rocket Lab becomes a dominant player in the medium-lift launch market and a major satellite manufacturer, with revenue scaling to multi-billions.</p></p>
+
+<p><p><strong>Justification:</strong> The premium is justified only if the company executes flawlessly on its Neutron timeline and captures a significant share of the growing demand for satellite constellations and national security launches. The current valuation leaves no room for delays, cost overruns, or competitive setbacks. The stock's high beta (2.55) and its 52-week range ($37.57 - $151.00) highlight the extreme volatility and speculative nature of the current price. We believe the risk/reward is balanced at current levels, as the price already reflects substantial optimism.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Neutron Development & Launch Failure</strong> <code>#critical</code></li></p>
+<p><p>The company's entire growth thesis hinges on the successful and timely debut of the Neutron rocket. Any significant delay, cost overrun, or launch failure would severely damage investor confidence and justify a massive de-rating from current levels. The company has not yet provided a firm launch date, and technical challenges are highly probable in new rocket development.</p></p>
+<p><li><strong>Execution Risk in Scaling Space Systems</strong> <code>#medium</code></li></p>
+<p><p>The Space Systems segment is growing rapidly but requires flawless execution to meet backlog and margin targets. Supply chain disruptions, manufacturing yield issues, or integration problems with acquired businesses could compress margins and slow growth, undermining the premium valuation.</p></p>
+<p><li><strong>Competitive Pressure from <a href="../companies/SpaceX.html">SpaceX</a> and Others</strong> <code>#medium</code></li></p>
+<p><p><a href="../companies/SpaceX.html">SpaceX</a>'s dominant position and aggressive pricing in the launch market could limit Rocket Lab's ability to win new launch contracts or force it to lower prices, impacting profitability. The medium-lift market is also attracting new entrants, increasing competitive intensity.</p></p>
+<p><li><strong>Valuation & Market Sentiment Risk</strong> <code>#high</code></li></p>
+<p><p>At ~71.6x revenue, the stock is priced for perfection. Any disappointment in quarterly results, a broader market correction, or a shift in investor sentiment towards unprofitable growth companies could lead to a sharp and rapid decline in the share price. The recent insider selling activity (multiple sales at prices between $92.81 and $101.57) could also be interpreted as a negative signal by the market.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ul></p>
+<p><li><strong>First Neutron Launch</strong> <code>#near-term</code></li></p>
+<p><p>A successful first launch of the Neutron rocket would be the single largest catalyst, validating the technology and opening up a new, larger addressable market. This would likely drive a significant re-rating of the stock.</p></p>
+<p><li><strong>Major Contract Wins</strong> <code>#near-term</code></li></p>
+<p><p>Announcements of new, large contracts for Neutron or the Space Systems division (e.g., a major constellation deal or a significant national security launch contract) would provide concrete evidence of demand and de-risk the growth narrative.</p></p>
+<p><li><strong>Path to Profitability</strong> <code>#medium-term</code></li></p>
+<p><p>Any guidance indicating a clear and accelerating path to positive gross margin expansion and reduced operating losses would be a positive catalyst. Achieving operational leverage in the Space Systems segment would be particularly well-received.</p></p>
+<p><li><strong>Continued Revenue Growth Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>Quarterly results showing revenue growth re-accelerating above the current 38% pace, driven by Space Systems, would signal stronger-than-expected market traction and support the current valuation.</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: HOLD (Conviction: Medium)</strong></p></p>
+
+<p><p><strong>12-Month Price Target: $85.00</strong></p></p>
+
+<p><p><strong>Thesis:</strong> Rocket Lab is a fundamentally sound company with a strong competitive position, a robust balance sheet, and a clear growth trajectory. However, the current market valuation of $43.1B (71.6x FY2025 revenue) already prices in a high degree of success for the Neutron program and significant market share gains. The risk/reward profile is balanced at this level. We recommend investors hold existing positions but refrain from initiating new ones at this price. We would become more constructive on a pullback to the $60-$70 range or upon tangible proof of Neutron's success. The stock's extreme volatility (beta of 2.55) and the recent insider selling activity warrant caution.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>RKLB — Rocket Lab USA, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-05 09:03</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>RKLB</td></tr></p>
+<p><tr><td>Name</td><td>Rocket Lab USA, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Industrials</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>2,600</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>601799000.0</td><td>-228838000.0</td><td>-198209000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2024-12-31</td><td>436214000.0</td><td>-189801000.0</td><td>-190175000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2023-12-31</td><td>244592000.0</td><td>-177918000.0</td><td>-182571000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2022-12-31</td><td>210996000.0</td><td>-135204000.0</td><td>-135944000.0</td><td>-0.3</td></tr></p>
+<p><tr><td>2021-12-31</td><td>62237000.0</td><td>-102053000.0</td><td>-117320000.0</td><td>-0.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>2324478000.0</td><td>602624000.0</td><td>1721854000.0</td><td>828660000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>1184342000.0</td><td>801889000.0</td><td>382453000.0</td><td>271042000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>941211000.0</td><td>386667000.0</td><td>554544000.0</td><td>162518000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>989123000.0</td><td>315917000.0</td><td>673206000.0</td><td>242515000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>980847000.0</td><td>282399000.0</td><td>698448000.0</td><td>690959000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-165521000.0</td><td>43325000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-48890000.0</td><td>31844000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-98867000.0</td><td>28507000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-106538000.0</td><td>29385000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-71791000.0</td><td>10851000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-08</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-29</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-05</td></tr></p>
+<p><tr><td>2026-06-05</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='FIX' name='Comfort Systems USA, Inc.' price=1775.86 market_cap=62500149598, symbol='HEI' name='HEICO Corporation' price=367.66 market_cap=51222269872, symbol='WAB' name='Westinghouse Air Brake Technologies Corporation' price=299.07 market_cap=50516212770, symbol='UAL' name='United Airlines Holdings, Inc.' price=132.62 market_cap=43044437327, symbol='ESLT' name='Elbit Systems Ltd.' price=849.27 market_cap=39789299091, symbol='EME' name='EMCOR Group, Inc.' price=819.88 market_cap=36164825632, symbol='XYL' name='Xylem Inc.' price=122.17 market_cap=28525106790, symbol='OTIS' name='Otis Worldwide Corporation' price=73.64 market_cap=28032490124, symbol='VRSK' name='Verisk Analytics, Inc.' price=192.8 market_cap=25094080078</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-05 09:03</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-05 09:03 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/RKLB.html">RKLB</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
