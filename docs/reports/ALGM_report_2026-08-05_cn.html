@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALGM — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ALGM</strong></span>
+  <span>ALGM</span>
+  <span>未知</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 ALGM — ALGM</h1>
+<blockquote><em>投资研究报告 · 2026年8月5日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/ALGM.html">ALGM</a></td><td><strong>所属板块：</strong> <a href="../companies/板块 — 未知.html">板块 — 未知</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/投资仪表盘.html">投资仪表盘</a></td><td><a href="../companies/同业比较.html">同业比较</a></td><td><a href="../companies/ALGM估值.html">ALGM估值</a></td></tr></p>
+<p><tr><td>- <a href="../companies/板块 — 未知.html">板块 — 未知</a></td><td><a href="../companies/经济指标.html">经济指标</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>2026财年（截至2026年3月）出现明显拐点</strong>：营收同比增长22.8%至8.901亿美元，但公司录得<strong>净亏损1,470万美元</strong>（摊薄每股收益 -0.08美元），主要受2,060万美元营业亏损和2,210万美元利息费用拖累。</li></p>
+<p><li><strong>毛利率同比扩大约340个基点</strong>至46.3%（2025财年为44.3%），表明产品组合结构改善，但由于高额研发支出（2.058亿美元，占营收23.1%）和销售管理费用（1.811亿美元），经营杠杆仍难以实现。</li></p>
+<p><li><strong>资产负债表承压</strong>：总债务（流动+长期）为2.873亿美元，而现金为1.688亿美元；留存收益从2024财年的+4.630亿美元转为<strong>-6,850万美元</strong>——两年内恶化5.315亿美元。</li></p>
+<p><li><strong>现金流质量强劲</strong>：2026财年经营现金流回升至1.631亿美元（2025财年为6,190万美元），资本支出3,820万美元，产生约1.249亿美元自由现金流——这对偿债能力至关重要。</li></p>
+<p><li><strong>内部人士活动喜忧参半</strong>：多次公开市场卖出（价格区间41.56–52.72美元）表明内部人士正在套现，而Rule 16b-3项下的收购（价格为0美元）表明为股权授予——无积极买入信号。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p><strong>Allegro MicroSystems (ALGM)</strong> 设计并销售模拟和混合信号半导体解决方案，主要面向<strong>汽车（约占营收70%以上）</strong>和<strong>工业</strong>终端市场。核心产品包括用于电动汽车（EV）、高级驾驶辅助系统（ADAS）和工业自动化的磁传感器、电流传感器和电源IC。</p></p>
+
+<p><p><strong>竞争地位</strong>：ALGM在汽车传感领域与<a href="../companies/ADI.html">ADI</a>、<a href="../companies/TXHN.html">TXHN</a>和<a href="../companies/ON.html">ON</a>竞争。其护城河在于<strong>专有磁传感器技术</strong>和高壁垒的汽车认证（AEC-Q100），但规模不及大型同行。</p></p>
+
+<p><p><strong>主要分部构成</strong>（基于营收趋势）：</p></p>
+<p><ul></p>
+<p><li><strong>汽车</strong>：主要驱动力；电动汽车内容增长（xEV）是核心增长引擎。</li></p>
+<p><li><strong>工业及其他</strong>：包括替代能源、数据中心和一般工业——正在增长但规模较小。</li></p>
+<p></ul></p>
+
+<p><p><strong>2026财年营收</strong>：8.901亿美元（同比增长22.8%），从2025财年7.250亿美元的低谷（较2024财年10.494亿美元下降30.9%）中恢复。2024至2025财年的下滑属于周期性下行；2026财年呈现强劲的V型复苏。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>营收与利润率</strong>：</p></p>
+<p><ul></p>
+<p><li><strong>2026财年营收</strong>：8.901亿美元，对比2025财年7.250亿美元（+22.8%）——强劲反弹，但仍较2024财年峰值10.494亿美元低15.2%。</li></p>
+<p><li><strong>毛利润</strong>：2026财年4.120亿美元（毛利率46.3%），高于2025财年的3.215亿美元（44.3%）。利润率回升令人鼓舞，但仍低于2024财年的55.0%（5.775亿美元）。</li></p>
+<p><li><strong>营业利润</strong>：2026财年为<strong>-1,850万美元</strong>（营业利润率-2.1%），较2025财年的-1,980万美元有所改善，但远低于2024财年的+1.962亿美元（利润率18.7%）。公司正大力投入以推动增长：研发费用同比增长14.6%至2.058亿美元，销售管理费用同比增长12.0%至1.811亿美元。</li></p>
+<p><li><strong>净利润</strong>：2026财年亏损1,470万美元（每股收益-0.08美元），对比2025财年亏损7,280万美元（每股收益-0.39美元）。变动主要受<strong>2,210万美元利息费用</strong>和940万美元权益法投资亏损（可能来自<a href="../companies/TSM.html">TSM</a>支持的合资企业或类似项目）驱动。</li></p>
+<p></ul></p>
+
+<p><p><strong>现金流</strong>：</p></p>
+<p><ul></p>
+<p><li><strong>经营现金流</strong>：2026财年1.631亿美元，较2025财年6,190万美元和2024财年1.817亿美元大幅改善。营运资本释放（存货减少920万美元，应收账款减少650万美元）助力现金生成。</li></p>
+<p><li><strong>资本支出</strong>：3,820万美元（2026财年），低于2025财年的3,990万美元和2024财年的1.248亿美元。公司已转向<strong>轻晶圆厂模式</strong>，降低了资本密集度。</li></p>
+<p><li><strong>自由现金流</strong>：约1.249亿美元（经营现金流1.631亿美元 - 资本支出3,820万美元），自由现金流利润率达14.0%，表现健康。</li></p>
+<p></ul></p>
+
+<p><p><strong>资产负债表</strong>：</p></p>
+<p><ul></p>
+<p><li><strong>现金</strong>：1.688亿美元（2026财年），对比2025财年1.213亿美元。<strong>总债务</strong>：2.873亿美元（流动150万美元 + 长期2.857亿美元）。净债务约1.185亿美元。</li></p>
+<p><li><strong>存货</strong>：1.818亿美元（2026财年），与2025财年基本持平（1.839亿美元），表明尽管营收增长，存货管理依然规范。</li></p>
+<p><li><strong>权益</strong>：普通股权益总额9.547亿美元，但<strong>留存收益为-6,850万美元</strong>——公司自2024财年以来未产生累计盈利。</li></p>
+<p><li><strong>商誉与无形资产</strong>：合计4.419亿美元，占权益总额的46.3%——若增长停滞，存在潜在减值风险。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><p><strong>当前估值倍数</strong>（基于2026财年业绩）：</p></p>
+<p><ul></p>
+<p><li><strong>市盈率</strong>：无意义（每股收益为负-0.08美元）。</li></p>
+<p><li><strong>EV/EBITDA</strong>：EV = 市值（按43美元/股约80亿美元）+ 净债务（1.185亿美元）≈ 81亿美元。EBITDA = 营业利润（-1,850万美元）+ 折旧摊销（6,760万美元）≈ 4,910万美元。<strong>EV/EBITDA ≈ 165倍</strong>——基于历史业绩极为昂贵。</li></p>
+<p><li><strong>市销率</strong>：基于2026财年营收8.901亿美元，约9.0倍。</li></p>
+<p></ul></p>
+
+<p><p><strong>同业比较</strong>：<a href="../companies/ADI.html">ADI</a>交易于约25倍市盈率，<a href="../companies/ON.html">ON</a>约15倍。ALGM的估值表明市场正在定价<strong>回归2024财年水平的盈利能力</strong>（营业利润1.96亿美元）甚至更高。按2024财年营业利润计算，EV/EBITDA约为30倍——仍较同业存在溢价。</p></p>
+
+<p><p><strong>合理性分析</strong>：只有当电动汽车/工业复苏加速且ALGM维持>20%的营收增长并将营业利润率恢复至>20%时，该溢价才合理。鉴于当前-2.1%的营业利润率，市场正在定价<strong>尚未实现的巨大利润率复苏</strong>。基于当前基本面，该股似乎<strong>估值过高</strong>，但按两年远期正常化盈利能力（每股收益约1.50-2.00美元）计算，可能估值合理。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>利润率复苏失败</strong> <code>#critical</code></li></p>
+<p><p>营业利润率为-2.1%（2026财年）。如果研发/销售管理费用投入未能转化为2027财年>25%的营收增长，公司将难以承担每年2,210万美元的利息费用。要恢复至2024财年18.7%的营业利润率，需要营收超过11亿美元且运营支出持平——难度极大。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>汽车行业周期性</strong> <code>#critical</code></li></p>
+<p><p>在汽车行业下行期间，2025财年营收下降30.9%（从10.494亿美元降至7.250亿美元）。ALGM高度依赖汽车行业（约70%以上），任何电动汽车需求放缓或中国（关键市场）库存调整都可能重演这一下滑。2026财年的复苏（+22.8%）可能是周期性反弹，而非结构性趋势。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>资产负债表/契约风险</strong> <code>#medium</code></li></p>
+<p><p>净债务1.185亿美元，留存收益为负（-6,850万美元）。虽然经营现金流1.631亿美元覆盖利息约7.4倍，但公司没有空间进行额外的债务融资回购或收购。任何现金流不及预期都将迫使股权稀释。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>商誉减值</strong> <code>#medium</code></li></p>
+<p><p>商誉（2.033亿美元）+ 无形资产（2.387亿美元）= 4.420亿美元，占权益的46%。如果股价持续低迷且市值跌破账面价值，ALGM可能被迫计提减值损失，进一步侵蚀权益。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>内部人士减持</strong> <code>#low</code></li></p>
+<p><p>多次公开市场卖出（价格区间41.56–52.72美元，近期区间）表明内部人士正在当前水平附近降低敞口。虽然本身并非危险信号，但表明内部人士对近期上行空间缺乏信心。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ol></p>
+<p><li><strong>电动汽车内容增长加速</strong> <code>#near-term</code></li></p>
+<p><p>ALGM的磁传感器和电源IC在xEV平台（电池管理、牵引逆变器）中含量丰富。如果全球电动汽车渗透率加速（尤其是中国），2027财年营收可能超过10亿美元，推动经营杠杆。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>工业/数据中心复苏</strong> <code>#near-term</code></li></p>
+<p><p>非汽车分部（工业、数据中心）正在复苏。如果AI驱动的数据中心电源管理需求（类似<a href="../companies/AVGO.html">AVGO</a>和<a href="../companies/ON.html">ON</a>）回升，ALGM可以实现多元化，降低对汽车周期性的依赖。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>利润率正常化</strong> <code>#medium-term</code></li></p>
+<p><p>毛利率为46.3%，运营支出增速低于营收增速，到2027财年恢复至50%以上毛利率和15%以上营业利润率是可行的。这将支撑当前估值。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>债务再融资/去杠杆</strong> <code>#medium-term</code></li></p>
+<p><p>凭借1.631亿美元的经营现金流，ALGM可在两年内偿还2.857亿美元的长期债务，每年减少2,210万美元利息费用——直接增厚每股收益。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>新产品导入</strong> <code>#medium-term</code></li></p>
+<p><p>940万美元的权益法投资亏损表明公司正在投资合资企业（可能为制造合作伙伴）。新产品（如高压GaN/SiC驱动器）的成功量产可能推动股票重新估值。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 投资建议</div><div class="callout-body"><p><strong>持有</strong>（信心度：中等）</p></p>
+
+<p><p><strong>12个月目标价：38–42美元</strong>（较当前约43美元有下行空间）</p></p>
+
+<p><p><strong>核心观点</strong>：ALGM正在执行稳健的运营复苏——营收增长22.8%、经营现金流增长163%、毛利率扩张均为积极信号。然而，该股基于历史业绩交易于约165倍EV/EBITDA，已充分定价完美的利润率复苏。公司必须在2027财年实现营收超过10亿美元且营业利润率超过10%，才能支撑当前股价水平。鉴于汽车行业的周期性和紧张的资产负债表，我们认为在利润率拐点出现之前上行空间有限。</p></p>
+
+<p><p><strong>关键监测指标</strong>：季度毛利率趋势（目标>48%）、存货周转天数，以及任何电动汽车订单动能迹象。如果股价回落至30–32美元（基于正常化盈利约8倍EV/EBITDA），我们将上调至<strong>买入</strong>。反之，若2027财年指引不及预期，可能触发估值下修至25–28美元。</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>（点击展开）</em></div><div class="callout-body"></p>
+<p><h1>ALGM — ALGM</h1></p>
+
+<p><blockquote><em>自动生成：2026-08-05 11:46</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>基本信息</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>ALGM</td></tr></p>
+<p><tr><td>公司名称</td><td>—</td></tr></p>
+<p><tr><td>所属板块</td><td>—</td></tr></p>
+<p><tr><td>所属行业</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工人数</td><td>—</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>暂无指标数据。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h3>利润表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期末</th><th>总营收</th><th>营业利润</th><th>净利润</th><th>摊薄每股收益</th></tr></p>
+<p><tr><td>2026-03-27</td><td>890096000.0</td><td>18487000.0</td><td>-14653000.0</td><td>-0.1</td></tr></p>
+<p><tr><td>2025-03-28</td><td>725006000.0</td><td>-19802000.0</td><td>-72763000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2024-03-29</td><td>1049367000.0</td><td>196244000.0</td><td>152888000.0</td><td>0.8</td></tr></p>
+<p><tr><td>2023-03-31</td><td>973653000.0</td><td>203307000.0</td><td>187494000.0</td><td>1.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>768674000.0</td><td>136650000.0</td><td>119555000.0</td><td>0.6</td></tr></p>
+<p></table></p>
+
+<p><h3>资产负债表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期末</th><th>总资产</th><th>总负债</th><th>总权益</th><th>现金及现金等价物</th></tr></p>
+<p><tr><td>2026-03-27</td><td>1416175000.0</td><td>459730000.0</td><td>954747000.0</td><td>168753000.0</td></tr></p>
+<p><tr><td>2025-03-28</td><td>1420961000.0</td><td>489861000.0</td><td>929555000.0</td><td>121334000.0</td></tr></p>
+<p><tr><td>2024-03-29</td><td>1530603000.0</td><td>398887000.0</td><td>1130435000.0</td><td>212143000.0</td></tr></p>
+<p><tr><td>2023-03-31</td><td>1181155000.0</td><td>214340000.0</td><td>965628000.0</td><td>351576000.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>892620000.0</td><td>157257000.0</td><td>734207000.0</td><td>282383000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>现金流量表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期末</th><th>经营现金流</th><th>折旧摊销</th></tr></p>
+<p><tr><td>2026-03-27</td><td>163069000.0</td><td>67593000.0</td></tr></p>
+<p><tr><td>2025-03-28</td><td>61913000.0</td><td>64502000.0</td></tr></p>
+<p><tr><td>2024-03-29</td><td>181715000.0</td><td>71382000.0</td></tr></p>
+<p><tr><td>2023-03-31</td><td>193206000.0</td><td>50808000.0</td></tr></p>
+<p><tr><td>2022-03-25</td><td>156129000.0</td><td>48527000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手侵蚀？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管壁垒？<br>4. <strong>成本优势</strong> — 与同业相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>发生概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响程度</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [做多 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>市场正在定价的关键假设：</strong> ___<br>- <strong>什么会改变我的看法：</strong> ___</blockquote></p>
+
+<p><p><em>最后数据刷新：2026-08-05 11:46</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-08-05 11:46 · AI投资系统</em></p>
+<p><em>相关：<a href="../companies/ALGM.html">ALGM</a> · <a href="../companies/同业比较.html">同业比较</a> · <a href="../companies/投资仪表盘.html">投资仪表盘</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
