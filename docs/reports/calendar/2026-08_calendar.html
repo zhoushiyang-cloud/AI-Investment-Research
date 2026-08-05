@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>August 2026 Earnings Calendar</title>
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --text: #e0e0e0;
+    --accent: #e94560;
+    --gold: #ffd700;
+    --mega: #ff6b6b;
+    --large: #ffd93d;
+    --small: #6bcb77;
+    --border: #2a2a4a;
+    --hover: #1f3060;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, Segoe UI, sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: 20px; max-width: 1200px; margin: auto;
+  }
+  h1 { text-align: center; margin-bottom: 20px; color: var(--accent); }
+  .grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 4px; margin-bottom: 20px;
+  }
+  .day-header {
+    background: var(--card); padding: 10px; text-align: center;
+    font-weight: bold; border-radius: 6px;
+  }
+  .day {
+    background: var(--card); padding: 8px; min-height: 100px;
+    border-radius: 6px; cursor: default; transition: all 0.2s;
+    position: relative; font-size: 0.85em;
+  }
+  .day:hover { background: var(--hover); transform: scale(1.02); z-index: 10; }
+  .day.empty { opacity: 0.3; }
+  .day-num { font-weight: bold; font-size: 1.1em; margin-bottom: 4px; }
+  .event { margin: 2px 0; padding: 2px 4px; border-radius: 3px; font-size: 0.75em; }
+  .event.mega { background: var(--mega); color: #000; font-weight: bold; }
+  .event.large { background: var(--large); color: #000; }
+  .event.small { background: var(--small); color: #000; }
+  .event.econ { background: #8b5cf6; color: #fff; font-weight: bold; }
+  .event.more { color: #888; font-style: italic; }
+  .legend { display: flex; gap: 20px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+  .legend span { padding: 4px 10px; border-radius: 4px; font-size: 0.85em; }
+  .tooltip {
+    display: none; position: absolute; background: #000; color: #fff;
+    padding: 8px 12px; border-radius: 6px; font-size: 0.8em; z-index: 100;
+    white-space: nowrap; pointer-events: none; left: 50%; transform: translateX(-50%);
+    bottom: 100%; margin-bottom: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .day:hover .tooltip { display: block; }
+  .stats { text-align: center; margin: 20px 0; font-size: 0.9em; color: #888; }
+  .filter-row { text-align: center; margin: 10px 0; }
+  .filter-row button {
+    background: var(--card); color: var(--text); border: 1px solid var(--border);
+    padding: 6px 14px; margin: 0 3px; border-radius: 4px; cursor: pointer;
+  }
+  .filter-row button.active { background: var(--accent); }
+  @media (max-width: 768px) {
+    .day { min-height: 60px; font-size: 0.7em; }
+  }
+</style>
+</head>
+<body>
+
+<h1>📅 August 2026 — Earnings Calendar</h1>
+
+<div class="filter-row">
+  <button onclick="filter('all')" class="active" id="btn-all">All</button>
+  <button onclick="filter('mega')" id="btn-mega">🔥 Mega-Cap</button>
+  <button onclick="filter('tracked')" id="btn-tracked">⭐ Tracked</button>
+  <button onclick="filter('econ')" id="btn-econ">🏛 Economic</button>
+</div>
+
+<div class="legend">
+  <span style="background:var(--mega);color:#000">🔥 Mega-Cap ($200B+)</span>
+  <span style="background:var(--large);color:#000">⭐ Large-Cap ($10B+)</span>
+  <span style="background:var(--small);color:#000">• Notable</span>
+  <span style="background:#8b5cf6;color:#fff">🏛 Economic Event</span>
+</div>
+
+<div class="grid" id="calendar-grid"></div>
+
+<div class="stats" id="stats-bar"></div>
+
+<script>
+const CALENDAR_DATA = {"2026-08-03": [{"symbol": "PLTR", "name": "Palantir Technologies Inc.", "mcap": "$301B", "mcap_val": 301222249910.0, "eps": "$0.28", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "MUFG", "name": "Mitsubishi UFJ Financial Group Inc", "mcap": "$267B", "mcap_val": 266904818591.0, "eps": "$0.35", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "VRTX", "name": "Vertex Pharmaceuticals Incorporated", "mcap": "$119B", "mcap_val": 119471285890.0, "eps": "$4.15", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "MAR", "name": "Marriott International", "mcap": "$91B", "mcap_val": 91455125115.0, "eps": "$3.06", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "WMB", "name": "Williams Companies, Inc. (The)", "mcap": "$86B", "mcap_val": 86135767804.0, "eps": "$0.52", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "FANG", "name": "Diamondback Energy, Inc.", "mcap": "$56B", "mcap_val": 55911017779.0, "eps": "$5.96", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "OKE", "name": "ONEOK, Inc.", "mcap": "$56B", "mcap_val": 55604210282.0, "eps": "$1.39", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "EA", "name": "Electronic Arts Inc.", "mcap": "$53B", "mcap_val": 52635244006.0, "eps": "$0.27", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "TKO", "name": "TKO Group Holdings, Inc.", "mcap": "$35B", "mcap_val": 35150035626.0, "eps": "$1.63", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "EC", "name": "Ecopetrol S.A.", "mcap": "$34B", "mcap_val": 34126856601.0, "eps": "$0.83", "importance": 2, "quarter": "Jun/2026"}], "2026-08-04": [{"symbol": "SPCX", "name": "Space Exploration Technologies Corp.", "mcap": "$1.5T", "mcap_val": 1499295504611.0, "eps": "($0.26)", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "AMD", "name": "Advanced Micro Devices, Inc.", "mcap": "$790B", "mcap_val": 790254293685.0, "eps": "$1.35", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "CAT", "name": "Caterpillar, Inc.", "mcap": "$382B", "mcap_val": 382342550691.0, "eps": "$6.25", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "MRK", "name": "Merck & Company, Inc.", "mcap": "$316B", "mcap_val": 315569465505.0, "eps": "($0.26)", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "ANET", "name": "Arista Networks, Inc.", "mcap": "$233B", "mcap_val": 232813967420.0, "eps": "$0.80", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "AMGN", "name": "Amgen Inc.", "mcap": "$204B", "mcap_val": 204479273770.0, "eps": "$5.60", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "MCD", "name": "McDonald's Corporation", "mcap": "$188B", "mcap_val": 188447468983.0, "eps": "$3.32", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "GILD", "name": "Gilead Sciences, Inc.", "mcap": "$163B", "mcap_val": 162831888975.0, "eps": "($7.07)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "BKNG", "name": "Booking Holdings Inc.", "mcap": "$149B", "mcap_val": 149326823402.0, "eps": "$2.45", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PFE", "name": "Pfizer, Inc.", "mcap": "$143B", "mcap_val": 142657087550.0, "eps": "$0.68", "importance": 2, "quarter": "Jun/2026"}], "2026-08-05": [{"symbol": "LLY", "name": "Eli Lilly and Company", "mcap": "$1.1T", "mcap_val": 1056031143032.0, "eps": "$6.71", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "HSBC", "name": "HSBC Holdings plc", "mcap": "$365B", "mcap_val": 365348356374.0, "eps": "$2.24", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "NVO", "name": "Novo Nordisk A/S", "mcap": "$209B", "mcap_val": 208511248187.0, "eps": "$0.81", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "SNDK", "name": "Sandisk Corporation", "mcap": "$191B", "mcap_val": 190744050997.0, "eps": "$33.28", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "WDC", "name": "Western Digital Corporation", "mcap": "$182B", "mcap_val": 181723313106.0, "eps": "$3.24", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "DIS", "name": "Walt Disney Company (The)", "mcap": "$170B", "mcap_val": 170421231151.0, "eps": "$1.88", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "SHOP", "name": "Shopify Inc.", "mcap": "$152B", "mcap_val": 151808280796.0, "eps": "$0.28", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "UBER", "name": "Uber Technologies, Inc.", "mcap": "$146B", "mcap_val": 145769245321.0, "eps": "$0.83", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "APP", "name": "Applovin Corporation", "mcap": "$136B", "mcap_val": 136445390400.0, "eps": "$3.72", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CVS", "name": "CVS Health Corporation", "mcap": "$134B", "mcap_val": 134444460339.0, "eps": "$1.87", "importance": 2, "quarter": "Jun/2026"}], "2026-08-06": [{"symbol": "TM", "name": "Toyota Motor Corp Ltd Ord", "mcap": "$294B", "mcap_val": 294055281543.0, "eps": "", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "COP", "name": "ConocoPhillips", "mcap": "$145B", "mcap_val": 145171913874.0, "eps": "$2.96", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PH", "name": "Parker-Hannifin Corporation", "mcap": "$126B", "mcap_val": 125773694755.0, "eps": "$8.30", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PBR", "name": "Petroleo Brasileiro S.A.- Petrobras", "mcap": "$123B", "mcap_val": 122829623222.0, "eps": "$1.52", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PBR.A", "name": "Petroleo Brasileiro S.A.- Petrobras", "mcap": "$123B", "mcap_val": 122829623222.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "HWM", "name": "Howmet Aerospace Inc.", "mcap": "$115B", "mcap_val": 114566776682.0, "eps": "$1.23", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "NET", "name": "Cloudflare, Inc.", "mcap": "$100B", "mcap_val": 99939054876.0, "eps": "($0.03)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CNQ", "name": "Canadian Natural Resources Limited", "mcap": "$99B", "mcap_val": 99400468028.0, "eps": "$1.43", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CEG", "name": "Constellation Energy Corporation", "mcap": "$99B", "mcap_val": 98861332144.0, "eps": "$2.36", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "DDOG", "name": "Datadog, Inc.", "mcap": "$97B", "mcap_val": 97390707710.0, "eps": "$0.13", "importance": 2, "quarter": "Jun/2026"}], "2026-08-07": [{"symbol": "BRK.A", "name": "Berkshire Hathaway Inc.", "mcap": "$1.1T", "mcap_val": 1104838763000.0, "eps": "", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "BRK.B", "name": "Berkshire Hathaway Inc.", "mcap": "$1.1T", "mcap_val": 1104838763000.0, "eps": "$5.24", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "VST", "name": "Vistra Corp.", "mcap": "$53B", "mcap_val": 52580234060.0, "eps": "$1.83", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "TTWO", "name": "Take-Two Interactive Software, Inc.", "mcap": "$46B", "mcap_val": 45516182434.0, "eps": "$0.08", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PPL", "name": "PPL Corporation", "mcap": "$26B", "mcap_val": 26482732742.0, "eps": "$0.35", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PAA", "name": "Plains All American Pipeline, L.P.", "mcap": "$17B", "mcap_val": 17073866729.0, "eps": "$0.40", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "EMA", "name": "Emera Incorporated", "mcap": "$16B", "mcap_val": 16353539283.0, "eps": "$0.51", "importance": 2, "quarter": "Jun/2026"}], "2026-08-12": [{"symbol": "CSCO", "name": "Cisco Systems, Inc.", "mcap": "$457B", "mcap_val": 456654620287.0, "eps": "$0.99", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "COHR", "name": "Coherent Corp.", "mcap": "$56B", "mcap_val": 56371513953.0, "eps": "$1.43", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "NBIS", "name": "Nebius Group N.V.", "mcap": "$54B", "mcap_val": 53973678081.0, "eps": "($0.67)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CBRS", "name": "Cerebras Systems Inc.", "mcap": "$49B", "mcap_val": 49020439223.0, "eps": "($0.21)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "AMCR", "name": "Amcor plc", "mcap": "$21B", "mcap_val": 21277148654.0, "eps": "$1.20", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PAAS", "name": "Pan American Silver Corp.", "mcap": "$18B", "mcap_val": 18151064580.0, "eps": "$0.86", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PFGC", "name": "Performance Food Group Company", "mcap": "$18B", "mcap_val": 17964795360.0, "eps": "$1.62", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "SUZ", "name": "Suzano S.A.", "mcap": "$11B", "mcap_val": 10782923256.0, "eps": "$0.06", "importance": 2, "quarter": "Jun/2026"}], "2026-08-13": [{"symbol": "AMAT", "name": "Applied Materials, Inc.", "mcap": "$411B", "mcap_val": 411437716220.0, "eps": "$3.36", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "BN", "name": "Brookfield Corporation", "mcap": "$104B", "mcap_val": 104191668025.0, "eps": "$0.63", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "NTES", "name": "NetEase, Inc.", "mcap": "$84B", "mcap_val": 83964896056.0, "eps": "$2.20", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "NU", "name": "Nu Holdings Ltd.", "mcap": "$70B", "mcap_val": 70115927246.0, "eps": "$0.20", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "JD", "name": "JD.com, Inc.", "mcap": "$45B", "mcap_val": 45099400571.0, "eps": "$0.77", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "KB", "name": "KB Financial Group Inc", "mcap": "$43B", "mcap_val": 43069971289.0, "eps": "$3.51", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "BAP", "name": "Credicorp Ltd.", "mcap": "$37B", "mcap_val": 37355577245.0, "eps": "$7.20", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "TPR", "name": "Tapestry, Inc.", "mcap": "$31B", "mcap_val": 31444218840.0, "eps": "$1.25", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "QXO", "name": "QXO, Inc. ", "mcap": "$15B", "mcap_val": 14618375000.0, "eps": "$0.09", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "PS", "name": "Pershing Square Inc.", "mcap": "$14B", "mcap_val": 14024000000.0, "eps": "$0.12", "importance": 2, "quarter": "Jun/2026"}], "2026-08-18": [{"symbol": "HD", "name": "Home Depot, Inc. (The)", "mcap": "$339B", "mcap_val": 339039614214.0, "eps": "$4.71", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "BHP", "name": "BHP Group Limited", "mcap": "$215B", "mcap_val": 214842090938.0, "eps": "", "importance": 3, "quarter": "Jun/2026"}, {"symbol": "KEYS", "name": "Keysight Technologies Inc.", "mcap": "$55B", "mcap_val": 55009510006.0, "eps": "$2.16", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "VIK", "name": "Viking Holdings Ltd", "mcap": "$47B", "mcap_val": 47462839572.0, "eps": "$1.25", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "BIDU", "name": "Baidu, Inc.", "mcap": "$38B", "mcap_val": 38468965627.0, "eps": "$1.19", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "AS", "name": "Amer Sports, Inc.", "mcap": "$20B", "mcap_val": 20187559409.0, "eps": "$0.10", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "ZTO", "name": "ZTO Express (Cayman) Inc.", "mcap": "$19B", "mcap_val": 18954955062.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "TOL", "name": "Toll Brothers, Inc.", "mcap": "$14B", "mcap_val": 14063646660.0, "eps": "$2.90", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "KLAR", "name": "Klarna Group plc", "mcap": "$14B", "mcap_val": 13971761080.0, "eps": "($0.07)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "XPEV", "name": "XPeng Inc.", "mcap": "$12B", "mcap_val": 11823608441.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}], "2026-08-20": [{"symbol": "WMT", "name": "Walmart Inc.", "mcap": "$881B", "mcap_val": 881038943250.0, "eps": "$0.73", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "DE", "name": "Deere & Company", "mcap": "$163B", "mcap_val": 163328338371.0, "eps": "$4.85", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "ROST", "name": "Ross Stores, Inc.", "mcap": "$81B", "mcap_val": 81128741931.0, "eps": "$1.91", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "AEG", "name": "Aegon Ltd.", "mcap": "$18B", "mcap_val": 18058671825.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "YMM", "name": "Full Truck Alliance Co. Ltd.", "mcap": "$10B", "mcap_val": 10084930878.0, "eps": "$0.18", "importance": 2, "quarter": "Jun/2026"}], "2026-08-26": [{"symbol": "NVDA", "name": "NVIDIA Corporation", "mcap": "$5.0T", "mcap_val": 5000688000000.0, "eps": "$2.01", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "RY", "name": "Royal Bank Of Canada", "mcap": "$291B", "mcap_val": 290973649467.0, "eps": "$2.88", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "CRWD", "name": "CrowdStrike Holdings, Inc.", "mcap": "$206B", "mcap_val": 206238234571.0, "eps": "$0.05", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "SNOW", "name": "Snowflake Inc.", "mcap": "$107B", "mcap_val": 106589898000.0, "eps": "($0.51)", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "SNPS", "name": "Synopsys, Inc.", "mcap": "$75B", "mcap_val": 75073298953.0, "eps": "$2.67", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "A", "name": "Agilent Technologies, Inc.", "mcap": "$39B", "mcap_val": 39483985771.0, "eps": "$1.48", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "NTAP", "name": "NetApp, Inc.", "mcap": "$36B", "mcap_val": 35895171754.0, "eps": "$1.70", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "VEEV", "name": "Veeva Systems Inc.", "mcap": "$34B", "mcap_val": 33659731463.0, "eps": "$1.62", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "TCOM", "name": "Trip.com Group Limited", "mcap": "$30B", "mcap_val": 29785057001.0, "eps": "$0.84", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "WSM", "name": "Williams-Sonoma, Inc.", "mcap": "$28B", "mcap_val": 28235637318.0, "eps": "$2.04", "importance": 2, "quarter": "Jul/2026"}], "2026-08-27": [{"symbol": "DELL", "name": "Dell Technologies Inc.", "mcap": "$278B", "mcap_val": 278051290299.0, "eps": "$4.65", "importance": 3, "quarter": "Jul/2026"}, {"symbol": "TD", "name": "Toronto Dominion Bank (The)", "mcap": "$198B", "mcap_val": 198137489349.0, "eps": "$1.72", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "MRVL", "name": "Marvell Technology, Inc.", "mcap": "$170B", "mcap_val": 169701638617.0, "eps": "$0.65", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "CM", "name": "Canadian Imperial Bank of Commerce", "mcap": "$108B", "mcap_val": 108386694614.0, "eps": "$1.78", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "ADSK", "name": "Autodesk, Inc.", "mcap": "$50B", "mcap_val": 49523810000.0, "eps": "$2.35", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "WDAY", "name": "Workday, Inc.", "mcap": "$41B", "mcap_val": 40767350000.0, "eps": "$1.26", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "DG", "name": "Dollar General Corporation", "mcap": "$28B", "mcap_val": 28173326555.0, "eps": "$2", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "AFRM", "name": "Affirm Holdings, Inc.", "mcap": "$25B", "mcap_val": 25328378471.0, "eps": "$0.33", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "BURL", "name": "Burlington Stores, Inc.", "mcap": "$23B", "mcap_val": 23177208515.0, "eps": "$2.17", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "ULTA", "name": "Ulta Beauty, Inc.", "mcap": "$23B", "mcap_val": 22973917692.0, "eps": "$6.16", "importance": 2, "quarter": "Jul/2026"}], "2026-08-10": [{"symbol": "SPG", "name": "Simon Property Group, Inc.", "mcap": "$74B", "mcap_val": 74314276234.0, "eps": "$3.18", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "B", "name": "Barrick Mining Corporation", "mcap": "$62B", "mcap_val": 61512803123.0, "eps": "$0.81", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "FERG", "name": "Ferguson Enterprises Inc.", "mcap": "$49B", "mcap_val": 48902132927.0, "eps": "$3.23", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "RKLB", "name": "Rocket Lab Corporation", "mcap": "$41B", "mcap_val": 40769636264.0, "eps": "($0.07)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "ALC", "name": "Alcon Inc.", "mcap": "$35B", "mcap_val": 35083937000.0, "eps": "$0.77", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "ASTS", "name": "AST SpaceMobile, Inc.", "mcap": "$25B", "mcap_val": 24653672813.0, "eps": "($0.28)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "SBS", "name": "Companhia de saneamento Basico Do Estado De Sao Paulo - Sabesp", "mcap": "$19B", "mcap_val": 19138219756.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "KSPI", "name": "Joint Stock Company Kaspi.kz", "mcap": "$17B", "mcap_val": 17418678780.0, "eps": "$2.78", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "JBS", "name": "JBS N.V.", "mcap": "$15B", "mcap_val": 14735265635.0, "eps": "$0.32", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "AXSM", "name": "Axsome Therapeutics, Inc.", "mcap": "$11B", "mcap_val": 10860069017.0, "eps": "($0.99)", "importance": 2, "quarter": "Jun/2026"}], "2026-08-11": [{"symbol": "SE", "name": "Sea Limited", "mcap": "$68B", "mcap_val": 68077654620.0, "eps": "$0.78", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "LITE", "name": "Lumentum Holdings Inc.", "mcap": "$61B", "mcap_val": 60675442000.0, "eps": "$2.62", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CAH", "name": "Cardinal Health, Inc.", "mcap": "$55B", "mcap_val": 55178899438.0, "eps": "$2.42", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "CRWV", "name": "CoreWeave, Inc.", "mcap": "$47B", "mcap_val": 46788112873.0, "eps": "($1.50)", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "FNV", "name": "Franco-Nevada Corporation", "mcap": "$41B", "mcap_val": 41051748378.0, "eps": "$1.95", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "ESLT", "name": "Elbit Systems Ltd.", "mcap": "$39B", "mcap_val": 38609390730.0, "eps": "$3.57", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "VG", "name": "Venture Global, Inc.", "mcap": "$32B", "mcap_val": 32495403032.0, "eps": "$0.49", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "ONON", "name": "On Holding AG", "mcap": "$24B", "mcap_val": 24216465502.0, "eps": "$0.38", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "SMCI", "name": "Super Micro Computer, Inc.", "mcap": "$17B", "mcap_val": 17224625324.0, "eps": "$0.56", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "TME", "name": "Tencent Music Entertainment Group", "mcap": "$15B", "mcap_val": 14999309885.0, "eps": "$0.23", "importance": 2, "quarter": "Jun/2026"}], "2026-08-17": [{"symbol": "FN", "name": "Fabrinet", "mcap": "$16B", "mcap_val": 16336211656.0, "eps": "$3.69", "importance": 2, "quarter": "Jun/2026"}], "2026-08-19": [{"symbol": "ADI", "name": "Analog Devices, Inc.", "mcap": "$176B", "mcap_val": 176267058035.0, "eps": "$3.33", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "TJX", "name": "TJX Companies, Inc. (The)", "mcap": "$174B", "mcap_val": 173990950245.0, "eps": "$1.18", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "LOW", "name": "Lowe's Companies, Inc.", "mcap": "$119B", "mcap_val": 118903535114.0, "eps": "$4.25", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "TGT", "name": "Target Corporation", "mcap": "$68B", "mcap_val": 67833442577.0, "eps": "$2.21", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "EL", "name": "Estee Lauder Companies, Inc. (The)", "mcap": "$31B", "mcap_val": 30636793402.0, "eps": "$0.31", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "SQM", "name": "Sociedad Quimica y Minera S.A.", "mcap": "$19B", "mcap_val": 19146302270.0, "eps": "$2.03", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "NDSN", "name": "Nordson Corporation", "mcap": "$17B", "mcap_val": 16861365424.0, "eps": "$3.09", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "FUTU", "name": "Futu Holdings Limited", "mcap": "$15B", "mcap_val": 15003542794.0, "eps": "", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "HTHT", "name": "H World Group Limited", "mcap": "$13B", "mcap_val": 13109740404.0, "eps": "$0.65", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "DY", "name": "Dycom Industries, Inc.", "mcap": "$12B", "mcap_val": 12462453196.0, "eps": "$4.36", "importance": 2, "quarter": "Jul/2026"}], "2026-08-21": [{"symbol": "BJ", "name": "BJ's Wholesale Club Holdings, Inc.", "mcap": "$12B", "mcap_val": 12399086138.0, "eps": "$1.15", "importance": 2, "quarter": "Jul/2026"}], "2026-08-24": [{"symbol": "PDD", "name": "PDD Holdings Inc.", "mcap": "$128B", "mcap_val": 128319191049.0, "eps": "$2.69", "importance": 2, "quarter": "Jun/2026"}, {"symbol": "HEI", "name": "Heico Corporation", "mcap": "$50B", "mcap_val": 50367059472.0, "eps": "$1.50", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "HEI.A", "name": "Heico Corporation", "mcap": "$50B", "mcap_val": 50367059472.0, "eps": "", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "SMTC", "name": "Semtech Corporation", "mcap": "$11B", "mcap_val": 11092441085.0, "eps": "$0.41", "importance": 2, "quarter": "Jul/2026"}], "2026-08-25": [{"symbol": "BMO", "name": "Bank Of Montreal", "mcap": "$126B", "mcap_val": 126490963511.0, "eps": "$3.02", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "BNS", "name": "Bank of Nova Scotia (The)", "mcap": "$108B", "mcap_val": 107647018496.0, "eps": "$1.53", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "INTU", "name": "Intuit Inc.", "mcap": "$87B", "mcap_val": 87091445430.0, "eps": "$2.14", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "ZM", "name": "Zoom Communications, Inc.", "mcap": "$29B", "mcap_val": 28810065419.0, "eps": "$1.01", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "MDB", "name": "MongoDB, Inc.", "mcap": "$29B", "mcap_val": 28792216908.0, "eps": "$0.08", "importance": 2, "quarter": "Jul/2026"}, {"symbol": "BEKE", "name": "KE Holdings Inc", "mcap": "$20B", "mcap_val": 19534932113.0, "eps": "$0.25", "importance": 2, "quarter": "Jun/2026"}], "2026-08-28": [{"symbol": "UI", "name": "Ubiquiti Inc.", "mcap": "$33B", "mcap_val": 33206047156.0, "eps": "$3.67", "importance": 2, "quarter": "Jun/2026"}]};
+const ECON_DATA = [{"date": "2026-07-14", "event": "June CPI Inflation Report", "importance": "critical"}, {"date": "2026-07-15", "event": "June PPI (Producer Prices)", "importance": "medium"}, {"date": "2026-07-16", "event": "Fed Beige Book Release", "importance": "medium"}, {"date": "2026-07-17", "event": "June Retail Sales Data", "importance": "medium"}, {"date": "2026-07-28", "event": "FOMC July Meeting (Day 1)", "importance": "critical"}, {"date": "2026-07-29", "event": "FOMC Rate Decision (2:00 PM ET)", "importance": "critical"}, {"date": "2026-07-30", "event": "Q2 GDP Advance Estimate", "importance": "critical"}, {"date": "2026-07-31", "event": "June PCE Inflation (Fed's preferred gauge)", "importance": "critical"}];
+const TRACKED = ["CGNX", "MSFT", "AVGO", "SKHYV", "MRVL", "PLTR", "SMCI", "ORCL", "DELL", "RKLB", "SPCX", "GOOGL", "ONDS", "NVDA", "TSLA", "ALGM", "CRCL", "AMZN"];
+const YEAR = 2026, MONTH = 8;
+
+function buildCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = '';
+  const headers = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  headers.forEach(h => {
+    const dh = document.createElement('div');
+    dh.className = 'day-header'; dh.textContent = h;
+    grid.appendChild(dh);
+  });
+
+  const firstDay = new Date(YEAR, MONTH-1, 1).getDay();
+  const daysInMonth = new Date(YEAR, MONTH, 0).getDate();
+  const startOffset = firstDay === 0 ? 6 : firstDay - 1; // Monday=0
+
+  for (let i = 0; i < startOffset; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'day empty';
+    grid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${YEAR}-${String(MONTH).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'day';
+    cell.id = 'day-' + d;
+
+    let html = `<div class="day-num">${d}</div>`;
+
+    // Economic events
+    const econEvts = ECON_DATA.filter(e => e.date === dateStr);
+    econEvts.forEach(ee => {
+      html += `<div class="event econ" data-type="econ">🏛 ${ee.event.substring(0,30)}</div>`;
+    });
+
+    // Earnings events
+    const dayEvents = CALENDAR_DATA[dateStr] || [];
+    dayEvents.forEach((ev, i) => {
+      if (i >= 4) return;
+      const cls = ev.importance >= 3 ? 'mega' : ev.importance >= 2 ? 'large' : 'small';
+      const tracked = TRACKED.includes(ev.symbol) ? '⭐' : '';
+      html += `<div class="event ${cls}" data-type="earnings">${tracked} ${ev.symbol} ($${ev.eps})</div>`;
+    });
+
+    if (dayEvents.length > 4) {
+      html += `<div class="event more">+${dayEvents.length - 4} more...</div>`;
+    }
+
+    // Tooltip
+    if (dayEvents.length > 0 || econEvts.length > 0) {
+      let tip = '<b>' + dateStr + '</b><br>';
+      econEvts.forEach(ee => tip += '🏛 ' + ee.event + '<br>');
+      dayEvents.slice(0,8).forEach(ev => {
+        tip += `${ev.symbol}: ${ev.name} (${ev.mcap}, EPS ${ev.eps})<br>`;
+      });
+      if (dayEvents.length > 8) tip += '+ more...';
+      html += `<div class="tooltip">${tip}</div>`;
+    }
+
+    cell.innerHTML = html;
+    grid.appendChild(cell);
+  }
+
+  document.getElementById('stats-bar').innerHTML =
+    `${Object.values(CALENDAR_DATA).flat().length} events · ${ECON_DATA.length} economic events · ${Object.keys(CALENDAR_DATA).length} trading days`;
+}
+
+function filter(type) {
+  document.querySelectorAll('.filter-row button').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + type).classList.add('active');
+
+  document.querySelectorAll('.day').forEach(day => {
+    if (type === 'all') { day.style.opacity = '1'; return; }
+    const events = day.querySelectorAll('.event');
+    const econEvts = day.querySelectorAll('.event[data-type="econ"]');
+    const earningEvts = day.querySelectorAll('.event[data-type="earning"]:not([data-type="econ"])');
+    if (type === 'econ') {
+      day.style.opacity = econEvts.length > 0 ? '1' : '0.25';
+    } else if (type === 'mega') {
+      const hasMega = Array.from(events).some(e => e.classList.contains('mega'));
+      day.style.opacity = hasMega ? '1' : '0.25';
+    } else if (type === 'tracked') {
+      let hasTracked = false;
+      events.forEach(e => {
+        if (e.textContent.includes('⭐')) hasTracked = true;
+      });
+      day.style.opacity = hasTracked ? '1' : '0.25';
+    }
+  });
+}
+
+buildCalendar();
+</script>
+</body>
+</html>

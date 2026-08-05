@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAOI — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>AAOI</strong></span>
+  <span>Applied Optoelectronics, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 AAOI — Applied Optoelectronics, Inc.</h1>
+<blockquote><em>Investment Research Report · August 05, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/AAOI.html">AAOI</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/AAOI Valuation.html">AAOI Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Explosive growth inflection</strong>: FY2025 revenue surged <strong>82.8% YoY</strong> to <strong>$455.7M</strong> (from $249.4M in FY2024), driven by AI data center optical module demand. The market is pricing in continued hypergrowth, with the stock up <strong>~610% from its 52-week low of $18.50</strong>.</li></p>
+<p><li><strong>Profitability still elusive</strong>: Despite the revenue surge, AAOI posted a <strong>net loss of -$38.2M</strong> in FY2025 (improved from -$186.7M in FY2024). Gross margin expanded to <strong>30.0%</strong> (from 24.8%), but heavy R&D ($85.5M) and operating losses (-$54.6M) persist.</li></p>
+<p><li><strong>Balance sheet transformed</strong>: AAOI raised <strong>$518.9M</strong> in equity during FY2025, boosting cash to <strong>$206.1M</strong> and total equity to <strong>$733.9M</strong> (from $229.1M). This eliminates near-term solvency risk but dilutes existing shareholders significantly.</li></p>
+<p><li><strong>Extreme volatility</strong>: Beta of <strong>3.69</strong>; the stock swung from <strong>$76.01 to $136.27</strong> within the last 10 trading days. The August 4, 2026 surge (+19.4% to $131.63) suggests a major catalyst (likely a customer win or earnings beat) just occurred.</li></p>
+<p><li><strong>Valuation is speculative</strong>: At <strong>$10.56B market cap</strong> vs. $455.7M revenue, the stock trades at <strong>~23.2x trailing revenue</strong> — pricing in flawless execution and massive market share gains against incumbents like <a href="../companies/AVGO.html">AVGO</a> and <a href="../companies/COHR.html">COHR</a>.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Applied Optoelectronics (AAOI) designs and manufactures fiber-optic networking products, including <strong>optical transceivers, laser components, and turn-key systems</strong>. Founded in 1997 and headquartered in Sugar Land, TX, the company serves three primary end-markets:</p></p>
+<p><ul></p>
+<p><li><strong>Internet data center operators</strong> (largest and fastest-growing segment) — 800G/1.6T optical modules for AI/ML clusters</li></p>
+<p><li><strong>Cable TV (CATV) equipment manufacturers</strong> — legacy headend and node infrastructure</li></p>
+<p><li><strong>Telecom/ISP providers</strong> — fiber-to-the-home and long-haul transport gear</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive positioning</strong>: AAOI is a <strong>second-tier optical module supplier</strong> competing against <a href="../companies/COHR.html">COHR</a> (Coherent), <a href="../companies/LITE.html">LITE</a> (Lumentum), <a href="../companies/AVGO.html">AVGO</a> (Broadcom), and <a href="../companies/MRVL.html">MRVL</a> (Marvell) in the high-speed datacom market. Its key differentiator is <strong>vertical integration</strong> — in-house laser and photodetector manufacturing — which provides cost advantages and supply chain control. The company has won design-ins at <strong>major U.S. hyperscalers</strong> (Microsoft, Meta, Amazon) for 800G modules, which drove the FY2025 revenue inflection.</p></p>
+
+<p><p><strong>Revenue concentration risk</strong>: The top customers account for a disproportionate share of revenue (data not available in this filing, but historically >50% from 2-3 customers). The recent stock surge on August 4, 2026 suggests a new or expanded customer contract was announced, but specific details are not in the provided data.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 revenue: <strong>$455.7M</strong> (+82.8% YoY from $249.4M)</li></p>
+<p><li>FY2024 revenue: <strong>$249.4M</strong> (+14.6% YoY from $217.6M)</li></p>
+<p><li>FY2025 gross profit: <strong>$136.9M</strong> (30.0% margin) vs. $61.8M (24.8%) in FY2024 — margin expansion from operating leverage and product mix shift to higher-margin 800G modules</li></p>
+<p><li>FY2025 operating loss: <strong>-$54.6M</strong> (improved from -$70.9M in FY2024) — R&D spend of <strong>$85.5M</strong> (+55.7% YoY) is the primary drag</li></p>
+<p><li>FY2025 net loss: <strong>-$38.2M</strong> (EPS: <strong>-$0.64</strong>) vs. -$186.7M (EPS: -$4.50) in FY2024 — massive improvement driven by revenue scale and a <strong>$9.6M other income</strong> gain</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 operating cash flow: <strong>-$174.4M</strong> (worsened from -$69.5M) — working capital absorption from <strong>$127.6M increase in receivables</strong> and <strong>$100.7M increase in inventory</strong> to support growth</li></p>
+<p><li>FY2025 capex: <strong>-$179.1M</strong> — heavy investment in manufacturing capacity (new fab/assembly lines for 1.6T products)</li></p>
+<p><li>FY2025 equity raise: <strong>$518.9M</strong> — transformed balance sheet; cash now <strong>$206.1M</strong> vs. $67.4M at end of FY2024</li></p>
+<p><li>Total assets: <strong>$1.168B</strong> (up from $547M); total equity: <strong>$733.9M</strong> (up from $229.1M)</li></p>
+<p><li>Debt: <strong>$33.98M</strong> current portion + $0 long-term (repaid during FY2025) — minimal leverage</li></p>
+<p></ul></p>
+
+<p><p><strong>Key concern</strong>: The company is <strong>burning cash at an accelerating rate</strong> (-$174.4M operating + -$179.1M investing = -$353.5M total FY2025 burn). The $518.9M raise provides ~18 months of runway at current burn rates, but <strong>another dilutive raise is likely</strong> if growth doesn't translate to positive FCF by mid-2027.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current multiples</strong> (based on $131.63 price, $10.56B market cap):</p></p>
+<p><ul></p>
+<p><li><strong>P/E</strong>: N/A (negative earnings)</li></p>
+<p><li><strong>EV/Revenue (trailing)</strong>: ~<strong>23.2x</strong> ($10.56B MC + $34M debt - $206M cash = $10.39B EV / $455.7M revenue)</li></p>
+<p><li><strong>EV/EBITDA</strong>: N/A (negative EBITDA of ~-$27M)</li></p>
+<p><li><strong>P/S (forward)</strong>: If FY2026 revenue doubles to ~$900M, forward P/S is still ~<strong>11.7x</strong></li></p>
+<p></ul></p>
+
+<p><p><strong>Peer comparison</strong> (from provided data):</p></p>
+<p><table class="md-table"></p>
+<p><tr><th>Company</th><th>Market Cap</th><th>P/S (trailing)</th></tr></p>
+<p><tr><td><a href="../companies/MXL.html">MXL</a> MaxLinear</td><td>$6.60B</td><td>~8.5x</td></tr></p>
+<p><tr><td><a href="../companies/VSH.html">VSH</a> Vishay</td><td>$5.49B</td><td>~1.5x</td></tr></p>
+<p><tr><td><a href="../companies/KLIC.html">KLIC</a> Kulicke</td><td>$4.91B</td><td>~3.5x</td></tr></p>
+<p><tr><td><a href="../companies/LASR.html">LASR</a> nLIGHT</td><td>$4.35B</td><td>~12x</td></tr></p>
+<p><tr><td><strong>AAOI</strong></td><td><strong>$10.56B</strong></td><td><strong>~23.2x</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>Assessment</strong>: AAOI trades at a <strong>significant premium to all peers</strong> — even high-growth optical peers like <a href="../companies/LASR.html">LASR</a> (12x) and <a href="../companies/MXL.html">MXL</a> (8.5x). The market is pricing in:</p></p>
+<p><ol></p>
+<p><li><strong>Revenue doubling in FY2026</strong> to ~$900M+</li></p>
+<p><li><strong>Sustained 50%+ growth</strong> through FY2027 as 1.6T modules ramp</li></p>
+<p><li><strong>Gross margin expansion</strong> to 35%+ as utilization improves</li></p>
+<p><li><strong>Path to profitability</strong> by FY2027</li></p>
+<p></ol></p>
+
+<p><p>The valuation is <strong>justified only if AAOI secures a top-2 position</strong> at a second hyperscaler (beyond Microsoft) and executes flawlessly on capacity expansion. At 23x trailing revenue, there is <strong>zero margin for error</strong> — any customer share loss or product delay would trigger a 50%+ correction.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Customer Concentration & Single-Point Failure</strong> <code>#critical</code></li></p>
+<p><p>Revenue is heavily dependent on 1-2 hyperscaler customers (data not available, but typical for this industry). Loss of a single 800G design-win or a customer shifting to <a href="../companies/COHR.html">COHR</a>/<a href="../companies/AVGO.html">AVGO</a> would devastate the growth narrative. The stock's 610% run-up assumes these contracts are locked in — they are not.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Cash Burn & Dilution Cycle</strong> <code>#critical</code></li></p>
+<p><p>FY2025 total cash burn was <strong>-$353.5M</strong> (operating + capex). At this pace, the $206.1M cash balance lasts <strong>~7 months</strong> without additional funding. The company will likely need to raise another <strong>$300-500M</strong> in 2026, causing further dilution. The 60.2M weighted shares outstanding is up from 41.5M in FY2024 — a 45% increase in share count.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Technology Transition Risk</strong> <code>#medium</code></li></p>
+<p><p>The industry is rapidly transitioning from 800G to <strong>1.6T optical modules</strong>. AAOI's competitive position in 1.6T is unproven. If <a href="../companies/AVGO.html">AVGO</a> or <a href="../companies/COHR.html">COHR</a> deliver superior 1.6T products with better power efficiency, AAOI could lose the next design cycle entirely.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin Compression from Competition</strong> <code>#medium</code></li></p>
+<p><p>Gross margin of 30.0% is below industry leaders (<a href="../companies/AVGO.html">AVGO</a> optical ~40%+). As hyperscalers push for price reductions on volume orders, AAOI's margin expansion story could stall. The company needs <strong>35%+ gross margins</strong> to reach breakeven — a significant stretch given current cost structure.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Extreme Volatility & Momentum Reversal</strong> <code>#medium</code></li></p>
+<p><p>Beta of <strong>3.69</strong> means the stock moves ~3.7x the market. The recent 10-day range of <strong>$76.01 to $136.27</strong> (79% swing) illustrates the speculative nature. Any disappointment in quarterly guidance could trigger a <strong>50%+ drawdown</strong> given the valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Geopolitical/Supply Chain</strong> <code>#low</code></li></p>
+<p><p>Manufacturing is concentrated in Texas and China (data not available on exact split). Tariffs or export controls on optical components could disrupt supply or increase costs.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>New Hyperscaler Design Win</strong> <code>#near-term</code></li></p>
+<p><p>The August 4, 2026 stock surge (+19.4% to $131.63 on 20.6M shares — 2x average volume) strongly suggests a major customer announcement. If AAOI secures a second or third hyperscaler for 800G/1.6T modules, revenue could exceed $1B in FY2026.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>FY2026 Guidance Raise</strong> <code>#near-term</code></li></p>
+<p><p>With FY2025 revenue of $455.7M, management likely guides FY2026 to <strong>$800M-$1B</strong> (75-120% growth). A beat-and-raise on the next earnings call would validate the current valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Gross Margin Inflection</strong> <code>#near-term</code></li></p>
+<p><p>If gross margins expand from 30.0% to <strong>33-35%</strong> in the next 2 quarters, it signals operating leverage is kicking in — a key driver for the path to profitability.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>1.6T Product Qualification</strong> <code>#medium-term</code></li></p>
+<p><p>Successful qualification of 1.6T transceivers with existing customers would extend the growth runway into 2027-2028 and justify a premium multiple.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Positive Operating Cash Flow</strong> <code>#medium-term</code></li></p>
+<p><p>If AAOI can swing to <strong>positive OCF</strong> by Q4 2026 (as receivables/inventory growth normalizes), it would eliminate the dilution overhang and significantly de-risk the equity story.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>HOLD</strong> (Conviction: Medium)</p></p>
+
+<p><p><strong>12-month price target: $120-$150</strong> (current: $131.63)</p></p>
+
+<p><p><strong>Thesis</strong>: AAOI is executing well in a hypergrowth market — FY2025 revenue growth of 82.8% and a 5.3x improvement in net loss demonstrate real operational progress. The company has secured a foothold in the AI optical module supply chain and has the balance sheet (post-$518.9M raise) to fund expansion.</p></p>
+
+<p><p><strong>However, the risk/reward is balanced at current levels.</strong> At 23.2x trailing revenue, the market has already priced in flawless execution. The stock is up 610% from its low, and the recent volatility (79% intraday range in 10 days) indicates frothy positioning. While the August 4 catalyst could signal a major win, we need <strong>visibility on FY2026 guidance and margin trajectory</strong> before recommending new capital deployment.</p></p>
+
+<p><p><strong>Action</strong>: Existing holders should <strong>trim 20-30%</strong> of positions into strength (above $130) to lock in gains. New investors should <strong>wait for a pullback to $90-100</strong> (18-20x forward revenue) or for confirmation of sustained profitability before initiating. The company must demonstrate <strong>positive operating cash flow</strong> and <strong>35%+ gross margins</strong> to justify a Buy rating at this valuation.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>AAOI — Applied Optoelectronics, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-05 08:52</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>AAOI</td></tr></p>
+<p><tr><td>Name</td><td>Applied Optoelectronics, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>4,691</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>455715000.0</td><td>-54602000.0</td><td>-38228000.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2024-12-31</td><td>249365000.0</td><td>-70908000.0</td><td>-186733000.0</td><td>-4.5</td></tr></p>
+<p><tr><td>2023-12-31</td><td>217646000.0</td><td>-41349000.0</td><td>-56048000.0</td><td>-1.8</td></tr></p>
+<p><tr><td>2022-12-31</td><td>222818000.0</td><td>-58998000.0</td><td>-66397000.0</td><td>-2.4</td></tr></p>
+<p><tr><td>2021-12-31</td><td>211565000.0</td><td>-56766000.0</td><td>-54162000.0</td><td>-2.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>1168423000.0</td><td>434505000.0</td><td>733918000.0</td><td>206140000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>547032000.0</td><td>317920000.0</td><td>229112000.0</td><td>67428000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>389186000.0</td><td>174317000.0</td><td>214869000.0</td><td>45366000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>408263000.0</td><td>223593000.0</td><td>184670000.0</td><td>24685000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>454459000.0</td><td>199889000.0</td><td>254570000.0</td><td>34656000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-174428000.0</td><td>27600000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-69526000.0</td><td>20600000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-7929000.0</td><td>20400000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-14022000.0</td><td>23200000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-11644000.0</td><td>25300000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-22</td><td>115.0</td><td>117.5</td><td>110.0</td><td>110.5</td><td>8,072,997</td></tr></p>
+<p><tr><td>2026-07-23</td><td>108.6</td><td>119.7</td><td>108.2</td><td>112.0</td><td>6,288,557</td></tr></p>
+<p><tr><td>2026-07-24</td><td>109.0</td><td>109.7</td><td>99.5</td><td>100.2</td><td>7,103,569</td></tr></p>
+<p><tr><td>2026-07-27</td><td>100.6</td><td>102.9</td><td>92.2</td><td>97.8</td><td>6,662,393</td></tr></p>
+<p><tr><td>2026-07-28</td><td>93.0</td><td>93.3</td><td>81.5</td><td>88.1</td><td>10,840,292</td></tr></p>
+<p><tr><td>2026-07-29</td><td>88.2</td><td>88.3</td><td>76.0</td><td>76.5</td><td>12,204,268</td></tr></p>
+<p><tr><td>2026-07-30</td><td>83.3</td><td>90.7</td><td>82.8</td><td>90.1</td><td>10,949,179</td></tr></p>
+<p><tr><td>2026-07-31</td><td>100.1</td><td>103.2</td><td>91.0</td><td>94.3</td><td>9,739,870</td></tr></p>
+<p><tr><td>2026-08-03</td><td>89.8</td><td>111.0</td><td>88.1</td><td>110.2</td><td>12,055,507</td></tr></p>
+<p><tr><td>2026-08-04</td><td>128.6</td><td>136.3</td><td>123.5</td><td>131.6</td><td>20,618,886</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-07-27</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-14</td></tr></p>
+<p><tr><td>2026-07-01</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='MXL' name='MaxLinear, Inc.' price=72.72 market_cap=6595208850, symbol='VSH' name='Vishay Intertechnology, Inc.' price=38.85 market_cap=5488757371, symbol='KLIC' name='Kulicke and Soffa Industries, Inc.' price=93.85 market_cap=4911440506, symbol='LASR' name='nLIGHT, Inc.' price=77.18 market_cap=4353623466, symbol='UCTT' name='Ultra Clean Holdings, Inc.' price=84.54 market_cap=3789788878, symbol='POWI' name='Power Integrations, Inc.' price=64.57 market_cap=3597839367, symbol='VECO' name='Veeco Instruments Inc.' price=53.8 market_cap=3283601493, symbol='SONO' name='Sonos, Inc.' price=16.42 market_cap=1942387480, symbol='PGY' name='Pagaya Technologies Ltd.' price=21.92 market_cap=1828694479, symbol='DQ' name='Daqo New Energy Corp.' price=13.41 market_cap=907402891</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-05 08:52</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-05 08:52 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/AAOI.html">AAOI</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
