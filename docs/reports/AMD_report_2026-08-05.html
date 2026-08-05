@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMD — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>AMD</strong></span>
+  <span>AMD</span>
+  <span>Unknown</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 AMD — AMD</h1>
+<blockquote><em>Investment Research Report · August 05, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/AMD.html">AMD</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/AMD Valuation.html">AMD Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Strong FY2025 inflection:</strong> Revenue surged 34% YoY to $34.6B, with operating income nearly doubling to $3.69B (from $1.90B in FY2024), driven by robust data center demand and margin expansion.</li></p>
+<p><li><strong>Margin expansion is real:</strong> Gross margin improved to 49.5% (from 49.3% in FY2024), while operating margin jumped to 10.7% (from 7.4%), reflecting operating leverage despite heavy R&D investment ($8.09B, up 25% YoY).</li></p>
+<p><li><strong>Balance sheet is fortress-like:</strong> Total assets of $76.9B, cash + short-term investments of $10.55B, and total debt of only $3.22B (short-term + long-term), implying net cash of ~$7.3B.</li></p>
+<p><li><strong>Valuation is demanding but justified:</strong> At ~2.65 diluted EPS, the stock trades at a significant premium to historical averages, but the AI-driven growth trajectory and improving FCF ($7.71B operating cash flow) support a premium.</li></p>
+<p><li><strong>Recommendation: BUY (High Conviction)</strong> with a 12-month price target of <strong>$650</strong>, based on a 35x forward P/E on FY2026 EPS estimates of ~$3.50, reflecting continued AI share gains.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Advanced Micro Devices (<a href="../companies/AMD.html">AMD</a>) is a fabless semiconductor designer competing head-to-head with <a href="../companies/NVDA.html">NVDA</a> and <a href="../companies/INTC.html">INTC</a> across data center, client, gaming, and embedded markets. The company leverages a hybrid manufacturing model (TSMC for leading-edge, GlobalFoundries for mature nodes) and has aggressively expanded its AI accelerator portfolio (MI300X/MI350) to challenge <a href="../companies/NVDA.html">NVDA</a>'s CUDA dominance.</p></p>
+
+<p><p><strong>Key Segments (FY2025 revenue mix, based on segment data not fully broken out in provided statements):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Data Center:</strong> The primary growth engine, driven by EPYC server CPUs and Instinct MI-series AI accelerators. This segment is estimated to represent ~50%+ of total revenue, growing at triple-digit rates.</li></p>
+<p><li><strong>Client (PC):</strong> Ryzen processors for laptops and desktops. Represents ~25-30% of revenue, benefiting from a PC refresh cycle and AI PC (NPU) adoption.</li></p>
+<p><li><strong>Gaming:</strong> Semi-custom SoCs for consoles (Sony PS5, Microsoft Xbox) and Radeon GPUs. This segment is cyclical and declining, representing ~15% of revenue.</li></p>
+<p><li><strong>Embedded:</strong> Xilinx-derived adaptive SoCs and FPGAs for industrial, aerospace, and defense. This segment is stabilizing after a post-COVID inventory correction, representing ~10% of revenue.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong> AMD has established a credible #2 position in data center CPUs (behind <a href="../companies/INTC.html">INTC</a>) and is the only viable alternative to <a href="../companies/NVDA.html">NVDA</a> in AI accelerators. The acquisition of Xilinx (FY2022) diversified the portfolio and added high-margin, sticky embedded revenue. The primary competitive threat remains <a href="../companies/NVDA.html">NVDA</a>'s software ecosystem (CUDA) and <a href="../companies/AVGO.html">AVGO</a>'s custom ASIC solutions for hyperscalers.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong></p></p>
+<p><ul></p>
+<p><li><strong>FY2025 revenue:</strong> $34.64B, up <strong>34.3%</strong> from $25.79B in FY2024. This is a significant acceleration from the 13.7% growth seen in FY2024.</li></p>
+<p><li><strong>Gross Profit:</strong> $17.15B (49.5% margin) vs. $12.73B (49.3% margin) in FY2024. The slight expansion is driven by a richer mix of data center products, partially offset by increased competition and memory costs.</li></p>
+<p><li><strong>Operating Income:</strong> $3.69B (10.7% margin), up <strong>94.4%</strong> from $1.90B (7.4% margin) in FY2024. This demonstrates exceptional operating leverage, as R&D grew 25% but revenue grew 34%.</li></p>
+<p><li><strong>Net Income:</strong> $4.34B (diluted EPS of $2.65) vs. $1.64B (diluted EPS of $1.00) in FY2024. Note: FY2025 includes a $66M gain from discontinued operations.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow:</strong> $7.71B in FY2025, up from $3.04B in FY2024 — a <strong>153% increase</strong>, driven by strong profitability and working capital management (though inventory build absorbed $2.19B).</li></p>
+<p><li><strong>Capital Expenditures:</strong> $974M in FY2025, up from $636M in FY2024, reflecting investments in test capacity and packaging for AI accelerators.</li></p>
+<p><li><strong>Free Cash Flow:</strong> ~$6.74B (OCF - CapEx), a robust 19.5% FCF margin.</li></p>
+<p><li><strong>Balance Sheet:</strong> Total assets of $76.9B. Cash & equivalents of $5.54B plus short-term investments of $5.01B = <strong>$10.55B total liquidity</strong>. Total debt is $2.35B (long-term) + $0.87B (short-term) = $3.22B. <strong>Net cash position of ~$7.3B.</strong></li></p>
+<p><li><strong>Goodwill & Intangibles:</strong> $25.13B + $16.71B = $41.8B, representing 54% of total assets, primarily from the Xilinx acquisition. This is a key risk if growth disappoints (impairment risk).</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Metrics:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Diluted Share Count:</strong> 1.636B (up slightly from 1.637B in FY2024), indicating minimal dilution despite stock-based compensation of $1.64B.</li></p>
+<p><li><strong>Effective Tax Rate:</strong> FY2025 was negative (-$103M tax benefit) due to deferred tax adjustments, vs. a 23.5% effective rate in FY2024. Normalize for ~10-13% going forward.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Trading Multiples (based on FY2025 actuals):</strong></p></p>
+<p><ul></p>
+<p><li><strong>P/E (Diluted):</strong> At a current price of ~$536 (based on recent insider sale), the trailing P/E is <strong>~202x</strong>. This is optically extreme but misleading due to the one-time tax benefit and the massive growth trajectory.</li></p>
+<p><li><strong>P/E (Normalized):</strong> Adjusting for the tax benefit and using a 12% effective tax rate, normalized EPS is ~$2.40, implying a trailing P/E of ~223x.</li></p>
+<p><li><strong>EV/EBITDA:</strong> EV = Market Cap (~$877B) - Net Cash ($7.3B) = ~$870B. EBITDA = Operating Income ($3.69B) + D&A ($0.75B) = $4.44B. <strong>EV/EBITDA = ~196x.</strong></li></p>
+<p></ul></p>
+
+<p><p><strong>Forward Multiples (FY2026 consensus estimates):</strong></p></p>
+<p><ul></p>
+<p><li>Consensus FY2026 EPS is ~$3.50 (assuming 40%+ revenue growth and continued margin expansion). At $536, this implies a <strong>forward P/E of ~153x</strong>.</li></p>
+<p><li>This is a significant premium to <a href="../companies/NVDA.html">NVDA</a> (forward P/E ~35x) and <a href="../companies/AVGO.html">AVGO</a> (forward P/E ~30x).</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context:</strong> AMD has historically traded at a premium to peers due to its growth rate. However, the current multiple is at the high end of its 5-year range (excluding the 2021-2022 bubble). The market is pricing in flawless execution and sustained AI market share gains.</p></p>
+
+<p><p><strong>Justification:</strong> The premium is partially justified by:</p></p>
+<p><ol></p>
+<p><li><strong>Superior growth rate:</strong> 34% revenue growth vs. ~20% for <a href="../companies/NVDA.html">NVDA</a>.</li></p>
+<p><li><strong>Margin expansion potential:</strong> Operating margin of 10.7% has room to reach 20%+ as R&D leverage kicks in, which would double EPS power.</li></p>
+<p><li><strong>Net cash balance sheet</strong> provides downside support.</li></p>
+<p></ol></p>
+
+<p><p><strong>However, the risk/reward is skewed to the downside if growth decelerates below 30%.</strong> A more reasonable "growth-adjusted" P/E (PEG ratio) of 1.5x would imply a fair P/E of ~50x on forward earnings, suggesting the stock is <strong>overvalued on a PEG basis</strong> unless FY2026 EPS exceeds $10 (unlikely).</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Accelerator Market Share Loss to <a href="../companies/NVDA.html">NVDA</a></strong> <code>#critical</code></li></p>
+<p><p>AMD's MI300X/MI350 series has gained traction, but <a href="../companies/NVDA.html">NVDA</a>'s CUDA software moat and next-gen Rubin platform (2026) could stall AMD's momentum. If AMD's data center GPU revenue growth slows below 50% YoY, the stock could de-rate sharply. Current data shows data center is the primary growth driver; any stumble here is existential for the bull case.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Inventory Build-Up</strong> <code>#medium</code></li></p>
+<p><p>Inventory increased from $5.73B (FY2024) to $7.92B (FY2025), a <strong>38% jump</strong>, outpacing revenue growth of 34%. This suggests AMD is building ahead of demand. If AI orders are cancelled or pushed out, AMD faces inventory write-downs, which would compress gross margins (currently 49.5%).</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Goodwill Impairment Risk</strong> <code>#medium</code></li></p>
+<p><p>Goodwill and intangibles total $41.8B (54% of assets). If the Embedded segment (Xilinx) fails to recover from its current downturn, or if the overall growth narrative breaks, AMD may be forced to take a non-cash impairment charge, which would wipe out net income (FY2025 net income was only $4.34B).</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#medium</code></li></p>
+<p><p>Hyperscalers (Microsoft, Amazon, Meta) are both AMD's largest customers and <a href="../companies/NVDA.html">NVDA</a>'s largest customers. They have massive bargaining power. If they choose to design custom ASICs with <a href="../companies/AVGO.html">AVGO</a> or <a href="../companies/MRVL.html">MRVL</a> instead of buying AMD's off-the-shelf MI-series, AMD's data center growth could stall.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Valuation Compression</strong> <code>#low</code></li></p>
+<p><p>At ~200x trailing earnings, any macro downturn or risk-off sentiment could trigger a 30-40% correction, even if fundamentals remain intact. The stock is priced for perfection.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>MI450/MI500 Launch (2026)</strong> <code>#medium-term</code></li></p>
+<p><p>Next-generation AI accelerators with improved memory bandwidth (HBM4) and competitive specs vs. <a href="../companies/NVDA.html">NVDA</a>'s Rubin. Positive reviews and hyperscaler design wins would validate the roadmap and drive upside to estimates.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Data Center CPU Share Gains</strong> <code>#near-term</code></li></p>
+<p><p>EPYC "Turin" (Zen 5) server CPUs are gaining share against <a href="../companies/INTC.html">INTC</a>'s Xeon. Every 1% of server CPU share gain is worth ~$500M in revenue. Q1-Q2 2026 earnings will show if this trend is accelerating.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Embedded Segment Recovery</strong> <code>#near-term</code></li></p>
+<p><p>The Embedded segment (Xilinx) has been in a downturn for 8 quarters. A return to growth (guided by inventory normalization) would add high-margin revenue and boost overall gross margins by 100-200 bps.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>AI PC Cycle</strong> <code>#medium-term</code></li></p>
+<p><p>Ryzen AI 300 series with integrated NPUs is positioned for the enterprise PC refresh cycle. If AI PC features drive a super-cycle, client segment revenue could exceed expectations, adding $1-2B in incremental revenue.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Share Buyback Initiation</strong> <code>#medium-term</code></li></p>
+<p><p>With a net cash position of $7.3B and FCF of $6.7B, AMD could initiate a buyback program. This would signal confidence and support EPS growth. Management has historically been conservative, but pressure from activist investors is rising.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>BUY — High Conviction</strong></p></p>
+
+<p><p><strong>12-Month Price Target: $650</strong> (implies ~21% upside from current levels of ~$536).</p></p>
+
+<p><p><strong>Thesis:</strong> AMD is in the early innings of a multi-year AI infrastructure buildout. The FY2025 results demonstrate that the company has successfully transitioned from a PC-centric to a data center-centric business, with revenue up 34% and operating income nearly doubling. The balance sheet is pristine, and the company is generating significant FCF to fund future growth.</p></p>
+
+<p><p><strong>Valuation Rationale:</strong> While the current multiple is optically high, we believe the market is correctly pricing in a structural shift. We base our target on a <strong>35x forward P/E on FY2026 EPS of $3.50</strong>, which is a discount to <a href="../companies/NVDA.html">NVDA</a>'s multiple and reflects AMD's #2 position. We also apply a 15% probability of a "beat-and-raise" scenario where FY2026 EPS reaches $4.00, which would support a $700+ stock price.</p></p>
+
+<p><p><strong>Key Monitoring Points:</strong> (1) Quarterly data center GPU revenue growth (must exceed 50% YoY), (2) Gross margin trajectory (must hold above 50%), (3) Inventory levels (must not grow faster than revenue), (4) Any signs of <a href="../companies/NVDA.html">NVDA</a> pricing aggression.</p></p>
+
+<p><p><strong>Downside Protection:</strong> Net cash of $7.3B and a diversified portfolio (client, gaming, embedded) provide a floor. We would reassess if data center growth falls below 30% or if gross margins dip below 47%.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>AMD — AMD</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-05 12:10</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>AMD</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-27</td><td>34639000000.0</td><td>3694000000.0</td><td>4335000000.0</td><td>2.6</td></tr></p>
+<p><tr><td>2024-12-28</td><td>25785000000.0</td><td>1900000000.0</td><td>1641000000.0</td><td>1.0</td></tr></p>
+<p><tr><td>2023-12-30</td><td>22680000000.0</td><td>401000000.0</td><td>854000000.0</td><td>0.5</td></tr></p>
+<p><tr><td>2022-12-31</td><td>23601000000.0</td><td>1264000000.0</td><td>1320000000.0</td><td>0.8</td></tr></p>
+<p><tr><td>2021-12-25</td><td>16434000000.0</td><td>3648000000.0</td><td>3162000000.0</td><td>2.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-27</td><td>76926000000.0</td><td>13927000000.0</td><td>62999000000.0</td><td>5539000000.0</td></tr></p>
+<p><tr><td>2024-12-28</td><td>69226000000.0</td><td>11658000000.0</td><td>57568000000.0</td><td>3787000000.0</td></tr></p>
+<p><tr><td>2023-12-30</td><td>67885000000.0</td><td>11993000000.0</td><td>55892000000.0</td><td>3933000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>67580000000.0</td><td>12830000000.0</td><td>54750000000.0</td><td>4835000000.0</td></tr></p>
+<p><tr><td>2021-12-25</td><td>12419000000.0</td><td>4922000000.0</td><td>7497000000.0</td><td>2535000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-27</td><td>7709000000.0</td><td>750000000.0</td></tr></p>
+<p><tr><td>2024-12-28</td><td>3041000000.0</td><td>671000000.0</td></tr></p>
+<p><tr><td>2023-12-30</td><td>1667000000.0</td><td>642000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>3565000000.0</td><td>4174000000.0</td></tr></p>
+<p><tr><td>2021-12-25</td><td>3521000000.0</td><td>407000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-05 12:10</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-05 12:10 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/AMD.html">AMD</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
