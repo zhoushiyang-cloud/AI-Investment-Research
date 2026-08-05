@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MU — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>MU</strong></span>
+  <span>美光科技公司</span>
+  <span>科技</span>
+  <span>2026-07-27</span>
+</div>
+<hr>
+
+<h1>📊 MU — 美光科技公司</h1>
+<blockquote><em>投资研究报告 · 2026年7月27日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/MU.html">MU</a></td><td><strong>所属板块：</strong> <a href="../companies/板块 — 科技.html">板块 — 科技</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/投资仪表盘.html">投资仪表盘</a></td><td><a href="../companies/同业比较.html">同业比较</a></td><td><a href="../companies/MU估值.html">MU估值</a></td></tr></p>
+<p><tr><td>- <a href="../companies/板块 — 科技.html">板块 — 科技</a></td><td><a href="../companies/经济指标.html">经济指标</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>周期性拐点已完成：</strong> 美光在2025财年实现了大规模盈利复苏，营收同比增长49%至374亿美元，净利润从8亿美元跃升至85亿美元，这得益于AI驱动的HBM和高容量内存需求周期。</li></p>
+<p><li><strong>AI敞口是核心投资逻辑：</strong> 该公司是<a href="../companies/NVDA.html">NVDA</a>生态系统的关键受益者，其高带宽内存（HBM）和数据中心SSD产品需求爆发式增长。这体现在创纪录的98亿美元营业利润上。</li></p>
+<p><li><strong>估值偏高但合理：</strong> 按约122倍滚动市盈率和约11倍EV/EBITDA（基于2025财年）计算，该股已计入周期延续的预期。然而，基于正常化盈利的远期市盈率更为合理，反映了需求的结构性转变。</li></p>
+<p><li><strong>主要风险在于周期性与地缘政治：</strong> 半导体存储市场以波动剧烈著称。需求前置、库存修正或中美贸易紧张局势升级（美光在中国有大量敞口）都可能严重影响盈利。</li></p>
+<p><li><strong>建议：持有（中等信心）。</strong> 尽管AI顺风强劲且公司执行良好，但该股的高贝塔值（2.14）以及近期从52周高点回撤27%的走势表明市场已在定价潜在峰值。我们认为当前水平的风险回报比均衡。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p>美光科技公司是全球半导体存储和存储解决方案的领导者。它是仅有的三家控制全球DRAM和NAND闪存供应的主要厂商之一（另外两家是<a href="../companies/三星.html">三星</a>和<a href="../companies/SK海力士.html">SK海力士</a>）。</p></p>
+
+<p><p><strong>主要业务板块（2025财年营收占比估算）：</strong></p></p>
+<p><ul></p>
+<p><li><strong>计算与网络（约45%）：</strong> 包括数据中心DRAM（HBM、服务器DDR5）、个人电脑和网络用DRAM。这是主要增长驱动力，得益于AI基础设施建设。</li></p>
+<p><li><strong>移动端（约20%）：</strong> 智能手机用DRAM和NAND。需求与高端设备换机周期和内存容量提升相关。</li></p>
+<p><li><strong>存储（约20%）：</strong> 面向企业和消费市场的NAND SSD。从HDD向SSD的迁移提供了长期结构性顺风。</li></p>
+<p><li><strong>嵌入式（约15%）：</strong> 面向汽车、工业和消费物联网应用的内存。该板块提供了多元化收入来源和更长周期营收。</li></p>
+<p></ul></p>
+
+<p><p><strong>竞争地位：</strong> 美光在DRAM领域稳居第三，在NAND领域位列前五。其竞争优势在于领先的制程技术（1-alpha、1-beta DRAM；200+层NAND）以及与<a href="../companies/NVDA.html">NVDA</a>在HBM3E供应上的深度合作，后者是AI供应链中的关键瓶颈。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>营收与盈利能力：</strong></p></p>
+<p><ul></p>
+<p><li><strong>2025财年营收：</strong> 374亿美元，较2024财年的251亿美元增长49%，较2023财年低谷的155亿美元增长140%。这充分体现了强劲的周期性复苏。</li></p>
+<p><li><strong>毛利率：</strong> 2025财年毛利润为149亿美元，毛利率约为39.8%，较2024财年的22.4%和2023财年的-9.1%大幅改善。</li></p>
+<p><li><strong>营业利润：</strong> 2025财年飙升至98亿美元，而2024财年为13亿美元，2023财年为-57亿美元亏损。这凸显了业务的经营杠杆效应。</li></p>
+<p><li><strong>盈利：</strong> 2025财年摊薄每股收益为7.59美元，高于2024财年的0.70美元。</li></p>
+<p></ul></p>
+
+<p><p><strong>现金流与资产负债表：</strong></p></p>
+<p><ul></p>
+<p><li><strong>经营现金流：</strong> 2025财年强劲，达175亿美元，高于2024财年的85亿美元。</li></p>
+<p><li><strong>资本支出：</strong> 2025财年支出庞大，达159亿美元，反映了对HBM产能和领先晶圆厂的投资。这是主要的现金用途。</li></p>
+<p><li><strong>自由现金流：</strong> 为正，约16亿美元（175亿美元经营现金流 - 159亿美元资本支出），较前几年的负自由现金流显著好转。</li></p>
+<p><li><strong>资产负债表：</strong> 总债务（长期）为115亿美元，现金为96亿美元，净债务约为19亿美元。资产负债表可控，但对周期性公司而言杠杆偏高。总权益为620亿美元。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><ul></p>
+<p><li><strong>滚动市盈率（2025财年）：</strong> 约121倍（$920.95 / $7.59）。看似极其昂贵。</li></p>
+<p><li><strong>远期市盈率（2026财年预期）：</strong> 基于分析师一致预期每股收益约12-14美元，远期市盈率约为66-77倍，仍然较高，但反映了对周期峰值盈利的预期。</li></p>
+<p><li><strong>EV/EBITDA（2025财年）：</strong> 企业价值（市值1.04万亿美元 + 净债务19亿美元）= 约1.042万亿美元。EBITDA（营业利润98亿美元 + 折旧摊销84亿美元）= 182亿美元。EV/EBITDA = 约57倍。非常高。</li></p>
+<p><li><strong>同业比较：</strong> 美光的估值显著高于<a href="../companies/KLAC.html">KLAC</a>（市盈率约25倍）和<a href="../companies/AMAT.html">AMAT</a>（市盈率约22倍）等同业。这一溢价因其直接受益于AI内存周期而合理，但也意味着容错空间很小。</li></p>
+<p><li><strong>市净率（P/B）：</strong> 约16.7倍（1.04万亿美元 / 620亿美元账面价值），表明市场为其盈利能力和未来增长支付了大幅溢价。</li></p>
+<p><li><strong>结论：</strong> 当前估值已计入AI周期的“最佳情景”。按任何传统指标衡量都不便宜。投资逻辑完全取决于AI驱动内存需求的可持续性和增长。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>内存周期下行</strong> <code>#critical</code></li></p>
+<p><p>半导体存储行业历来具有周期性。由于供应过剩或需求正常化导致的DRAM/NAND价格回调可能引发营收和利润的快速崩塌，如2023财年所见（营收降至155亿美元，净亏损-58亿美元）。该股2.14的贝塔值放大了这一风险。</p></p>
+<p><li><strong>地缘政治/中国风险</strong> <code>#critical</code></li></p>
+<p><p>美光在中国市场有大量敞口。中美贸易紧张局势升级、出口管制或美光产品在中国被禁（类似于2023年其产品在关键基础设施领域被禁）都可能严重影响营收。</p></p>
+<p><li><strong>HBM技术与竞争</strong> <code>#medium</code></li></p>
+<p><p>当前AI热潮高度依赖HBM。美光正与<a href="../companies/三星.html">三星</a>和<a href="../companies/SK海力士.html">SK海力士</a>直接竞争。HBM4认证延迟、良率问题或市场份额被竞争对手夺走都可能破坏增长逻辑。</p></p>
+<p><li><strong>客户集中度</strong> <code>#medium</code></li></p>
+<p><p>美光HBM营收的很大一部分依赖于单一客户<a href="../companies/NVDA.html">NVDA</a>。<a href="../companies/NVDA.html">NVDA</a>供应链策略的任何转变或其GPU需求放缓都将直接影响美光的营收。</p></p>
+<p><li><strong>高资本密集度</strong> <code>#low</code></li></p>
+<p><p>该业务需要大规模持续资本支出（2025财年资本支出为159亿美元）。产能规划失误（建设过多或过少）可能导致重大财务损失或错失机会。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ol></p>
+<p><li><strong>HBM4量产与认证</strong> <code>#near-term</code></li></p>
+<p><p>下一代HBM4内存在<a href="../companies/NVDA.html">NVDA</a>及其他AI ASIC客户处成功通过认证并实现量产爬坡，可能在未来12个月内推动显著的营收和利润率扩张。</p></p>
+<p><li><strong>数据中心需求加速</strong> <code>#near-term</code></li></p>
+<p><p>企业持续采用AI服务器以及推理基础设施建设将推动高容量DDR5和企业级SSD需求，提供多年顺风。</p></p>
+<p><li><strong>非AI板块内存价格复苏</strong> <code>#medium-term</code></li></p>
+<p><p>PC和智能手机市场（一直疲软）的复苏将提供第二增长曲线，并降低公司对数据中心板块的依赖。</p></p>
+<p><li><strong>股票回购</strong> <code>#medium-term</code></li></p>
+<p><p>凭借强劲现金流，公司可能恢复更积极的股票回购计划，这将增厚每股收益。数据显示2025财年回购金额为0。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 投资建议</div><div class="callout-body"><p><strong>评级：持有（中等信心）</strong></p></p>
+<p><p><strong>12个月目标价：$1,050</strong></p></p>
+
+<p><p><strong>投资逻辑：</strong> 美光是科技领域最强大长期趋势（AI）的高质量周期性受益者。2025财年业绩确认了大规模盈利复苏。然而，该股已大幅上涨，当前估值已计入周期峰值盈利的延续。近期内部人士在$1,070以上价位卖出，以及该股从52周高点$1,255下跌27%的走势，表明市场正变得谨慎。我们认为该股估值合理。鉴于AI顺风，我们不会在此价位卖出，但缺乏推动盈利预期上修的新催化剂，上行空间也有限，因此持有评级是合适的。我们将在回调至$800水平时转为更积极的态度。</p></p>
+<p></div></div>---</p>
+
+<hr>
+
+<h2>📝 更新日志</h2>
+
+<h3>2026-07-28</h3>
+
+<table class="md-table">
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td><strong>股价</strong></td><td>$900.2</td></tr>
+<tr><td><strong>1周</strong></td><td>+4.0%</td></tr>
+<tr><td><strong>1月</strong></td><td>-12.8%</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 近期动态</div><div class="callout-body"><ul></p>
+<p><li><strong>股价走势：</strong> MU过去一周反弹4.0%，部分收复了前两周3.9%的跌幅，但仍远低于7月高点$1,097.0。</li></p>
+<p><li><strong>重要新闻：</strong> 近期无公司特定新闻；股价变动似乎由更广泛的板块轮动和近期回调后的技术性买盘驱动。</li></p>
+<p><li><strong>同业/板块背景：</strong> 半导体同业表现分化，板块缺乏明确催化剂，使MU维持区间震荡。</li></p>
+<p><li><strong>短期展望：</strong> 关注宏观或板块层面的消息以突破7月$804-$1,097区间；若无催化剂，该股可能继续盘整。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 评级状态</div><div class="callout-body"><p><strong>维持持有</strong> — 鉴于7月宽幅区间和缺乏消息，投资逻辑保持不变，但突破$1,097或跌破$804将需要重新评估。</p></p>
+<p><p>下一个催化剂：关注宏观和板块趋势。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>（点击展开）</em></div><div class="callout-body"></p>
+<p><h1>MU — 美光科技公司</h1></p>
+
+<p><blockquote><em>自动生成：2026-07-27 14:44</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>MU</td></tr></p>
+<p><tr><td>公司名称</td><td>美光科技公司</td></tr></p>
+<p><tr><td>所属板块</td><td>科技</td></tr></p>
+<p><tr><td>行业</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工人数</td><td>53,000</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>指标数据不可用。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h3>利润表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总营收</th><th>营业利润</th><th>净利润</th><th>摊薄每股收益</th></tr></p>
+<p><tr><td>2025-08-28</td><td>37378000000.0</td><td>9770000000.0</td><td>8539000000.0</td><td>7.6</td></tr></p>
+<p><tr><td>2024-08-29</td><td>25111000000.0</td><td>1304000000.0</td><td>778000000.0</td><td>0.7</td></tr></p>
+<p><tr><td>2023-08-31</td><td>15540000000.0</td><td>-5745000000.0</td><td>-5833000000.0</td><td>-5.3</td></tr></p>
+<p><tr><td>2022-09-01</td><td>30758000000.0</td><td>9702000000.0</td><td>8687000000.0</td><td>7.8</td></tr></p>
+<p><tr><td>2021-09-02</td><td>27705000000.0</td><td>6283000000.0</td><td>5861000000.0</td><td>5.1</td></tr></p>
+<p></table></p>
+
+<p><h3>资产负债表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总资产</th><th>总负债</th><th>总权益</th><th>现金及等价物</th></tr></p>
+<p><tr><td>2025-08-28</td><td>82798000000.0</td><td>28633000000.0</td><td>54165000000.0</td><td>9642000000.0</td></tr></p>
+<p><tr><td>2024-08-29</td><td>69416000000.0</td><td>24285000000.0</td><td>45131000000.0</td><td>7041000000.0</td></tr></p>
+<p><tr><td>2023-08-31</td><td>64254000000.0</td><td>20134000000.0</td><td>44120000000.0</td><td>8577000000.0</td></tr></p>
+<p><tr><td>2022-09-01</td><td>66283000000.0</td><td>16376000000.0</td><td>49907000000.0</td><td>8262000000.0</td></tr></p>
+<p><tr><td>2021-09-02</td><td>58849000000.0</td><td>14916000000.0</td><td>43933000000.0</td><td>7763000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>现金流量表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>经营现金流</th><th>折旧摊销</th></tr></p>
+<p><tr><td>2025-08-28</td><td>17525000000.0</td><td>8352000000.0</td></tr></p>
+<p><tr><td>2024-08-29</td><td>8507000000.0</td><td>7780000000.0</td></tr></p>
+<p><tr><td>2023-08-31</td><td>1559000000.0</td><td>7756000000.0</td></tr></p>
+<p><tr><td>2022-09-01</td><td>15181000000.0</td><td>7116000000.0</td></tr></p>
+<p><tr><td>2021-09-02</td><td>12468000000.0</td><td>6214000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>股价历史（K线）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>日期</th><th>开盘</th><th>最高</th><th>最低</th><th>收盘</th><th>成交量</th></tr></p>
+<p><tr><td>2026-07-13</td><td>929.0</td><td>943.5</td><td>902.6</td><td>937.0</td><td>35,536,239</td></tr></p>
+<p><tr><td>2026-07-14</td><td>988.4</td><td>994.8</td><td>950.1</td><td>983.1</td><td>30,835,225</td></tr></p>
+<p><tr><td>2026-07-15</td><td>975.8</td><td>978.4</td><td>873.6</td><td>904.3</td><td>54,779,242</td></tr></p>
+<p><tr><td>2026-07-16</td><td>866.8</td><td>887.7</td><td>840.5</td><td>853.2</td><td>46,718,034</td></tr></p>
+<p><tr><td>2026-07-17</td><td>822.5</td><td>904.0</td><td>804.0</td><td>849.0</td><td>63,346,278</td></tr></p>
+<p><tr><td>2026-07-20</td><td>885.6</td><td>901.0</td><td>858.9</td><td>865.5</td><td>37,705,237</td></tr></p>
+<p><tr><td>2026-07-21</td><td>925.4</td><td>982.9</td><td>916.6</td><td>970.8</td><td>49,369,020</td></tr></p>
+<p><tr><td>2026-07-22</td><td>938.2</td><td>982.6</td><td>936.1</td><td>959.5</td><td>31,588,637</td></tr></p>
+<p><tr><td>2026-07-23</td><td>975.1</td><td>1011.8</td><td>964.4</td><td>990.2</td><td>40,196,319</td></tr></p>
+<p><tr><td>2026-07-24</td><td>959.0</td><td>967.1</td><td>904.0</td><td>921.0</td><td>40,803,073</td></tr></p>
+<p></table></p>
+
+
+<p><h2>近期SEC文件</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>提交日期</th></tr></p>
+<p><tr><td>2026-07-17</td></tr></p>
+<p><tr><td>2026-07-06</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-06-30</td></tr></p>
+<p><tr><td>2026-06-30</td></tr></p>
+<p><tr><td>2026-06-25</td></tr></p>
+<p><tr><td>2026-06-24</td></tr></p>
+<p><tr><td>2026-06-11</td></tr></p>
+<p></table></p>
+
+<p><h2>同业</h2></p>
+
+<p><p>symbol='CSCO' name='思科系统公司' price=114.17 market_cap=449993595703, symbol='AMAT' name='应用材料公司' price=536.25 market_cap=425760513750, symbol='LRCX' name='泛林集团' price=305.21 market_cap=381686469700, symbol='ARM' name='Arm Holdings plc 美国存托股份' price=260.01 market_cap=276650640000, symbol='KLAC' name='科磊公司' price=210.52 market_cap=274998065600, symbol='TXN' name='德州仪器公司' price=279.58 market_cap=254443800940, symbol='IBM' name='国际商业机器公司' price=214.19 market_cap=201795681460, symbol='SAP' name='SAP SE' price=160.0 market_cap=186437626240, symbol='QCOM' name='高通公司' price=166.97 market_cap=175986380000, symbol='CRM' name='赛富时公司' price=163.66 market_cap=134037540000</p></p>
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手的冲击？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管护城河？<br>4. <strong>成本优势</strong> — 与同业相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [做多 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>当前定价所计入的关键假设：</strong> ___<br>- <strong>什么会改变我的想法：</strong> ___</blockquote></p>
+
+<p><p><em>上次数据刷新：2026-07-27 14:44</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-07-27 14:44 · AI投资系统</em></p>
+<p><em>相关：<a href="../companies/MU.html">MU</a> · <a href="../companies/同业比较.html">同业比较</a> · <a href="../companies/投资仪表盘.html">投资仪表盘</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

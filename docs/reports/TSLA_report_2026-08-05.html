@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSLA — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>TSLA</strong></span>
+  <span>TSLA</span>
+  <span>Unknown</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 TSLA — TSLA</h1>
+<blockquote><em>Investment Research Report · August 05, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/TSLA.html">TSLA</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/TSLA Valuation.html">TSLA Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Deteriorating profitability</strong>: FY2025 operating income fell to $4.36B from $7.08B in FY2024, with diluted EPS dropping to $1.08 from $2.04 — a 47% decline year-over-year.</li></p>
+<p><li><strong>Revenue stagnation</strong>: Total revenue was essentially flat at $94.83B in FY2025 vs $97.69B in FY2024, marking the first year of no growth after years of expansion.</li></p>
+<p><li><strong>Margin compression</strong>: Gross margin contracted to 18.0% in FY2025 from 17.9% in FY2024, while operating margin collapsed to 4.6% from 7.2% due to aggressive R&D spending (+41% YoY) and price cuts.</li></p>
+<p><li><strong>Balance sheet remains fortress-like</strong>: $44.06B in cash + short-term investments vs $6.58B long-term debt, providing ample liquidity for AI/robotaxi investments.</li></p>
+<p><li><strong>Valuation disconnect</strong>: At ~$450/share, the market is pricing in a technology/AI premium that current automotive fundamentals do not support — the stock trades at ~100x forward earnings.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Tesla operates two primary segments: <strong>Automotive</strong> (including EV sales, regulatory credits, and energy generation/storage) and <strong>Services & Other</strong> (including insurance, supercharging, and used car sales). The company is transitioning from a pure EV manufacturer to an AI/robotics platform company, with key initiatives in Full Self-Driving (FSD) software, the Optimus humanoid robot, and robotaxi deployment.</p></p>
+
+<p><p><strong>Competitive position</strong>: Tesla remains the EV market leader in the US, but faces intensifying competition globally — particularly from Chinese manufacturers like <a href="../companies/BYD.html">BYD</a> and legacy OEMs scaling EV production. The company's moat increasingly rests on its software stack (FSD), battery supply chain, and supercharger network rather than hardware alone.</p></p>
+
+<p><p><strong>Key strategic pivot</strong>: Management has shifted focus toward AI-driven autonomy and robotics, evidenced by R&D spending surging to $6.41B in FY2025 (up from $4.54B in FY2024). This pivot is reflected in the stock's valuation, which trades on optionality rather than current automotive earnings.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue</strong>: FY2025 total revenue was $94.83B, down 1.0% from FY2024's $97.69B. This marks a stark reversal from FY2023's $96.77B — the company has essentially been flat for three years, indicating market share saturation in core EV markets.</p></p>
+
+<p><p><strong>Margins</strong>: Gross profit declined to $17.09B (18.0% margin) from $17.45B (17.9% margin) in FY2024. The real deterioration is at the operating level: operating income fell to $4.36B (4.6% margin) from $7.08B (7.2% margin) — a 38% decline. This was driven by:</p></p>
+<p><ul></p>
+<p><li>R&D expense: $6.41B in FY2025 vs $4.54B in FY2024 (+41%)</li></p>
+<p><li>SG&A expense: $5.83B vs $5.15B (+13%)</li></p>
+<p><li>Restructuring charge: $390M in FY2025</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow</strong>: Operating cash flow remained resilient at $14.75B in FY2025 (vs $14.92B in FY2024), but capex surged to $8.53B (vs $11.34B in FY2024 — actually down). Free cash flow was $6.22B. The company invested heavily in short-term investments ($3.71B purchases), signaling capital allocation toward AI infrastructure.</p></p>
+
+<p><p><strong>Balance Sheet</strong>: Total assets grew to $137.81B from $122.07B. Cash + short-term investments stand at $44.06B vs $36.56B in FY2024. Total debt is manageable at $6.58B long-term. Shareholder equity increased to $82.14B from $72.91B.</p></p>
+
+<p><p><strong>EPS</strong>: Diluted EPS collapsed to $1.08 in FY2025 from $2.04 in FY2024 — a 47% decline. Basic EPS was $1.18 vs $2.23. The company continues aggressive buybacks, reducing diluted share count to 3.53B from 3.50B.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current multiples</strong> (based on ~$450/share and 3.53B diluted shares):</p></p>
+<p><ul></p>
+<p><li>Market cap: ~$1.59 trillion</li></p>
+<p><li>P/E (trailing): ~417x</li></p>
+<p><li>P/E (forward, assuming modest recovery): ~200-300x</li></p>
+<p><li>EV/EBITDA: ~180x (using FY2025 EBITDA of ~$9.39B)</li></p>
+<p><li>Price/Sales: ~16.8x</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer comparison</strong>: Tesla trades at a massive premium to traditional automakers (<a href="../companies/F.html">F</a>, <a href="../companies/GM.html">GM</a> trade at 5-8x earnings) and even high-growth tech peers. <a href="../companies/NVDA.html">NVDA</a> trades at ~30x forward earnings with 3x the growth rate. The premium is only justified if FSD/robotaxi/Optimus become material revenue drivers within 3-5 years.</p></p>
+
+<p><p><strong>Historical context</strong>: Tesla's 5-year average P/E is ~80-100x, so the current multiple is elevated even by its own standards. The market is pricing in a successful AI transition, not current fundamentals. At $450, the stock implies Tesla will capture a significant share of the autonomous mobility market — a high-conviction bet.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Autonomy execution failure</strong> <code>#critical</code></li></p>
+<p><p>FSD/robotaxi is the primary valuation driver. If regulatory approval stalls or technology underperforms competitors (<a href="../companies/GOOGL.html">GOOGL</a>'s Waymo), the stock could re-rate to automotive multiples (~30-40x earnings), implying 70-80% downside.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>EV demand destruction</strong> <code>#critical</code></li></p>
+<p><p>Revenue has been flat for three years ($96.8B → $97.7B → $94.8B). If global EV adoption slows further or price competition intensifies (especially from Chinese OEMs), gross margins could compress below 15%, making current profitability unsustainable.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin compression from AI investments</strong> <code>#medium</code></li></p>
+<p><p>R&D spending increased 41% YoY to $6.41B. If AI/robotics investments don't yield commercial products within 24 months, operating margins could remain depressed, reducing cash flow available for buybacks and further investment.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Key person risk</strong> <code>#medium</code></li></p>
+<p><p>Elon Musk's attention is divided across multiple companies (<a href="../companies/X.html">X</a>, xAI, SpaceX). His legal and political controversies could distract from Tesla operations or damage brand perception among core EV buyers.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Regulatory/legal overhang</strong> <code>#medium</code></li></p>
+<p><p>Ongoing investigations into FSD safety claims, NHTSA probes, and potential SEC actions could result in fines, forced recalls, or restrictions on autonomous deployment.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competitive displacement</strong> <code>#low</code></li></p>
+<p><p>While Tesla retains brand leadership, <a href="../companies/BYD.html">BYD</a> and other Chinese EV makers are gaining scale. If Tesla loses China market share (currently significant), revenue could decline further.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Robotaxi network launch</strong> <code>#near-term</code></li></p>
+<p><p>Management has repeatedly signaled a 2026 launch for unsupervised FSD in select markets. A successful pilot in Austin or California would validate the core thesis and could drive significant multiple expansion.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>FSD v13+ regulatory approvals</strong> <code>#near-term</code></li></p>
+<p><p>Any federal or state-level approval for unsupervised autonomous driving would be a major catalyst, potentially unlocking the robotaxi revenue stream.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Optimus humanoid robot progress</strong> <code>#medium-term</code></li></p>
+<p><p>If Optimus demonstrates production-ready capabilities (currently in development), it opens a massive TAM beyond automotive. Any major customer announcement or production milestone would be highly accretive to valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Energy storage acceleration</strong> <code>#medium-term</code></li></p>
+<p><p>Tesla's energy segment (Megapack, Powerwall) is growing faster than automotive. If management highlights this as a core growth driver, it could diversify the revenue base and reduce dependence on EV sales.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin recovery from cost cuts</strong> <code>#near-term</code></li></p>
+<p><p>The $390M restructuring charge in FY2025 suggests management is streamlining operations. If FY2026 shows operating margin recovery toward 7-8%, it would signal the worst of margin compression is over.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>New vehicle platform (Model 2)</strong> <code>#medium-term</code></li></p>
+<p><p>A lower-cost mass-market vehicle could reignite volume growth. Management has hinted at a 2026-2027 launch; any concrete timeline would be a positive catalyst.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>HOLD</strong> — Conviction: <strong>Medium</strong></p></p>
+
+<p><p><strong>12-month price target: $400</strong> (downside from current ~$450)</p></p>
+
+<p><p><strong>Thesis</strong>: Tesla's current valuation embeds near-perfect execution on autonomy and robotics. While the company's balance sheet ($44B cash) and technology leadership are undeniable, the fundamental business is deteriorating — revenue is flat, operating income is down 38%, and margins are compressing. The stock trades at ~100x forward earnings, pricing in a future that may not materialize on schedule.</p></p>
+
+<p><p><strong>Upside scenario</strong> ($550+): Robotaxi launch exceeds expectations, FSD regulatory approvals accelerate, and automotive margins stabilize. The AI premium is justified.</p></p>
+
+<p><p><strong>Downside scenario</strong> ($250-300): Autonomy delays, continued EV price wars, and margin compression force the market to re-rate Tesla as a traditional automaker with a software option.</p></p>
+
+<p><p><strong>Action</strong>: Do not initiate new positions at current levels. Existing holders should maintain positions given the optionality, but trim on any strength above $500. Wait for either (a) a pullback to $300-350 for a more attractive entry, or (b) concrete evidence of robotaxi revenue before adding. The risk/reward is balanced but not compelling at current prices.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>TSLA — TSLA</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-05 16:02</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>TSLA</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>94827000000.0</td><td>4355000000.0</td><td>3855000000.0</td><td>1.1</td></tr></p>
+<p><tr><td>2024-12-31</td><td>97690000000.0</td><td>7076000000.0</td><td>7153000000.0</td><td>2.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>96773000000.0</td><td>8891000000.0</td><td>14974000000.0</td><td>4.3</td></tr></p>
+<p><tr><td>2022-12-31</td><td>81462000000.0</td><td>13656000000.0</td><td>12587000000.0</td><td>3.6</td></tr></p>
+<p><tr><td>2021-12-31</td><td>53823000000.0</td><td>6523000000.0</td><td>5644000000.0</td><td>1.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>137806000000.0</td><td>54941000000.0</td><td>82137000000.0</td><td>16513000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>122070000000.0</td><td>48390000000.0</td><td>72913000000.0</td><td>16139000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>106618000000.0</td><td>43009000000.0</td><td>62634000000.0</td><td>16398000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>82338000000.0</td><td>36440000000.0</td><td>44704000000.0</td><td>16253000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>62131000000.0</td><td>30548000000.0</td><td>30189000000.0</td><td>17576000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>14747000000.0</td><td>5030000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>14923000000.0</td><td>4120000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>13256000000.0</td><td>3330000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>14724000000.0</td><td>2420000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>11497000000.0</td><td>1961000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-05 16:02</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-05 16:02 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/TSLA.html">TSLA</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
