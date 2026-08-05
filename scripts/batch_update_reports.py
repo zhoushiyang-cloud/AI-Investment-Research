@@ -52,7 +52,7 @@ def run_step(ticker: str, step_name: str, cmd: list[str]) -> bool:
             cmd, cwd=str(PROJECT_ROOT),
             capture_output=True, text=True,
             encoding="utf-8", errors="replace",
-            timeout=180,
+            timeout=360,
         )
         if result.returncode == 0:
             # Extract OK/status line
