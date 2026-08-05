@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAOI — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>AAOI</strong></span>
+  <span>Applied Optoelectronics, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-05</span>
+</div>
+<hr>
+
+<h1>📊 AAOI — Applied Optoelectronics, Inc.</h1>
+<blockquote><em>投资研究报告 · 2026年8月5日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/AAOI.html">AAOI</a></td><td><strong>所属板块：</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/AAOI Valuation.html">AAOI Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>爆发式增长拐点</strong>：2025财年营收同比飙升 <strong>82.8%</strong> 至 <strong>4.557亿美元</strong>（2024财年为2.494亿美元），主要受AI数据中心光模块需求驱动。市场已消化持续超高速增长的预期，股价较52周低点18.50美元上涨约 <strong>610%</strong>。</li></p>
+<p><li><strong>盈利能力仍待实现</strong>：尽管营收激增，AAOI在2025财年仍录得 <strong>净亏损 -3820万美元</strong>（较2024财年的-1.867亿美元有所改善）。毛利率扩大至 <strong>30.0%</strong>（2024财年为24.8%），但高额研发支出（8550万美元）和经营亏损（-5460万美元）依然存在。</li></p>
+<p><li><strong>资产负债表转型</strong>：AAOI在2025财年通过股权融资筹集 <strong>5.189亿美元</strong>，将现金提升至 <strong>2.061亿美元</strong>，总权益增至 <strong>7.339亿美元</strong>（2024财年为2.291亿美元）。这消除了短期偿债风险，但显著稀释了现有股东权益。</li></p>
+<p><li><strong>极度波动</strong>：Beta值为 <strong>3.69</strong>；股价在最近10个交易日内从 <strong>76.01美元</strong> 波动至 <strong>136.27美元</strong>。2026年8月4日的飙升（+19.4%至131.63美元）表明刚刚发生了重大催化剂事件（可能是客户订单或财报超预期）。</li></p>
+<p><li><strong>估值具有投机性</strong>：按 <strong>105.6亿美元市值</strong> 对比4.557亿美元营收计算，该股交易价格约为 <strong>23.2倍滚动市销率</strong> —— 市场已定价完美执行及对<a href="../companies/AVGO.html">AVGO</a>和<a href="../companies/COHR.html">COHR</a>等现有巨头的大幅市场份额抢占。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p>Applied Optoelectronics (AAOI) 设计并制造光纤网络产品，包括 <strong>光收发器、激光组件和交钥匙系统</strong>。公司成立于1997年，总部位于德克萨斯州舒格兰，服务于三个主要终端市场：</p></p>
+<p><ul></p>
+<p><li><strong>互联网数据中心运营商</strong>（最大且增长最快的业务板块）—— 用于AI/ML集群的800G/1.6T光模块</li></p>
+<p><li><strong>有线电视（CATV）设备制造商</strong> —— 传统头端和节点基础设施</li></p>
+<p><li><strong>电信/ISP服务商</strong> —— 光纤到户和长途传输设备</li></p>
+<p></ul></p>
+
+<p><p><strong>竞争定位</strong>：AAOI是 <strong>二线光模块供应商</strong>，在高速数通市场与<a href="../companies/COHR.html">COHR</a>（Coherent）、<a href="../companies/LITE.html">LITE</a>（Lumentum）、<a href="../companies/AVGO.html">AVGO</a>（Broadcom）和<a href="../companies/MRVL.html">MRVL</a>（Marvell）竞争。其关键差异化优势在于 <strong>垂直整合</strong> —— 自产激光器和光电探测器 —— 这提供了成本优势和供应链控制能力。公司已赢得 <strong>美国主要超大规模云厂商</strong>（微软、Meta、亚马逊）的800G模块设计订单，推动了2025财年的营收拐点。</p></p>
+
+<p><p><strong>客户集中风险</strong>：前几大客户占营收比例过高（本次文件中未提供数据，但历史上2-3家客户占比超过50%）。2026年8月4日的股价飙升表明有新客户合同或现有合同扩展的公告，但具体细节未在提供的数据中体现。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>营收与盈利能力</strong>：</p></p>
+<p><ul></p>
+<p><li>2025财年营收：<strong>4.557亿美元</strong>（同比增长82.8%，2024财年为2.494亿美元）</li></p>
+<p><li>2024财年营收：<strong>2.494亿美元</strong>（同比增长14.6%，2023财年为2.176亿美元）</li></p>
+<p><li>2025财年毛利润：<strong>1.369亿美元</strong>（毛利率30.0%），2024财年为6180万美元（24.8%）—— 毛利率扩张源于经营杠杆及产品结构向高毛利800G模块的转变</li></p>
+<p><li>2025财年经营亏损：<strong>-5460万美元</strong>（较2024财年的-7090万美元有所改善）—— 研发支出 <strong>8550万美元</strong>（同比增长55.7%）是主要拖累因素</li></p>
+<p><li>2025财年净亏损：<strong>-3820万美元</strong>（每股收益：<strong>-0.64美元</strong>），2024财年为-1.867亿美元（每股收益：-4.50美元）—— 营收规模效应及 <strong>960万美元其他收入</strong> 收益带来大幅改善</li></p>
+<p></ul></p>
+
+<p><p><strong>现金流与资产负债表</strong>：</p></p>
+<p><ul></p>
+<p><li>2025财年经营现金流：<strong>-1.744亿美元</strong>（较-6950万美元恶化）—— 营运资金被 <strong>应收账款增加1.276亿美元</strong> 和 <strong>存货增加1.007亿美元</strong> 所吸收，以支持增长</li></p>
+<p><li>2025财年资本支出：<strong>-1.791亿美元</strong> —— 对制造产能（1.6T产品的新晶圆厂/组装线）进行大规模投资</li></p>
+<p><li>2025财年股权融资：<strong>5.189亿美元</strong> —— 资产负债表转型；现金现为 <strong>2.061亿美元</strong>，2024财年末为6740万美元</li></p>
+<p><li>总资产：<strong>11.68亿美元</strong>（2024财年为5.47亿美元）；总权益：<strong>7.339亿美元</strong>（2024财年为2.291亿美元）</li></p>
+<p><li>债务：<strong>3398万美元</strong> 流动部分 + 0美元长期债务（2025财年已偿还）—— 杠杆率极低</li></p>
+<p></ul></p>
+
+<p><p><strong>关键担忧</strong>：公司 <strong>现金消耗正在加速</strong>（经营-1.744亿美元 + 投资-1.791亿美元 = 2025财年总消耗-3.535亿美元）。5.189亿美元的融资按当前消耗速度可提供约18个月的运营资金，但 <strong>如果增长未能转化为正向自由现金流，到2027年中可能需要进行另一次稀释性融资</strong>。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><p><strong>当前倍数</strong>（基于131.63美元股价、105.6亿美元市值）：</p></p>
+<p><ul></p>
+<p><li><strong>市盈率</strong>：不适用（盈利为负）</li></p>
+<p><li><strong>EV/营收（滚动）</strong>：约 <strong>23.2倍</strong>（105.6亿美元市值 + 3400万美元债务 - 2.06亿美元现金 = 103.9亿美元EV / 4.557亿美元营收）</li></p>
+<p><li><strong>EV/EBITDA</strong>：不适用（EBITDA约为-2700万美元）</li></p>
+<p><li><strong>市销率（前瞻）</strong>：若2026财年营收翻倍至约9亿美元，前瞻市销率仍约为 <strong>11.7倍</strong></li></p>
+<p></ul></p>
+
+<p><p><strong>同行比较</strong>（基于提供的数据）：</p></p>
+<p><table class="md-table"></p>
+<p><tr><th>公司</th><th>市值</th><th>市销率（滚动）</th></tr></p>
+<p><tr><td><a href="../companies/MXL.html">MXL</a> MaxLinear</td><td>66.0亿美元</td><td>约8.5倍</td></tr></p>
+<p><tr><td><a href="../companies/VSH.html">VSH</a> Vishay</td><td>54.9亿美元</td><td>约1.5倍</td></tr></p>
+<p><tr><td><a href="../companies/KLIC.html">KLIC</a> Kulicke</td><td>49.1亿美元</td><td>约3.5倍</td></tr></p>
+<p><tr><td><a href="../companies/LASR.html">LASR</a> nLIGHT</td><td>43.5亿美元</td><td>约12倍</td></tr></p>
+<p><tr><td><strong>AAOI</strong></td><td><strong>105.6亿美元</strong></td><td><strong>约23.2倍</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>评估</strong>：AAOI的交易价格 <strong>显著高于所有同行</strong> —— 甚至高于<a href="../companies/LASR.html">LASR</a>（12倍）和<a href="../companies/MXL.html">MXL</a>（8.5倍）等高增长光学同行。市场已定价：</p></p>
+<p><ol></p>
+<p><li><strong>2026财年营收翻倍</strong> 至约9亿美元以上</li></p>
+<p><li><strong>2027财年持续50%以上增长</strong>，随着1.6T模块放量</li></p>
+<p><li><strong>毛利率扩大至35%以上</strong>，随着产能利用率提升</li></p>
+<p><li><strong>2027财年前实现盈利路径</strong></li></p>
+<p></ol></p>
+
+<p><p><strong>只有当AAOI在第二家超大规模云厂商（除微软外）获得前二大供应商地位，并完美执行产能扩张时，该估值才合理</strong>。按23倍滚动营收计算，<strong>容错空间为零</strong> —— 任何客户份额流失或产品延期都将引发50%以上的回调。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>客户集中与单点故障</strong> <code>#critical</code></li></p>
+<p><p>营收高度依赖1-2家超大规模云厂商客户（数据未提供，但该行业普遍如此）。失去单一800G设计订单或客户转向<a href="../companies/COHR.html">COHR</a>/<a href="../companies/AVGO.html">AVGO</a>将摧毁增长叙事。股价610%的涨幅假设这些合同已锁定 —— 但事实并非如此。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>现金消耗与稀释循环</strong> <code>#critical</code></li></p>
+<p><p>2025财年总现金消耗为 <strong>-3.535亿美元</strong>（经营+资本支出）。按此速度，2.061亿美元现金余额仅能维持 <strong>约7个月</strong> 而无需额外融资。公司可能在2026年需要再次融资 <strong>3-5亿美元</strong>，导致进一步稀释。加权平均流通股数从2024财年的4150万股增至6020万股 —— 股本增加45%。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>技术迭代风险</strong> <code>#medium</code></li></p>
+<p><p>行业正从800G快速向 <strong>1.6T光模块</strong> 过渡。AAOI在1.6T领域的竞争地位尚未得到验证。如果<a href="../companies/AVGO.html">AVGO</a>或<a href="../companies/COHR.html">COHR</a>推出能效更优的1.6T产品，AAOI可能完全失去下一轮设计周期。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>竞争导致的利润率压缩</strong> <code>#medium</code></li></p>
+<p><p>30.0%的毛利率低于行业领导者（<a href="../companies/AVGO.html">AVGO</a>光学业务约40%以上）。随着超大规模云厂商在批量订单上推动降价，AAOI的毛利率扩张故事可能停滞。公司需要 <strong>35%以上的毛利率</strong> 才能达到盈亏平衡 —— 考虑到当前成本结构，这是一个重大挑战。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>极度波动与动量反转</strong> <code>#medium</code></li></p>
+<p><p>Beta值为 <strong>3.69</strong>，意味着该股波动约为市场的3.7倍。最近10个交易日的区间为 <strong>76.01美元至136.27美元</strong>（79%的波动幅度），凸显其投机性质。鉴于当前估值，季度指引的任何不及预期都可能引发 <strong>50%以上的回撤</strong>。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>地缘政治/供应链</strong> <code>#low</code></li></p>
+<p><p>制造集中在德克萨斯州和中国（具体比例数据未提供）。关税或光学元件出口管制可能中断供应或推高成本。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ol></p>
+<p><li><strong>新超大规模云厂商设计订单</strong> <code>#near-term</code></li></p>
+<p><p>2026年8月4日股价飙升（+19.4%至131.63美元，成交量2060万股 —— 为平均成交量的2倍）强烈暗示有重大客户公告。如果AAOI获得第二或第三家超大规模云厂商的800G/1.6T模块订单，2026财年营收可能超过10亿美元。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>2026财年指引上调</strong> <code>#near-term</code></li></p>
+<p><p>基于2025财年4.557亿美元的营收，管理层可能将2026财年指引设定为 <strong>8亿-10亿美元</strong>（增长75-120%）。下一次财报电话会议上的超预期并上调指引将验证当前估值。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>毛利率拐点</strong> <code>#near-term</code></li></p>
+<p><p>如果未来两个季度毛利率从30.0%扩大至 <strong>33-35%</strong>，则表明经营杠杆正在发挥作用 —— 这是通往盈利路径的关键驱动因素。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>1.6T产品认证</strong> <code>#medium-term</code></li></p>
+<p><p>成功通过现有客户的1.6T收发器认证将把增长跑道延伸至2027-2028年，并支撑溢价估值。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>正向经营现金流</strong> <code>#medium-term</code></li></p>
+<p><p>如果AAOI能在2026年第四季度实现 <strong>正向经营现金流</strong>（随着应收账款/存货增长正常化），将消除稀释压力，显著降低股权故事的风险。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 投资建议</div><div class="callout-body"><p><strong>持有</strong>（信心度：中等）</p></p>
+
+<p><p><strong>12个月目标价：120-150美元</strong>（当前：131.63美元）</p></p>
+
+<p><p><strong>核心论点</strong>：AAOI在超高速增长市场中执行良好 —— 2025财年营收增长82.8%，净亏损改善5.3倍，表明运营取得实质性进展。公司已在AI光模块供应链中站稳脚跟，并拥有（5.189亿美元融资后的）资产负债表来支持扩张。</p></p>
+
+<p><p><strong>然而，当前水平的风险回报比趋于平衡。</strong> 按23倍滚动营收计算，市场已定价完美执行。股价自低点上涨610%，近期波动（10个交易日内79%的日内区间）表明仓位过热。虽然8月4日的催化剂可能预示着重大胜利，但在推荐新增资金配置之前，我们需要 <strong>对2026财年指引和毛利率轨迹的可见性</strong>。</p></p>
+
+<p><p><strong>操作建议</strong>：现有持仓者应在强势中 <strong>减持20-30%</strong> 仓位（130美元以上）以锁定收益。新投资者应 <strong>等待回调至90-100美元</strong>（18-20倍前瞻营收）或确认持续盈利能力后再建仓。公司必须证明 <strong>正向经营现金流</strong> 和 <strong>35%以上毛利率</strong>，才能在当前估值下支撑买入评级。</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>（点击展开）</em></div><div class="callout-body"></p>
+<p><h1>AAOI — Applied Optoelectronics, Inc.</h1></p>
+
+<p><blockquote><em>自动生成：2026-08-05 08:52</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>公司简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>AAOI</td></tr></p>
+<p><tr><td>公司名称</td><td>Applied Optoelectronics, Inc.</td></tr></p>
+<p><tr><td>所属板块</td><td>Technology</td></tr></p>
+<p><tr><td>行业</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工人数</td><td>4,691</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>指标数据不可用。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h3>利润表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总营收</th><th>营业利润</th><th>净利润</th><th>摊薄每股收益</th></tr></p>
+<p><tr><td>2025-12-31</td><td>455715000.0</td><td>-54602000.0</td><td>-38228000.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2024-12-31</td><td>249365000.0</td><td>-70908000.0</td><td>-186733000.0</td><td>-4.5</td></tr></p>
+<p><tr><td>2023-12-31</td><td>217646000.0</td><td>-41349000.0</td><td>-56048000.0</td><td>-1.8</td></tr></p>
+<p><tr><td>2022-12-31</td><td>222818000.0</td><td>-58998000.0</td><td>-66397000.0</td><td>-2.4</td></tr></p>
+<p><tr><td>2021-12-31</td><td>211565000.0</td><td>-56766000.0</td><td>-54162000.0</td><td>-2.0</td></tr></p>
+<p></table></p>
+
+<p><h3>资产负债表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>总资产</th><th>总负债</th><th>总权益</th><th>现金及现金等价物</th></tr></p>
+<p><tr><td>2025-12-31</td><td>1168423000.0</td><td>434505000.0</td><td>733918000.0</td><td>206140000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>547032000.0</td><td>317920000.0</td><td>229112000.0</td><td>67428000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>389186000.0</td><td>174317000.0</td><td>214869000.0</td><td>45366000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>408263000.0</td><td>223593000.0</td><td>184670000.0</td><td>24685000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>454459000.0</td><td>199889000.0</td><td>254570000.0</td><td>34656000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>现金流量表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>报告期</th><th>经营现金流</th><th>折旧摊销</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-174428000.0</td><td>27600000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-69526000.0</td><td>20600000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-7929000.0</td><td>20400000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-14022000.0</td><td>23200000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-11644000.0</td><td>25300000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>股价历史（K线）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>日期</th><th>开盘</th><th>最高</th><th>最低</th><th>收盘</th><th>成交量</th></tr></p>
+<p><tr><td>2026-07-22</td><td>115.0</td><td>117.5</td><td>110.0</td><td>110.5</td><td>8,072,997</td></tr></p>
+<p><tr><td>2026-07-23</td><td>108.6</td><td>119.7</td><td>108.2</td><td>112.0</td><td>6,288,557</td></tr></p>
+<p><tr><td>2026-07-24</td><td>109.0</td><td>109.7</td><td>99.5</td><td>100.2</td><td>7,103,569</td></tr></p>
+<p><tr><td>2026-07-27</td><td>100.6</td><td>102.9</td><td>92.2</td><td>97.8</td><td>6,662,393</td></tr></p>
+<p><tr><td>2026-07-28</td><td>93.0</td><td>93.3</td><td>81.5</td><td>88.1</td><td>10,840,292</td></tr></p>
+<p><tr><td>2026-07-29</td><td>88.2</td><td>88.3</td><td>76.0</td><td>76.5</td><td>12,204,268</td></tr></p>
+<p><tr><td>2026-07-30</td><td>83.3</td><td>90.7</td><td>82.8</td><td>90.1</td><td>10,949,179</td></tr></p>
+<p><tr><td>2026-07-31</td><td>100.1</td><td>103.2</td><td>91.0</td><td>94.3</td><td>9,739,870</td></tr></p>
+<p><tr><td>2026-08-03</td><td>89.8</td><td>111.0</td><td>88.1</td><td>110.2</td><td>12,055,507</td></tr></p>
+<p><tr><td>2026-08-04</td><td>128.6</td><td>136.3</td><td>123.5</td><td>131.6</td><td>20,618,886</td></tr></p>
+<p></table></p>
+
+
+<p><h2>近期SEC文件</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>提交日期</th></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-07-27</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-23</td></tr></p>
+<p><tr><td>2026-07-14</td></tr></p>
+<p><tr><td>2026-07-01</td></tr></p>
+<p></table></p>
+
+<p><h2>同行公司</h2></p>
+
+<p><p>symbol='MXL' name='MaxLinear, Inc.' price=72.72 market_cap=6595208850, symbol='VSH' name='Vishay Intertechnology, Inc.' price=38.85 market_cap=5488757371, symbol='KLIC' name='Kulicke and Soffa Industries, Inc.' price=93.85 market_cap=4911440506, symbol='LASR' name='nLIGHT, Inc.' price=77.18 market_cap=4353623466, symbol='UCTT' name='Ultra Clean Holdings, Inc.' price=84.54 market_cap=3789788878, symbol='POWI' name='Power Integrations, Inc.' price=64.57 market_cap=3597839367, symbol='VECO' name='Veeco Instruments Inc.' price=53.8 market_cap=3283601493, symbol='SONO' name='Sonos, Inc.' price=16.42 market_cap=1942387480, symbol='PGY' name='Pagaya Technologies Ltd.' price=21.92 market_cap=1828694479, symbol='DQ' name='Daqo New Energy Corp.' price=13.41 market_cap=907402891</p></p>
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手的冲击？</em><br>1. <strong>转换成本</strong> —— 客户离开的难度有多大？<br>2. <strong>网络效应</strong> —— 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> —— 专利、品牌、监管护城河？<br>4. <strong>成本优势</strong> —— 与同行相比的结构性成本地位？<br>5. <strong>有效规模</strong> —— 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [做多 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>市场已定价的关键假设：</strong> ___<br>- <strong>什么会改变我的想法：</strong> ___</blockquote></p>
+
+<p><p><em>上次数据刷新：2026-08-05 08:52</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-08-05 08:52 · AI投资系统</em></p>
+<p><em>相关：<a href="../companies/AAOI.html">AAOI</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
