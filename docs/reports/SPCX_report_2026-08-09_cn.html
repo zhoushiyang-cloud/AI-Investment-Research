@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPCX — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>SPCX</strong></span>
+  <span>太空探索技术公司</span>
+  <span>工业</span>
+  <span>2026-08-09</span>
+</div>
+<hr>
+
+<h1>📊 SPCX — 太空探索技术公司</h1>
+<blockquote><em>投资研究报告 · 2026年8月9日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/SPCX.html">SPCX</a></td><td><strong>行业：</strong> <a href="../companies/工业板块.html">工业板块</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/投资仪表盘.html">投资仪表盘</a></td><td><a href="../companies/同业比较.html">同业比较</a></td><td><a href="../companies/SPCX估值.html">SPCX估值</a></td></tr></p>
+<p><tr><td>- <a href="../companies/工业板块.html">工业板块</a></td><td><a href="../companies/经济指标.html">经济指标</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>SPCX在过去10个交易日飙升+17.3%</strong>（从113.50美元涨至133.11美元），于2026年8月7日收于10日高点133.48美元，成交量巨大（2.42亿股，而平均成交量为1.1亿股）。</li></p>
+<p><li><strong>该公司是一家垂直整合的太空垄断企业</strong>，在发射服务（猎鹰9号/猎鹰重型）、载人/货运运输（龙飞船）和卫星宽带（星链）领域占据主导地位，同时服务政府和商业客户。</li></p>
+<p><li><strong>市值达1.74万亿美元</strong>，无股息，贝塔系数为零，反映出市场以完美定价的纯增长叙事；该股较52周高点225.64美元低41%。</li></p>
+<p><li><strong>近期内部人士活动显示既有股权授予，也有一笔以105.32美元进行的公开市场卖出</strong>，表明内部人士正在变现股权，但并未在当前价位大举抛售。</li></p>
+<p><li><strong>我们首次给予“持有”评级</strong> — 业务基本面卓越，但估值未留任何安全边际，且该股极端波动（日振幅8-10%）要求投资者耐心等待更好的入场点。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p>太空探索技术公司（<a href="../companies/SPCX.html">SPCX</a>）是全球领先的私人太空公司，成立于2002年，总部位于得克萨斯州星舰基地，拥有22,000名员工。公司运营三大核心业务板块：</p></p>
+
+<p><ul></p>
+<p><li><strong>发射服务（约占收入45%）</strong> — 猎鹰9号和猎鹰重型为商业、民用和国家安全提供发射能力。该公司实际上<strong>垄断了美国轨道发射市场</strong>，几乎保持每周发射的节奏，其可重复使用的第一级架构在每公斤成本上大幅低于竞争对手。</li></p>
+<p><li><strong>星链（约占收入40%）</strong> — 卫星宽带星座是公司的现金牛，服务于美国、爱尔兰和加拿大的消费者、企业和海事/航空市场。凭借数千颗在轨卫星，星链已成为<strong>低轨宽带的主导提供商</strong>，并正在拓展至手机直连卫星和企业政府合同。</li></p>
+<p><li><strong>星舰与龙飞船（约占收入15%）</strong> — 龙飞船为国际空间站和商业低轨目的地提供载人和货运服务。星舰目前处于亚轨道/轨道飞行测试阶段，是深空任务（月球、火星）和重型载荷的长期增长引擎。星盾服务于政府传感、通信和卫星平台需求。</li></p>
+<p></ul></p>
+
+<p><p><strong>竞争地位：</strong> SPCX在美国发射领域没有可信的近期竞争对手（<a href="../companies/BA.html">BA</a>和<a href="../companies/LMT.html">LMT</a>在可重复使用技术上落后数十年），星链仅面临来自<a href="../companies/AMZN.html">AMZN</a>柯伊伯项目的初步竞争。公司的垂直整合 — 从制造到发射再到卫星运营 — 创造了无与伦比的成本和速度优势。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>收入与盈利能力：</strong> 所提供数据中<strong>未包含</strong>具体的收入和EBITDA数据。然而，1.74万亿美元的市值意味着市场正在定价超高速增长。公司的商业模式高度资本密集（火箭制造、卫星生产、发射基础设施），但星链的经常性订阅收入提供了稳定、高利润率的基盘，可能抵消发射业务的波动性。</p></p>
+
+<p><p><strong>资产负债表与现金流：</strong> 数据不可用。公司历史上以股权和债务混合方式私募融资；作为新上市公司（首个股价日期：2026年6月12日），资产负债表结构尚不透明。零股息（年化0.0美元）确认所有现金正被再投资于星舰开发和星链扩张。</p></p>
+
+<p><p><strong>价格走势与流动性：</strong> 该股流动性极高（日均成交量1.1亿股），但波动极大。过去10个交易日中，日振幅较大：8月5日振幅10.84美元（112.37→106.66），成交量2.08亿股；8月7日振幅18.95美元（114.53→133.48），成交量2.42亿股。52周区间为104.83–225.64美元，表明<strong>IPO后价格发现过程显著</strong>。</p></p>
+
+<p><p><strong>内部人士活动：</strong> 近期申报显示有Rule 16b-3(d)股权授予（薪酬）、一笔以105.32美元进行的公开市场卖出，以及若干衍生品转换。这一模式是IPO后锁定期到期的典型表现 — 内部人士正在分散投资，但并未发出困境信号。以105.32美元的卖出价明显<strong>低于当前价格133.11美元</strong>，表明部分内部人士提前卖出。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><p><strong>估值倍数：</strong> 鉴于市值1.74万亿美元且无盈利数据，我们无法计算市盈率或EV/EBITDA。但我们可以对标更广泛的航空航天与国防板块：<a href="../companies/BA.html">BA</a>市值约1500亿美元，<a href="../companies/LMT.html">LMT</a>约1100亿美元，<a href="../companies/RTX.html">RTX</a>约1600亿美元。SPCX的市值是<strong>最大传统国防承包商（prime contractor）的约11倍</strong>，尽管其收入仅为后者的零头。这意味着<strong>市销率可能在20-30倍区间</strong>（假设收入为600-800亿美元），这对工业企业而言是前所未有的。</p></p>
+
+<p><p><strong>合理性：</strong> 溢价部分合理，理由如下：</p></p>
+<p><ol></p>
+<p><li><strong>垄断经济学</strong> — 没有竞争对手能匹敌SPCX的发射频率或成本结构。</li></p>
+<p><li><strong>星链的经常性收入</strong> — 基于订阅的宽带业务，拥有全球TAM（潜在市场总量）。</li></p>
+<p><li><strong>星舰的期权价值</strong> — 如果星舰实现完全可重复使用，可能颠覆整个太空物流市场。</li></p>
+<p></ol></p>
+
+<p><p><strong>然而</strong>，该股较52周高点（225.64美元）低41%，表明市场已在质疑IPO初期暴涨的可持续性。在133.11美元价位，股价已定价星舰的完美执行以及星链用户数的持续增长。<strong>不存在安全边际</strong> — 任何执行失误都可能引发30-50%的回撤。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>星舰开发失败或延迟</strong> <code>#critical</code></li></p>
+<p><p>星舰是长期投资逻辑的关键。灾难性的测试失败或监管停飞（FAA）可能将火星/月球时间表推迟数年，摧毁增长溢价。该股10日的波动性表明其对消息面的敏感程度。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>估值压缩</strong> <code>#critical</code></li></p>
+<p><p>在1.74万亿美元市值下，SPCX已被完美定价。如果星链用户增长减速或发射频率下滑，估值倍数可能剧烈压缩。该股已从高点下跌41% — 在避险环境下进一步回撤50%至约65美元是可能的。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>关键人物风险 — 埃隆·马斯克</strong> <code>#medium</code></li></p>
+<p><p>马斯克是公司的远见者和运营驱动力。任何健康问题、法律纠纷或分心（例如他的其他公司<a href="../companies/TSLA.html">TSLA</a>、<a href="../companies/X.html">X</a>）都可能惊吓投资者。以105.32美元的内部人士卖出可能暗示个人流动性需求。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>来自<a href="../companies/AMZN.html">AMZN</a>柯伊伯项目的竞争</strong> <code>#medium</code></li></p>
+<p><p>柯伊伯项目计划于2026-2027年发射首批生产卫星。如果亚马逊在价格上低于星链或与AWS捆绑销售，可能对星链的ARPU（每用户平均收入）和用户增长构成压力。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>监管与地缘政治风险</strong> <code>#medium</code></li></p>
+<p><p>SPCX高度依赖美国政府合同（NASA、国防部、NRO）。政府更迭或预算优先级的改变可能减少发射需求。国际扩张（爱尔兰、加拿大）使公司面临外国监管风险。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>IPO后锁定期到期</strong> <code>#low</code></li></p>
+<p><p>公司于2026年6月上市。锁定期到期通常发生在IPO后180天（2026年12月）。近期内部人士卖出表明早期投资者开始变现 — 一波抛售潮可能对股价构成压力。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ul></p>
+<p><li><strong>星舰轨道飞行成功</strong> <code>#near-term</code></li></p>
+<p><p>一次成功的完整轨道测试并回收助推器将验证整个星舰计划，很可能触发强劲反弹。这是未来6个月内最重要的单一催化剂。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>星链手机直连卫星商用</strong> <code>#near-term</code></li></p>
+<p><p>手机直连卫星服务的商业推广（与移动运营商合作）将打开一个巨大的新TAM，并展示星链颠覆电信行业的能力。关注FCC批准和运营商公告。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>政府合同中标</strong> <code>#near-term</code></li></p>
+<p><p>额外的NRO/国防部发射合同或NASA阿尔忒弥斯月球着陆合同（星舰HLS）将提供收入可见性并降低星舰时间表的风险。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Q2/Q3财报发布</strong> <code>#near-term</code></li></p>
+<p><p>作为新上市公司，首份财报将受到密切关注。任何关于星链用户数、发射收入或星舰开发成本的披露都将设定新的估值基准。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>星链IPO或分拆</strong> <code>#medium-term</code></li></p>
+<p><p>如果SPCX宣布星链部分IPO（此前有传闻），可能释放价值并提供更清晰的分类加总估值。这可能在12-18个月内成为重大正面催化剂。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>国际宽带扩张</strong> <code>#medium-term</code></li></p>
+<p><p>星链获得新的国家运营许可（如印度、巴西、日本）将扩大可寻址市场并推动用户增长，支撑收入倍数。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 建议</div><div class="callout-body"><p><strong>持有 — 信心程度：中等</strong></p></p>
+
+<p><p><strong>12个月目标价：125–150美元</strong>（基准情形：135美元，反映当前水平）</p></p>
+
+<p><p><strong>投资逻辑：</strong> SPCX是一家具有真正太空发射垄断地位和快速扩张宽带业务的世代级公司。然而，该股在1.74万亿美元市值下已被完美定价，且极端波动（10日区间104.83–133.48美元）表明市场仍在IPO后发现公允价值。</p></p>
+
+<p><p><strong>我们建议现有股东持有</strong> — 不要在当前水平加仓。<strong>新投资者应等待回调至105–110美元区间</strong>（接近52周低点和内部人士卖出价格）再建仓，以获得更好的风险回报比。</p></p>
+
+<p><p><strong>上行情景：</strong> 星舰轨道飞行成功 + 星链用户数强劲增长可能推动股价在12个月内升至175–200美元（接近52周高点）。</p></p>
+
+<p><p><strong>下行情景：</strong> 星舰失败或估值压缩可能将股价推至70–80美元，即40-50%的回撤。</p></p>
+
+<p><p><strong>关键监测指标：</strong> 星舰测试时间表、星链用户数披露、内部人士卖出模式以及任何监管行动。风险回报平衡，但在133.11美元价位尚不足以构成“买入”评级。</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>(点击展开)</em></div><div class="callout-body"></p>
+<p><h1>SPCX — 太空探索技术公司</h1></p>
+
+<p><blockquote><em>自动生成：2026-08-09 15:07</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>SPCX</td></tr></p>
+<p><tr><td>名称</td><td>太空探索技术公司</td></tr></p>
+<p><tr><td>行业</td><td>工业</td></tr></p>
+<p><tr><td>子行业</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工数</td><td>22,000</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>指标数据不可用。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h2>价格历史（K线）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>日期</th><th>开盘</th><th>最高</th><th>最低</th><th>收盘</th><th>成交量</th></tr></p>
+<p><tr><td>2026-07-27</td><td>113.5</td><td>114.8</td><td>108.7</td><td>113.5</td><td>64,540,679</td></tr></p>
+<p><tr><td>2026-07-28</td><td>109.3</td><td>118.1</td><td>107.0</td><td>116.4</td><td>81,714,250</td></tr></p>
+<p><tr><td>2026-07-29</td><td>114.4</td><td>117.6</td><td>110.3</td><td>112.5</td><td>53,995,189</td></tr></p>
+<p><tr><td>2026-07-30</td><td>115.1</td><td>118.9</td><td>111.4</td><td>112.2</td><td>56,007,950</td></tr></p>
+<p><tr><td>2026-07-31</td><td>113.1</td><td>113.6</td><td>107.6</td><td>108.4</td><td>58,835,713</td></tr></p>
+<p><tr><td>2026-08-03</td><td>106.4</td><td>114.9</td><td>104.8</td><td>114.5</td><td>70,524,025</td></tr></p>
+<p><tr><td>2026-08-04</td><td>117.3</td><td>126.7</td><td>115.7</td><td>125.3</td><td>144,130,084</td></tr></p>
+<p><tr><td>2026-08-05</td><td>112.4</td><td>117.5</td><td>106.7</td><td>108.3</td><td>208,488,385</td></tr></p>
+<p><tr><td>2026-08-06</td><td>107.1</td><td>115.8</td><td>105.1</td><td>114.9</td><td>255,176,620</td></tr></p>
+<p><tr><td>2026-08-07</td><td>115.0</td><td>133.5</td><td>114.5</td><td>133.1</td><td>242,130,745</td></tr></p>
+<p></table></p>
+
+
+<p><h2>近期SEC申报</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>申报日期</th></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-06-26</td></tr></p>
+<p><tr><td>2026-06-23</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p><tr><td>2026-06-18</td></tr></p>
+<p><tr><td>2026-06-17</td></tr></p>
+<p><tr><td>2026-06-17</td></tr></p>
+<p></table></p>
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手的威胁？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管护城河？<br>4. <strong>成本优势</strong> — 与同行相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [做多 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>市场正在定价的关键假设：</strong> ___<br>- <strong>什么会改变我的看法：</strong> ___</blockquote></p>
+
+<p><p><em>最后数据刷新：2026-08-09 15:07</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于2026-08-09 15:07 · AI投资系统</em></p>
+<p><em>相关：<a href="../companies/SPCX.html">SPCX</a> · <a href="../companies/同业比较.html">同业比较</a> · <a href="../companies/投资仪表盘.html">投资仪表盘</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
