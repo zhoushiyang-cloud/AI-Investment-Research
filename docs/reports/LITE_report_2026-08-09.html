@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LITE — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>LITE</strong></span>
+  <span>Lumentum Holdings Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-09</span>
+</div>
+<hr>
+
+<h1>📊 LITE — Lumentum Holdings Inc.</h1>
+<blockquote><em>Investment Research Report · August 09, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/LITE.html">LITE</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/LITE Valuation.html">LITE Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>LITE has re-rated dramatically</strong>: Shares are up ~25% in the last 10 trading days alone (from $711.96 to $890.17), trading near all-time highs despite a $1.08B market cap that has ballooned to $69.3B. The stock is up ~700% from its 52-week low of $111.20.</li></p>
+<p><li><strong>Fundamentals are inflecting</strong>: FY2025 revenue grew 21% YoY to $1.645B, a sharp reversal from the -23% decline in FY2024. However, the company remains <strong>unprofitable on a GAAP basis</strong>, posting a net loss of -$172.1M pre-tax and only $25.9M net income driven by a $198M tax benefit.</li></p>
+<p><li><strong>AI/optical demand is the core thesis</strong>: The OpComms segment is benefiting from hyperscale AI datacenter buildouts, with the stock now trading at a premium multiple that implies sustained hypergrowth. The recent price action suggests the market is pricing in a "second AI wave" for optical components.</li></p>
+<p><li><strong>Balance sheet is manageable but leverage is rising</strong>: Total debt of $2.57B against $520.7M cash. The company generated only $126.3M in operating cash flow in FY2025, which is thin relative to its market cap and debt load.</li></p>
+<p><li><strong>Recommendation: HOLD with High conviction</strong>. The AI optical story is real, but the stock has already priced in significant upside. We see better risk/reward in peers like <a href="../companies/FN.html">FN</a> (Fabrinet) which trades at a fraction of LITE's multiple with similar AI exposure.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Lumentum Holdings Inc. is a global leader in optical and photonic products, headquartered in San Jose, CA. The company operates through two principal segments:</p></p>
+
+<p><ul></p>
+<p><li><strong>Optical Communications (OpComms)</strong> — The dominant segment (~85-90% of revenue), supplying components, modules, and subsystems for high-capacity fiber optic networks. Key products include tunable transceivers, ROADMs, optical amplifiers, VCSELs, and 3D sensing laser illumination sources. Customers span telecom, datacom, consumer, and industrial markets.</li></p>
+<p><li><strong>Commercial Lasers</strong> (~10-15% of revenue) — Produces diode-pumped solid-state, fiber, diode, and gas lasers for OEM applications in sheet metal processing, biotechnology, precision machining, and remote sensing.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: LITE is a top-tier player in optical components, competing directly with <a href="../companies/AVGO.html">AVGO</a> (Broadcom) in datacom optics and <a href="../companies/COHR.html">COHR</a> (Coherent) in telecom/lasers. The company's ROADM and tunable laser franchise is best-in-class, and its VCSEL/3D sensing technology has strategic importance for consumer electronics (Apple supply chain).</p></p>
+
+<p><p><strong>Key Strategic Shift</strong>: Under CEO Michael Hurlston, LITE has pivoted aggressively toward AI datacenter optics, positioning itself as a key enabler of next-generation AI clusters. The company's recent product wins in 800G and 1.6T transceivers are the primary driver of the stock's re-rating.</p></p>
+
+<p><p><strong>Employees</strong>: 10,562 full-time staff. Beta of 1.48 indicates high cyclicality and sensitivity to tech sentiment.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Trends</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025: $1.645B (+21% YoY) — strong recovery from FY2024's $1.359B (-23% YoY)</li></p>
+<p><li>FY2023: $1.767B — still below the FY2023 peak, indicating the recovery is incomplete</li></p>
+<p><li>Revenue inflection is real but the company has not yet regained its prior peak</li></p>
+<p></ul></p>
+
+<p><p><strong>Profitability</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 Gross Margin: 33.0% ($542.1M gross profit / $1.645B revenue) — up from 24.7% in FY2024, showing strong operating leverage</li></p>
+<p><li>FY2025 Operating Loss: -$180.1M (operating margin -11.0%) — improved from -$434M loss in FY2024 but still deeply negative</li></p>
+<p><li>FY2025 Net Income: $25.9M (diluted EPS $0.37) — turned positive only due to a <strong>$198M income tax benefit</strong>; pre-tax loss was -$172.1M</li></p>
+<p><li>R&D spending: $303.9M (18.5% of revenue) — heavy investment in next-gen optical products</li></p>
+<p><li>SGA: $348.2M (21.2% of revenue) — elevated relative to revenue base</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 Operating Cash Flow: $126.3M — weak relative to $1.645B revenue (7.7% OCF margin)</li></p>
+<p><li>CapEx: $231M — exceeding OCF, requiring external financing</li></p>
+<p><li>Cash: $520.7M + $356.4M short-term investments = $877.1M total liquidity</li></p>
+<p><li>Long-term debt: $2.56B — net debt of ~$1.7B</li></p>
+<p><li>Total equity: $1.135B — thin equity base relative to $4.22B total assets</li></p>
+<p><li>FY2025 included a <strong>$221.3M other operating expense</strong> (likely restructuring/impairment) and $14.6M impairment charge</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Concern</strong>: The company is spending heavily (R&D + CapEx + SGA) to capture AI optical demand, but GAAP profitability remains elusive. The $25.9M net income is entirely tax-driven, not operational. Free cash flow is negative (-$104.7M after CapEx).</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong>:</p></p>
+<p><ul></p>
+<p><li>Market Cap: $69.26B</li></p>
+<p><li>Price: $890.17 (near 52-week high of $1,085.68)</li></p>
+<p><li>P/E (trailing): ~2,675x on $25.9M net income — <strong>meaningless</strong> due to tax-driven earnings</li></p>
+<p><li>EV: $69.26B + $2.56B debt - $0.88B cash = ~$70.9B</li></p>
+<p><li>EV/Revenue (FY2025): ~43x — <strong>extraordinarily expensive</strong> for a company with negative operating income</li></p>
+<p><li>EV/EBITDA: Not calculable (negative EBITDA of ~$74M after D&A)</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>:</p></p>
+<p><ul></p>
+<p><li><a href="../companies/FN.html">FN</a> (Fabrinet): $20.1B market cap, trading at ~2.5x sales with strong profitability — LITE trades at <strong>17x Fabrinet's revenue multiple</strong> despite similar AI optical exposure</li></p>
+<p><li><a href="../companies/AVGO.html">AVGO</a> (Broadcom): Diversified semiconductor giant with optical exposure, trading at ~15x forward earnings</li></p>
+<p><li><a href="../companies/ENTG.html">ENTG</a> (Entegris): $23.2B market cap, ~4x sales — LITE is at 10x that multiple</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context</strong>: LITE's 52-week range is $111.20 - $1,085.68. The stock has re-rated from a "distressed optical" valuation to a "hypergrowth AI" valuation in under 12 months. The current price implies the market expects:</p></p>
+<p><ol></p>
+<p><li>Revenue to roughly triple to ~$5B within 3 years</li></p>
+<p><li>Operating margins to reach 25-30% (best-in-class for optical)</li></p>
+<p><li>Sustained AI capex cycle for 5+ years</li></p>
+<p></ol></p>
+
+<p><p><strong>Assessment</strong>: The valuation is <strong>not justified</strong> by current fundamentals. It is pricing in near-perfect execution and a multi-year AI supercycle. Any miss on AI datacenter orders or a slowdown in hyperscaler capex would cause a severe de-rating. We note the stock has already corrected 18% from its high ($1,085.68 → $890.17), suggesting volatility is elevated.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Capex Cyclicality</strong> <code>#critical</code></li></p>
+<p><p>LITE's entire valuation rests on sustained hyperscaler AI infrastructure spending. If <a href="../companies/NVDA.html">NVDA</a>-driven AI cluster buildouts pause or shift to in-house optical solutions (as <a href="../companies/AVGO.html">AVGO</a> and <a href="../companies/MRVL.html">MRVL</a> are developing), LITE's growth narrative collapses. The stock's 700%+ run from $111 to $890 embeds an assumption of 3-5 years of hypergrowth.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Persistent GAAP Unprofitability</strong> <code>#critical</code></li></p>
+<p><p>FY2025 operating loss of -$180.1M and negative free cash flow (-$104.7M) mean the company is burning cash while investing heavily. The $25.9M net income was entirely due to a $198M tax benefit — without it, the company would have reported a -$172.1M loss. There is no evidence of sustainable GAAP profitability.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#medium</code></li></p>
+<p><p>LITE's 3D sensing business is heavily dependent on Apple (via <a href="../companies/AAPL.html">AAPL</a> supply chain). Any loss of share in VCSELs or a shift to alternative sensing technologies would hit the OpComms segment. The company does not disclose customer concentration, but industry knowledge suggests top customers account for >30% of revenue.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competitive Intensity</strong> <code>#medium</code></li></p>
+<p><p><a href="../companies/AVGO.html">AVGO</a>, <a href="../companies/COHR.html">COHR</a>, and <a href="../companies/FN.html">FN</a> are all aggressively targeting the same AI optical opportunity. LITE's ROADM franchise is defensible, but the high-volume transceiver market is commoditizing rapidly. Pricing pressure could compress the 33% gross margin.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Leverage & Liquidity</strong> <code>#medium</code></li></p>
+<p><p>With $2.56B in long-term debt and only $126.3M in operating cash flow, LITE's debt service coverage is thin. If the AI cycle disappoints, the company may need to raise equity or restructure. The $231M CapEx requirement exceeds OCF, creating a structural funding gap.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Execution Risk on 1.6T Transition</strong> <code>#low</code></li></p>
+<p><p>The industry is transitioning from 800G to 1.6T optical modules. LITE must execute flawlessly on this generational shift. Any delay or quality issue would cede share to competitors and trigger a sharp sell-off given the premium valuation.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>1.6T Transceiver Ramp</strong> <code>#near-term</code></li></p>
+<p><p>LITE is expected to begin shipping 1.6T optical modules to hyperscalers in the next 2-3 quarters. Successful qualification and volume ramp would validate the AI thesis and could drive another leg higher. Watch for announcements of design wins with <a href="../companies/NVDA.html">NVDA</a>-based clusters.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>FY2026 Guidance</strong> <code>#near-term</code></li></p>
+<p><p>The next earnings report (expected late August/September 2026) will be critical. If management guides to >30% revenue growth with improving margins, the stock could re-rate further. If guidance is conservative, expect a pullback given the elevated expectations.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Cloud Hyperscaler Capex Announcements</strong> <code>#near-term</code></li></p>
+<p><p>Q3/Q4 2026 earnings from <a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>, <a href="../companies/AMZN.html">AMZN</a>, and <a href="../companies/META.html">META</a> will provide visibility into AI infrastructure spending. Any upward revisions to capex guidance would directly benefit LITE sentiment.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential M&A or Partnership</strong> <code>#medium-term</code></li></p>
+<p><p>LITE could acquire a complementary optical startup or enter a strategic partnership to strengthen its AI datacenter position. Given the rich stock price, LITE has a valuable currency for acquisitions.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin Expansion as Volumes Scale</strong> <code>#medium-term</code></li></p>
+<p><p>If revenue grows to $2.5B+ in FY2026, the fixed cost base (R&D $304M, SGA $348M) would be spread over a larger base, potentially driving operating margins to 10-15%. This would be the first proof point of the operating leverage thesis.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>HOLD — High Conviction</strong></p></p>
+
+<p><p><strong>12-Month Price Target: $850</strong> (range: $650 - $1,100)</p></p>
+
+<p><p><strong>Thesis</strong>: Lumentum is a legitimate beneficiary of the AI optical buildout, and the FY2025 revenue inflection (+21% YoY) confirms the demand environment is real. However, at $890 per share and a $69B market cap, the stock is pricing in flawless execution and a multi-year AI supercycle. The company is not yet profitable on an operating basis, generates thin cash flow, and faces intense competition from <a href="../companies/AVGO.html">AVGO</a>, <a href="../companies/COHR.html">COHR</a>, and <a href="../companies/FN.html">FN</a>.</p></p>
+
+<p><p><strong>Key considerations</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Upside</strong>: If LITE delivers >30% revenue growth in FY2026 with positive operating income, the stock could reach $1,100+.</li></p>
+<p><li><strong>Downside</strong>: Any AI capex pause, competitive share loss, or guidance miss could trigger a 40-50% correction toward $500-600.</li></p>
+<p></ul></p>
+
+<p><p><strong>Action</strong>: Existing holders should maintain positions but trim on strength above $1,000. New investors should wait for a pullback to $650-700 (which would represent a more reasonable ~30x forward revenue) before initiating. The risk/reward is balanced but not compelling at current levels.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>LITE — Lumentum Holdings Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-09 14:40</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>LITE</td></tr></p>
+<p><tr><td>Name</td><td>Lumentum Holdings Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>10,562</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-06-28</td><td>1645000000.0</td><td>-180100000.0</td><td>25900000.0</td><td>0.4</td></tr></p>
+<p><tr><td>2024-06-29</td><td>1359200000.0</td><td>-434000000.0</td><td>-546500000.0</td><td>-8.1</td></tr></p>
+<p><tr><td>2023-07-01</td><td>1767000000.0</td><td>-115700000.0</td><td>-131600000.0</td><td>-1.9</td></tr></p>
+<p><tr><td>2022-07-02</td><td>1712600000.0</td><td>303300000.0</td><td>198900000.0</td><td>2.7</td></tr></p>
+<p><tr><td>2021-07-03</td><td>1742800000.0</td><td>527000000.0</td><td>397300000.0</td><td>5.1</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-06-28</td><td>4218700000.0</td><td>3084000000.0</td><td>1134700000.0</td><td>520700000.0</td></tr></p>
+<p><tr><td>2024-06-29</td><td>3931900000.0</td><td>2974600000.0</td><td>957300000.0</td><td>436700000.0</td></tr></p>
+<p><tr><td>2023-07-01</td><td>4632100000.0</td><td>3276300000.0</td><td>1355800000.0</td><td>859000000.0</td></tr></p>
+<p><tr><td>2022-07-02</td><td>4162200000.0</td><td>2287200000.0</td><td>1875000000.0</td><td>1290200000.0</td></tr></p>
+<p><tr><td>2021-07-03</td><td>3551600000.0</td><td>1578800000.0</td><td>1972800000.0</td><td>774300000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-06-28</td><td>126300000.0</td><td>254000000.0</td></tr></p>
+<p><tr><td>2024-06-29</td><td>24700000.0</td><td>261200000.0</td></tr></p>
+<p><tr><td>2023-07-01</td><td>179800000.0</td><td>234300000.0</td></tr></p>
+<p><tr><td>2022-07-02</td><td>459300000.0</td><td>167100000.0</td></tr></p>
+<p><tr><td>2021-07-03</td><td>738700000.0</td><td>177100000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-27</td><td>767.9</td><td>770.3</td><td>697.9</td><td>712.0</td><td>3,744,225</td></tr></p>
+<p><tr><td>2026-07-28</td><td>677.5</td><td>679.0</td><td>602.3</td><td>651.9</td><td>5,642,335</td></tr></p>
+<p><tr><td>2026-07-29</td><td>655.2</td><td>655.2</td><td>594.8</td><td>602.4</td><td>6,388,594</td></tr></p>
+<p><tr><td>2026-07-30</td><td>661.9</td><td>698.3</td><td>650.0</td><td>693.2</td><td>5,621,172</td></tr></p>
+<p><tr><td>2026-07-31</td><td>748.0</td><td>772.6</td><td>691.1</td><td>713.9</td><td>4,550,421</td></tr></p>
+<p><tr><td>2026-08-03</td><td>685.6</td><td>785.3</td><td>671.0</td><td>779.9</td><td>4,198,394</td></tr></p>
+<p><tr><td>2026-08-04</td><td>852.4</td><td>868.3</td><td>813.3</td><td>849.5</td><td>6,642,865</td></tr></p>
+<p><tr><td>2026-08-05</td><td>824.8</td><td>883.6</td><td>824.0</td><td>826.3</td><td>3,421,867</td></tr></p>
+<p><tr><td>2026-08-06</td><td>808.5</td><td>881.8</td><td>793.0</td><td>838.1</td><td>4,140,181</td></tr></p>
+<p><tr><td>2026-08-07</td><td>870.0</td><td>928.5</td><td>861.9</td><td>890.2</td><td>5,818,819</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-07-30</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-08</td></tr></p>
+<p><tr><td>2026-07-07</td></tr></p>
+<p><tr><td>2026-06-04</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='ENTG' name='Entegris, Inc.' price=152.08 market_cap=23192200000, symbol='FFIV' name='F5, Inc.' price=400.23 market_cap=22580656416, symbol='FN' name='Fabrinet' price=562.38 market_cap=20149906686, symbol='RBRK' name='Rubrik, Inc.' price=90.07 market_cap=18538796908, symbol='ZBRA' name='Zebra Technologies Corporation' price=376.49 market_cap=17933498766, symbol='KSPI' name='Joint Stock Company Kaspi.kz' price=90.3 market_cap=17159462120, symbol='DOCU' name='DocuSign, Inc.' price=60.26 market_cap=11506345700, symbol='BSY' name='Bentley Systems, Incorporated' price=35.21 market_cap=10291233270, symbol='BILI' name='Bilibili Inc.' price=18.74 market_cap=7860693143, symbol='KLAR' name='Klarna Group plc' price=19.9 market_cap=7512407210</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-09 14:40</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-09 14:40 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/LITE.html">LITE</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
