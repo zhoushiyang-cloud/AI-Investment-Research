@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRVL — 投资研究报告</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>MRVL</strong></span>
+  <span>Marvell Technology, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-09</span>
+</div>
+<hr>
+
+<h1>📊 MRVL — Marvell Technology, Inc.</h1>
+<blockquote><em>投资研究报告 · 2026年8月9日</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>股票代码：</strong> <a href="../companies/MRVL.html">MRVL</a></td><td><strong>行业：</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>市值：</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 快速导航</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/MRVL Valuation.html">MRVL Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要</div><div class="callout-body"><ul></p>
+<p><li><strong>AI定制芯片拐点：</strong> MRVL已成功从一家周期性半导体供应商转型为超大规模AI基础设施的关键赋能者。2026财年营收同比增长42%至81.9亿美元，由定制AI加速器和互连产品驱动。</li></p>
+<p><li><strong>回归盈利：</strong> 在连续两年GAAP净亏损（2024财年：-9.33亿美元；2025财年：-8.85亿美元）之后，公司在2026财年实现了26.7亿美元的GAAP净利润，摊薄每股收益为3.07美元，标志着经营杠杆的重大拐点。</li></p>
+<p><li><strong>资产负债表转型：</strong> 公司在2026财年将总债务减少约7.9亿美元，同时将现金增加至26.4亿美元。总权益从负11.1亿美元转为正143.1亿美元，得益于利润的大幅回升。</li></p>
+<p><li><strong>估值溢价：</strong> 以218.72美元计算，该股交易价格约为2026财年GAAP每股收益的71倍。这一估值相对于<a href="../companies/AVGO.html">AVGO</a>和<a href="../companies/NVDA.html">NVDA</a>等同业存在溢价，反映了市场对AI定制芯片持续超高速增长的定价。</li></p>
+<p><li><strong>建议：持有（高确信度）。</strong> AI顺风是真实且持久的，但当前估值几乎没有为执行失误留下空间。我们设定12个月目标价为<strong>250美元</strong>，意味着约14%的上行空间。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览</div><div class="callout-body"><p>Marvell Technology, Inc.是一家无晶圆厂半导体公司，专注于数据基础设施解决方案，覆盖从数据中心核心到网络边缘的广泛领域。公司设计集成模拟、混合信号和数字信号处理的片上系统（SoC）架构。</p></p>
+
+<p><p><strong>主要业务板块及收入驱动因素：</strong></p></p>
+<p><ul></p>
+<p><li><strong>数据中心（主要增长引擎）：</strong> 这是AI故事的核心。收入由面向超大规模云厂商的定制专用集成电路（ASIC）、电光产品（PAM4 DSP、相干DSP、硅光子）以及高速以太网交换机驱动。随着云巨头寻求<a href="../companies/NVDA.html">NVDA</a>商用芯片的替代方案，该板块正经历爆发式增长。</li></p>
+<p><li><strong>运营商基础设施与企业网络：</strong> 为5G基站和企业本地数据中心提供以太网控制器、处理器和互连产品。该板块在周期性下行后正趋于稳定。</li></p>
+<p><li><strong>汽车/工业与消费：</strong> 投资组合中规模较小、较为成熟的板块，提供存储控制器和连接解决方案。</li></p>
+<p></ul></p>
+
+<p><p><strong>竞争地位：</strong></p></p>
+<p><p>MRVL在<strong>定制AI芯片</strong>领域占据主导地位，主要竞争对手为<a href="../companies/AVGO.html">AVGO</a>（博通）。其关键差异化优势在于能够交付复杂的高性能SoC，并配备领先的互连技术（共封装光学、线性可插拔光学），这些对于扩展AI集群至关重要。公司服务少数顶级超大规模云厂商（如<a href="../companies/MSFT.html">MSFT</a>、<a href="../companies/GOOGL.html">GOOGL</a>、<a href="../companies/AMZN.html">AMZN</a>），形成了高转换成本，但也带来了客户集中度风险。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析</div><div class="callout-body"><p><strong>营收与盈利能力：</strong></p></p>
+<p><ul></p>
+<p><li><strong>2026财年（截至2026年1月）：</strong> 营收达到<strong>81.9亿美元</strong>，高于2025财年的57.7亿美元（同比增长42%）。这一加速增长是AI ASIC放量的直接结果。</li></p>
+<p><li><strong>毛利率：</strong> 2026财年提升至<strong>51.0%</strong>（毛利润41.8亿美元/营收81.9亿美元），高于2025财年的41.3%。这一扩张反映了产品组合向高价值定制芯片和电光产品的有利转变。</li></p>
+<p><li><strong>营业利润：</strong> 2026财年大幅转正至<strong>13.2亿美元</strong>，而2025财年营业亏损为-7.2亿美元。这展示了在更高营收基础上的巨大经营杠杆。</li></p>
+<p><li><strong>净利润：</strong> GAAP净利润为<strong>26.7亿美元</strong>（摊薄每股收益：3.07美元），与2025财年-8.85亿美元的净亏损（摊薄每股收益：-1.02美元）形成鲜明对比。请注意：2026财年净利润包含一项重大的非现金资产出售收益（18.3亿美元），这抬高了利润底线；核心经营表现应以13.2亿美元的营业利润来衡量。</li></p>
+<p></ul></p>
+
+<p><p><strong>现金流与资产负债表：</strong></p></p>
+<p><ul></p>
+<p><li><strong>经营现金流：</strong> 2026财年强劲，达到<strong>17.5亿美元</strong>，高于2025财年的16.8亿美元，轻松覆盖3.54亿美元的资本支出。</li></p>
+<p><li><strong>流动性：</strong> 现金及等价物增加至<strong>26.4亿美元</strong>（2025财年为9.48亿美元）。总债务减少约7.9亿美元，长期债务降至39.7亿美元。</li></p>
+<p><li><strong>权益：</strong> 普通股总权益从<strong>-11.1亿美元</strong>（2025财年）转为<strong>+143.1亿美元</strong>（2026财年），得益于巨额利润和累计亏损的减少。这显著增强了资产负债表。</li></p>
+<p><li><strong>研发投入：</strong> 2026财年研发费用增加至<strong>20.8亿美元</strong>（占营收的25.3%），反映了为维持定制芯片路线图而进行的持续重投入。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <strong>当前股价：</strong> 218.72美元</td><td><strong>市值：</strong> 1915亿美元</td></tr></p>
+<p></table></p>
+<p><ul></p>
+<p><li><strong>市盈率：</strong> 基于2026财年GAAP摊薄每股收益3.07美元，该股交易价格约为<strong>71.2倍市盈率</strong>。这一数字表面上较高，但受到一次性收益的扭曲。按正常化基础计算，使用2026财年营业利润13.2亿美元和正常化税率，市盈率将显著更高。</li></p>
+<p><li><strong>EV/EBITDA：</strong> 无法直接计算，但以2026财年经营现金流17.5亿美元作为代理指标，EV/经营现金流约为1890亿美元/17.5亿美元 = <strong>约108倍</strong>，表明估值溢价。</li></p>
+<p><li><strong>同业比较：</strong> MRVL的交易估值高于多元化半导体同行，如<a href="../companies/NXPI.html">NXPI</a>（恩智浦，约24倍盈利）和<a href="../companies/MPWR.html">MPWR</a>（芯源系统，约60倍盈利）。相对于<a href="../companies/AVGO.html">AVGO</a>而言，该溢价是合理的——AVGO估值较低但业务更加多元化。市场正在将MRVL定价为类似于早期<a href="../companies/NVDA.html">NVDA</a>的"超高速增长"阶段。</li></p>
+<p><li><strong>合理性分析：</strong> 如果公司能够维持超过30%的营收增长并继续扩大利润率，该溢价是合理的。2026财年业绩验证了AI逻辑，但股价意味着市场预期这一增长将持续数年。任何指引不及预期或主要客户AI路线图的延迟都可能引发显著的估值下修。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险</div><div class="callout-body"><ol></p>
+<p><li><strong>客户集中度</strong> <code>#critical</code></li></p>
+<p><p>业务高度依赖少数超大规模云厂商的定制ASIC项目。失去单一主要客户（如<a href="../companies/GOOGL.html">GOOGL</a>或<a href="../companies/AMZN.html">AMZN</a>）或这些客户自研芯片策略的转变，将对营收产生重大不利影响——2026财年营收增长了42%。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>估值压缩</strong> <code>#critical</code></li></p>
+<p><p>以约71倍市盈率交易，该股已被定价为"完美"。AI基础设施支出的放缓，或仅仅是超大规模云厂商资本支出的暂停，都可能导致30-50%的估值下修。该股的贝塔系数为<strong>2.197</strong>，表明其对市场和行业抛售高度敏感。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>执行与技术路线图风险</strong> <code>#medium</code></li></p>
+<p><p>向下一代制程节点（2nm）和先进封装（共封装光学）的过渡十分复杂。产品发布的任何延迟或代工伙伴<a href="../companies/TSM.html">TSM</a>的良率问题都可能延迟收入确认，并使<a href="../companies/AVGO.html">AVGO</a>获得市场份额。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>宏观与地缘政治</strong> <code>#medium</code></li></p>
+<p><p>作为一家在中国拥有重要业务的全球性公司，MRVL面临出口管制和地缘政治紧张局势的风险。虽然公司不像某些同行那样高度暴露，但中美贸易限制的任何升级都可能扰乱供应链或限制进入关键增长市场的渠道。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>供应链约束</strong> <code>#low</code></li></p>
+<p><p>尽管有所改善，但先进封装和高带宽存储器（HBM）的半导体供应链仍然紧张。任何短缺都可能限制MRVL向客户交付成品AI加速器的能力，从而限制近期营收。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂</div><div class="callout-body"><ul></p>
+<p><li><strong>新的定制ASIC设计中标</strong> <code>#near-term</code></li></p>
+<p><p>宣布与已知客户之外的超大规模云厂商签订新的或扩展的定制芯片合同，将提供强有力的验证并推动股价上涨。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>电光与互连产品增长</strong> <code>#near-term</code></li></p>
+<p><p>800G/1.6T PAM4 DSP和coherent-lite DSP在AI数据中心建设中的需求持续强劲。这是MRVL作为市场领导者的高毛利、高增长领域。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>利润率扩张</strong> <code>#medium-term</code></li></p>
+<p><p>随着营收规模扩大，经营杠杆应推动毛利率向50%中段和营业利润率向25%以上迈进。任何表明利润率扩张快于预期的指引都将成为积极催化剂。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>债务削减/资本回报</strong> <code>#medium-term</code></li></p>
+<p><p>随着资产负债表现已强劲（正权益143亿美元），公司可能启动更大规模的股票回购计划或增加股息（目前年化0.24美元），这可能吸引更广泛的投资者群体。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 建议</div><div class="callout-body"><p><strong>评级：持有（高确信度）</strong></p></p>
+<p><p><strong>12个月目标价：250美元</strong>（意味着较218.72美元约有14%的上行空间）</p></p>
+
+<p><p><strong>投资论点：</strong> Marvell在AI定制芯片机遇上执行完美，2026财年实现了42%的营收增长和强劲GAAP盈利能力的回归，交出了出色的成绩单。该公司是超大规模云厂商建设AI基础设施的关键合作伙伴，长期结构性趋势无疑是积极的。</p></p>
+
+<p><p>然而，股价已经反映了这一成功。以约71倍滚动市盈率计算，风险回报比趋于平衡。我们相信公司将继续增长，但当前估值限制了相对于执行风险的上行潜力。我们建议投资者<strong>持有</strong>现有头寸，等待更具吸引力的入场点（例如回调至180-190美元区间）再行加仓，或等待能够证明更高估值倍数的明确催化剂出现。</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录 <em>（点击展开）</em></div><div class="callout-body"></p>
+<p><h1>MRVL — Marvell Technology, Inc.</h1></p>
+
+<p><blockquote><em>自动生成：2026-08-09 14:57</em></blockquote></p>
+
+<p><h2>公司概览</h2></p>
+
+<p><h3>公司简介</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股票代码</td><td>MRVL</td></tr></p>
+<p><tr><td>公司名称</td><td>Marvell Technology, Inc.</td></tr></p>
+<p><tr><td>行业</td><td>Technology</td></tr></p>
+<p><tr><td>子行业</td><td>—</td></tr></p>
+<p><tr><td>市值</td><td>—</td></tr></p>
+<p><tr><td>企业价值</td><td>—</td></tr></p>
+<p><tr><td>员工人数</td><td>7,480</td></tr></p>
+<p><tr><td>国家</td><td>—</td></tr></p>
+<p><tr><td>网站</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><p><em>指标数据不可用。</em></p></p>
+
+<p><h2>财务报表</h2></p>
+
+<p><h3>利润表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2026-01-31</td><td>8194600000.0</td><td>1322900000.0</td><td>2670100000.0</td><td>3.1</td></tr></p>
+<p><tr><td>2025-02-01</td><td>5767300000.0</td><td>-720300000.0</td><td>-885000000.0</td><td>-1.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>5507700000.0</td><td>-567700000.0</td><td>-933400000.0</td><td>-1.1</td></tr></p>
+<p><tr><td>2023-01-28</td><td>5919600000.0</td><td>238000000.0</td><td>-163500000.0</td><td>-0.2</td></tr></p>
+<p><tr><td>2022-01-29</td><td>4462400000.0</td><td>-347700000.0</td><td>-421000000.0</td><td>-0.5</td></tr></p>
+<p></table></p>
+
+<p><h3>资产负债表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2026-01-31</td><td>22285300000.0</td><td>7976900000.0</td><td>14308400000.0</td><td>2638800000.0</td></tr></p>
+<p><tr><td>2025-02-01</td><td>20204500000.0</td><td>6777500000.0</td><td>13427000000.0</td><td>948300000.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>21228500000.0</td><td>6397100000.0</td><td>14831400000.0</td><td>950800000.0</td></tr></p>
+<p><tr><td>2023-01-28</td><td>22522100000.0</td><td>6884900000.0</td><td>15637200000.0</td><td>911000000.0</td></tr></p>
+<p><tr><td>2022-01-29</td><td>22108600000.0</td><td>6406500000.0</td><td>15702100000.0</td><td>613500000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>现金流量表（年度）</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2026-01-31</td><td>1750500000.0</td><td>348600000.0</td></tr></p>
+<p><tr><td>2025-02-01</td><td>1681200000.0</td><td>304300000.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>1370500000.0</td><td>299800000.0</td></tr></p>
+<p><tr><td>2023-01-28</td><td>1288800000.0</td><td>304900000.0</td></tr></p>
+<p><tr><td>2022-01-29</td><td>819300000.0</td><td>265900000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>近期SEC文件</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-03</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-09</td></tr></p>
+<p></table></p>
+
+<p><h2>同业公司</h2></p>
+
+<p><p>symbol='GLW' name='Corning Inc' price=165.69 market_cap=142723377720, symbol='FTNT' name='Fortinet, Inc.' price=159.64 market_cap=117130047565, symbol='NET' name='Cloudflare, Inc.' price=300.27 market_cap=106577692973, symbol='SNPS' name='Synopsys, Inc.' price=415.99 market_cap=79653484407, symbol='MPWR' name='Monolithic Power Systems, Inc.' price=1401.54 market_cap=68857660200, symbol='TEL' name='TE Connectivity plc' price=216.33 market_cap=62722865574, symbol='NXPI' name='NXP Semiconductors N.V.' price=239.71 market_cap=60446274150, symbol='INFY' name='Infosys Limited' price=12.53 market_cap=50841477400, symbol='MSTR' name='Strategy Inc' price=100.01 market_cap=33084108080, symbol='RBLX' name='Roblox Corporation' price=37.79 market_cap=26996264543</p></p>
+
+<p><h2>研究框架</h2></p>
+
+<p><p>> [!abstract] 护城河评估</p></p>
+<p><blockquote><em>什么保护这家公司免受竞争对手的侵蚀？</em><br>1. <strong>转换成本</strong> — 客户离开的难度有多大？<br>2. <strong>网络效应</strong> — 每个用户是否使其更有价值？<br>3. <strong>无形资产</strong> — 专利、品牌、监管护城河？<br>4. <strong>成本优势</strong> — 与同行相比的结构性成本地位？<br>5. <strong>有效规模</strong> — 市场是否天然有限？</blockquote></p>
+
+<p><p>> [!warning] 风险</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>风险</td><td>严重程度</td><td>概率</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>描述风险...</em></td><td><code>#critical</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述风险...</em></td><td><code>#medium</code></td><td>高 / 中 / 低</td><td><br></td><td>3</td><td><em>描述风险...</em></td><td><code>#low</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] 催化剂</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>催化剂</td><td>时间线</td><td>影响</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>描述催化剂...</em></td><td><code>#near-term</code></td><td>高 / 中 / 低</td><td><br></td><td>2</td><td><em>描述催化剂...</em></td><td><code>#medium-term</code></td><td>高 / 中 / 低</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] 投资论点</p></p>
+<p><blockquote>- <strong>仓位：</strong> [做多 / 中性 / 回避]<br>- <strong>公允价值估计：</strong> $___（安全边际：___%）<br>- <strong>当前定价所包含的关键假设：</strong> ___<br>- <strong>什么会改变我的想法：</strong> ___</blockquote></p>
+
+<p><p><em>最后数据刷新：2026-08-09 14:57</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>报告生成于 2026-08-09 14:57 · AI投资系统</em></p>
+<p><em>相关：<a href="../companies/MRVL.html">MRVL</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
