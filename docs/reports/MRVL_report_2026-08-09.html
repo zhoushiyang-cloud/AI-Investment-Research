@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRVL — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>MRVL</strong></span>
+  <span>Marvell Technology, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-09</span>
+</div>
+<hr>
+
+<h1>📊 MRVL — Marvell Technology, Inc.</h1>
+<blockquote><em>Investment Research Report · August 09, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/MRVL.html">MRVL</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/MRVL Valuation.html">MRVL Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>AI Custom Silicon Inflection:</strong> MRVL has successfully transitioned from a cyclical semiconductor supplier to a critical enabler of hyperscale AI infrastructure. FY2026 revenue surged 42% YoY to $8.19B, driven by custom AI accelerators and interconnect.</li></p>
+<p><li><strong>Return to Profitability:</strong> After two consecutive years of GAAP net losses (FY2024: -$933M; FY2025: -$885M), the company posted a GAAP net income of $2.67B in FY2026, with diluted EPS of $3.07, signaling a major operating leverage inflection.</li></p>
+<p><li><strong>Balance Sheet Transformation:</strong> The company reduced total debt by ~$790M in FY2026 while increasing cash to $2.64B. Total equity swung from negative $1.11B to positive $14.31B, driven by the massive profit turnaround.</li></p>
+<p><li><strong>Valuation at a Premium:</strong> At $218.72, the stock trades at ~71x FY2026 GAAP EPS. This is a premium to peers like <a href="../companies/AVGO.html">AVGO</a> and <a href="../companies/NVDA.html">NVDA</a>, pricing in sustained hyper-growth in custom silicon for AI.</li></p>
+<p><li><strong>Recommendation: Hold (High Conviction).</strong> The AI tailwind is real and durable, but the current valuation leaves little room for execution error. We set a 12-month price target of <strong>$250</strong>, implying ~14% upside.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Marvell Technology, Inc. is a fabless semiconductor company specializing in data infrastructure solutions, spanning from the data center core to the network edge. The company designs system-on-a-chip (SoC) architectures integrating analog, mixed-signal, and digital signal processing.</p></p>
+
+<p><p><strong>Key Segments & Revenue Drivers:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Data Center (Primary Growth Engine):</strong> This is the core of the AI story. Revenue is driven by custom application-specific integrated circuits (ASICs) for hyperscalers, electro-optics (PAM4 DSPs, coherent DSPs, silicon photonics), and high-speed Ethernet switches. This segment is experiencing explosive growth as cloud giants seek alternatives to merchant silicon from <a href="../companies/NVDA.html">NVDA</a>.</li></p>
+<p><li><strong>Carrier Infrastructure & Enterprise Networking:</strong> Provides Ethernet controllers, processors, and interconnect for 5G base stations and enterprise on-prem data centers. This segment is stabilizing after a cyclical downturn.</li></p>
+<p><li><strong>Automotive/Industrial & Consumer:</strong> A smaller, more mature portion of the portfolio, providing storage controllers and connectivity solutions.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong></p></p>
+<p><p>MRVL holds a dominant position in <strong>custom AI silicon</strong>, competing primarily with <a href="../companies/AVGO.html">AVGO</a> (Broadcom). Its key differentiator is its ability to deliver complex, high-performance SoCs with leading-edge interconnect (co-packaged optics, linear pluggable optics) that are essential for scaling AI clusters. The company serves a concentrated customer base of top-tier hyperscalers (e.g., <a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>, <a href="../companies/AMZN.html">AMZN</a>), creating high switching costs but also customer concentration risk.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong></p></p>
+<p><ul></p>
+<p><li><strong>FY2026 (Ended Jan 2026):</strong> Revenue hit <strong>$8.19B</strong>, up from $5.77B in FY2025 (+42% YoY). This acceleration is a direct result of AI ASIC ramps.</li></p>
+<p><li><strong>Gross Margin:</strong> Improved to <strong>51.0%</strong> ($4.18B gross profit / $8.19B revenue) in FY2026, up from 41.3% in FY2025. This expansion reflects a favorable product mix shift toward higher-value custom silicon and electro-optics.</li></p>
+<p><li><strong>Operating Income:</strong> Turned sharply positive to <strong>$1.32B</strong> in FY2026, versus an operating loss of -$720M in FY2025. This demonstrates massive operating leverage on the higher revenue base.</li></p>
+<p><li><strong>Net Income:</strong> GAAP net income was <strong>$2.67B</strong> (Diluted EPS: $3.07), a stark contrast to the -$885M net loss (Diluted EPS: -$1.02) in FY2025. Note: FY2026 net income includes a significant non-cash gain on sale of assets ($1.83B), which inflated the bottom line; core operating performance is better measured by the $1.32B operating income.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow:</strong> Robust at <strong>$1.75B</strong> in FY2026, up from $1.68B in FY2025, comfortably covering capex of $354M.</li></p>
+<p><li><strong>Liquidity:</strong> Cash and equivalents increased to <strong>$2.64B</strong> (from $948M in FY2025). Total debt was reduced by ~$790M to $3.97B in long-term debt.</li></p>
+<p><li><strong>Equity:</strong> Total common equity swung from <strong>-$1.11B</strong> (FY2025) to <strong>+$14.31B</strong> (FY2026), driven by the massive profit and a reduction in accumulated deficit. This significantly strengthens the balance sheet.</li></p>
+<p><li><strong>R&D Investment:</strong> R&D expenses increased to <strong>$2.08B</strong> in FY2026 (25.3% of revenue), reflecting continued heavy investment to maintain the custom silicon roadmap.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <strong>Current Price:</strong> $218.72</td><td><strong>Market Cap:</strong> $191.5B</td></tr></p>
+<p></table></p>
+<p><ul></p>
+<p><li><strong>P/E Multiple:</strong> Based on FY2026 GAAP diluted EPS of $3.07, the stock trades at a <strong>~71.2x P/E</strong>. This is optically high, but it is distorted by one-time gains. On a normalized basis, using FY2026 operating income of $1.32B and a normalized tax rate, the P/E would be significantly higher.</li></p>
+<p><li><strong>EV/EBITDA:</strong> Data not available for direct calculation, but using FY2026 operating cash flow of $1.75B as a proxy, the EV/Operating Cash Flow is ~$189B / $1.75B = <strong>~108x</strong>, indicating a premium valuation.</li></p>
+<p><li><strong>Peer Comparison:</strong> MRVL trades at a premium to diversified semiconductor peers like <a href="../companies/NXPI.html">NXPI</a> (NXP, ~24x earnings) and <a href="../companies/MPWR.html">MPWR</a> (Monolithic Power, ~60x earnings). The premium is justified relative to <a href="../companies/AVGO.html">AVGO</a>, which trades at a lower multiple but has a more diversified business. The market is pricing MRVL for a "hyper-growth" phase similar to early-stage <a href="../companies/NVDA.html">NVDA</a>.</li></p>
+<p><li><strong>Justification:</strong> The premium is justified <em>if</em> the company can sustain >30% revenue growth and continue to expand margins. The FY2026 results validate the AI thesis, but the stock price implies that the market expects this growth to continue for several years. Any guidance miss or delay in a major customer's AI roadmap could trigger a significant de-rating.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#critical</code></li></p>
+<p><p>The business is heavily reliant on a few hyperscaler customers for custom ASIC programs. The loss of a single major customer (e.g., <a href="../companies/GOOGL.html">GOOGL</a> or <a href="../companies/AMZN.html">AMZN</a>) or a shift in their in-house silicon strategy would have a material adverse impact on revenue, which grew 42% in FY2026.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Valuation Compression</strong> <code>#critical</code></li></p>
+<p><p>At ~71x earnings, the stock is priced for perfection. A slowdown in AI infrastructure spending, or merely a pause in hyperscaler capex, could lead to a 30-50% de-rating. The stock's beta of <strong>2.197</strong> indicates it is highly sensitive to market and sector sell-offs.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Execution & Technology Roadmap Risk</strong> <code>#medium</code></li></p>
+<p><p>The transition to next-gen nodes (2nm) and advanced packaging (co-packaged optics) is complex. Any delay in product launches or yield issues at foundry partner <a href="../companies/TSM.html">TSM</a> could delay revenue recognition and allow <a href="../companies/AVGO.html">AVGO</a> to gain share.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Macro & Geopolitical</strong> <code>#medium</code></li></p>
+<p><p>As a global company with significant operations in China, MRVL is exposed to export controls and geopolitical tensions. While the company is not as exposed as some peers, any escalation in US-China trade restrictions could disrupt supply chains or limit access to a key growth market.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Supply Chain Constraints</strong> <code>#low</code></li></p>
+<p><p>While improving, the semiconductor supply chain remains tight for advanced packaging and high-bandwidth memory (HBM). Any shortage could limit MRVL's ability to ship finished AI accelerators to customers, capping near-term revenue.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ul></p>
+<p><li><strong>New Custom ASIC Design Wins</strong> <code>#near-term</code></li></p>
+<p><p>Announcements of new or expanded custom silicon contracts with hyperscalers beyond the current known customers would provide strong validation and drive the stock higher.</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Electro-Optics & Interconnect Growth</strong> <code>#near-term</code></li></p>
+<p><p>Continued strong demand for 800G/1.6T PAM4 DSPs and coherent-lite DSPs for AI data center build-outs. This is a high-margin, high-growth area where MRVL is a market leader.</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Margin Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>As revenue scales, operating leverage should drive gross margins toward the mid-50s% and operating margins toward 25%+. Any guidance indicating faster-than-expected margin expansion would be a positive catalyst.</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Debt Reduction / Capital Returns</strong> <code>#medium-term</code></li></p>
+<p><p>With the balance sheet now strong (positive equity of $14.3B), the company may initiate a larger buyback program or increase its dividend (currently $0.24 annualized), which could attract a broader investor base.</p></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: HOLD (High Conviction)</strong></p></p>
+<p><p><strong>12-Month Price Target: $250</strong> (Implies ~14% upside from $218.72)</p></p>
+
+<p><p><strong>Thesis:</strong> Marvell has executed flawlessly on the AI custom silicon opportunity, delivering a spectacular FY2026 with 42% revenue growth and a return to strong GAAP profitability. The company is a critical partner for hyperscalers building out AI infrastructure, and the long-term secular trend is undeniably positive.</p></p>
+
+<p><p>However, the stock price already reflects this success. At ~71x trailing earnings, the risk/reward is balanced. We believe the company will continue to grow, but the current valuation limits upside potential relative to the execution risk. We recommend investors <strong>Hold</strong> existing positions and wait for a more attractive entry point (e.g., a pullback to the $180-$190 range) before adding, or for a clear catalyst that justifies a higher multiple.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>MRVL — Marvell Technology, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-09 14:57</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>MRVL</td></tr></p>
+<p><tr><td>Name</td><td>Marvell Technology, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>7,480</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2026-01-31</td><td>8194600000.0</td><td>1322900000.0</td><td>2670100000.0</td><td>3.1</td></tr></p>
+<p><tr><td>2025-02-01</td><td>5767300000.0</td><td>-720300000.0</td><td>-885000000.0</td><td>-1.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>5507700000.0</td><td>-567700000.0</td><td>-933400000.0</td><td>-1.1</td></tr></p>
+<p><tr><td>2023-01-28</td><td>5919600000.0</td><td>238000000.0</td><td>-163500000.0</td><td>-0.2</td></tr></p>
+<p><tr><td>2022-01-29</td><td>4462400000.0</td><td>-347700000.0</td><td>-421000000.0</td><td>-0.5</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2026-01-31</td><td>22285300000.0</td><td>7976900000.0</td><td>14308400000.0</td><td>2638800000.0</td></tr></p>
+<p><tr><td>2025-02-01</td><td>20204500000.0</td><td>6777500000.0</td><td>13427000000.0</td><td>948300000.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>21228500000.0</td><td>6397100000.0</td><td>14831400000.0</td><td>950800000.0</td></tr></p>
+<p><tr><td>2023-01-28</td><td>22522100000.0</td><td>6884900000.0</td><td>15637200000.0</td><td>911000000.0</td></tr></p>
+<p><tr><td>2022-01-29</td><td>22108600000.0</td><td>6406500000.0</td><td>15702100000.0</td><td>613500000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2026-01-31</td><td>1750500000.0</td><td>348600000.0</td></tr></p>
+<p><tr><td>2025-02-01</td><td>1681200000.0</td><td>304300000.0</td></tr></p>
+<p><tr><td>2024-02-03</td><td>1370500000.0</td><td>299800000.0</td></tr></p>
+<p><tr><td>2023-01-28</td><td>1288800000.0</td><td>304900000.0</td></tr></p>
+<p><tr><td>2022-01-29</td><td>819300000.0</td><td>265900000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-03</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p><tr><td>2026-07-09</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='GLW' name='Corning Inc' price=165.69 market_cap=142723377720, symbol='FTNT' name='Fortinet, Inc.' price=159.64 market_cap=117130047565, symbol='NET' name='Cloudflare, Inc.' price=300.27 market_cap=106577692973, symbol='SNPS' name='Synopsys, Inc.' price=415.99 market_cap=79653484407, symbol='MPWR' name='Monolithic Power Systems, Inc.' price=1401.54 market_cap=68857660200, symbol='TEL' name='TE Connectivity plc' price=216.33 market_cap=62722865574, symbol='NXPI' name='NXP Semiconductors N.V.' price=239.71 market_cap=60446274150, symbol='INFY' name='Infosys Limited' price=12.53 market_cap=50841477400, symbol='MSTR' name='Strategy Inc' price=100.01 market_cap=33084108080, symbol='RBLX' name='Roblox Corporation' price=37.79 market_cap=26996264543</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-09 14:57</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-09 14:57 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/MRVL.html">MRVL</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
