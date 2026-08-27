@@ -33,7 +33,7 @@ Register-ScheduledTask -TaskName $TaskName `
     -Action $Action `
     -Settings $Settings `
     -Principal $Principal `
-    -Description "Daily 8AM batch update of AI investment research reports — updates 5 oldest companies, rebuilds portal, pushes to GitHub" `
+    -Description "Daily 8AM batch update of AI investment research reports — generates company catalyst calendar (earnings + 8-K events), updates 5 oldest companies, rebuilds portal, pushes to GitHub" `
     -Force
 
 Write-Host ""

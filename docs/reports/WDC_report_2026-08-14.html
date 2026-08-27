@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDC — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>WDC</strong></span>
+  <span>Western Digital Corporation</span>
+  <span>Technology</span>
+  <span>2026-08-14</span>
+</div>
+<hr>
+
+<h1>📊 WDC — Western Digital Corporation</h1>
+<blockquote><em>Investment Research Report · August 14, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/WDC.html">WDC</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/WDC Valuation.html">WDC Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>FY2025 marked a dramatic turnaround</strong>: Revenue surged 50.7% YoY to $9.52B (from $6.32B in FY2024), with net income swinging from a -$798M loss to +$1.889B, driven by the AI-driven demand cycle for high-capacity HDDs and NAND flash.</li></p>
+<p><li><strong>The stock has been extraordinarily volatile</strong>: Trading at $487.29, down 39% from its 52-week high of $799.87, yet up 566% from its 52-week low of $73.14. The recent 10-day price action shows a -10.6% decline, with a sharp single-day drop from $519 to $451 on August 6, 2026.</li></p>
+<p><li><strong>Balance sheet has been transformed</strong>: Total debt reduced to $4.71B (from $7.44B in FY2023), while cash increased to $2.11B. The company generated $1.69B in operating cash flow in FY2025.</li></p>
+<p><li><strong>Valuation is optically cheap on trailing earnings</strong> (~4.2x P/E on diluted EPS of $5.12), but this is misleading given the cyclical peak in earnings and the massive insider selling activity observed at prices between $424-$465.</li></p>
+<p><li><strong>We rate WDC a HOLD with Medium conviction</strong>, as the AI storage cycle appears mature, insider selling is a red flag, and the risk/reward is balanced at current levels.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Western Digital designs and manufactures data storage devices, operating across two primary product categories: <strong>HDDs (Hard Disk Drives)</strong> for data centers and client devices, and <strong>NAND flash-based SSDs and embedded storage</strong> for mobile, automotive, IoT, and consumer applications. The company sells through OEMs, distributors, and retailers under the <strong>WD, SanDisk, and G-Technology</strong> brands.</p></p>
+
+<p><p><strong>Revenue Segments (FY2025)</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Cloud/Data Center (HDD + Enterprise SSD)</strong>: The primary growth driver, benefiting from AI training and inference workloads requiring massive storage capacity. FY2025 revenue of $9.52B reflects a 50.7% increase over FY2024, largely attributable to this segment.</li></p>
+<p><li><strong>Client Devices (HDD + SSD for PCs, gaming, mobile)</strong>: Represents a mature, cyclical market. The company's total gross margin improved to 38.8% in FY2025 (from 28.1% in FY2024), indicating a favorable product mix shift toward high-value data center solutions.</li></p>
+<p><li><strong>Consumer Solutions (External HDDs, USB flash drives, memory cards)</strong>: A stable but lower-growth segment providing diversification.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: WDC is one of only three major HDD manufacturers globally (alongside <a href="../companies/STX.html">STX</a> Seagate and Toshiba), giving it an oligopolistic position in high-capacity nearline drives. In NAND flash, WDC operates a joint venture with Kioxia, competing against <a href="../companies/AVGO.html">AVGO</a>-backed Broadcom, Samsung, and SK Hynix. The company's competitive moat lies in its vertically integrated manufacturing and the scale of its HDD technology, particularly in energy-assisted (HAMR) and helium-filled drives critical for AI data centers.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>FY2025 Revenue</strong>: $9.52B, up from $6.32B in FY2024 and $12.32B in FY2023. The FY2023-FY2024 downturn was a cyclical trough; FY2025 represents a strong recovery.</li></p>
+<p><li><strong>Gross Profit</strong>: $3.69B in FY2025 (38.8% margin) vs. $1.77B (28.1% margin) in FY2024. This margin expansion is the key driver of profitability.</li></p>
+<p><li><strong>Operating Income</strong>: $2.33B in FY2025 vs. -$403M in FY2024. SG&A was well-controlled at $568M (down from $726M in FY2024).</li></p>
+<p><li><strong>Net Income</strong>: $1.889B in FY2025, or <strong>$5.12 diluted EPS</strong>, vs. -$2.61 in FY2024.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow</strong>: $1.691B in FY2025, a strong recovery from -$294M in FY2024.</li></p>
+<p><li><strong>Capital Expenditures</strong>: $412M in FY2025, down from $487M in FY2024, indicating disciplined capex despite growth.</li></p>
+<p><li><strong>Debt Reduction</strong>: Total debt (current + long-term) stands at $4.71B ($2.23B current + $2.49B long-term), down from $7.06B in FY2023. The company repaid $2.09B of debt in FY2025.</li></p>
+<p><li><strong>Cash Position</strong>: $2.11B in cash and equivalents, up from $1.55B in FY2024.</li></p>
+<p><li><strong>Working Capital</strong>: Inventory reduced to $1.29B (from $1.39B in FY2024), showing efficient supply chain management.</li></p>
+<p><li><strong>Share Count</strong>: Diluted shares outstanding at 359M, relatively stable.</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Concern</strong>: The FY2025 results include a <strong>$1.204B charge in "other income"</strong> (likely a loss on debt extinguishment or JV-related adjustments) and a <strong>$815M deferred tax benefit</strong>, which flatters net income. The underlying operating performance is strong, but the quality of earnings is partially driven by one-time items.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>P/E (Trailing)</strong>: $487.29 / $5.12 = <strong>~95x</strong>. This is optically extreme, but FY2025 was a recovery year. On a forward basis, if earnings normalize to a mid-cycle level of ~$8-10 EPS, the forward P/E would be ~50-60x, still expensive.</li></p>
+<p><li><strong>EV/EBITDA</strong>: Market cap is $167.96B. Net debt is ~$2.6B ($4.71B debt - $2.11B cash). EV ≈ $170.6B. FY2025 EBITDA (Operating income + D&A) = $2.33B + $451M = $2.78B. <strong>EV/EBITDA ≈ 61x</strong>, which is extremely rich.</li></p>
+<p><li><strong>P/S Ratio</strong>: $167.96B / $9.52B = <strong>~17.6x</strong>, versus <a href="../companies/STX.html">STX</a> Seagate at ~5.5x (market cap $206.6B / revenue ~$37B est.). WDC trades at a significant premium to its closest peer.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>:</p></p>
+<p><ul></p>
+<p><li><a href="../companies/STX.html">STX</a> Seagate: Price $921.37, market cap $206.6B. Seagate is the pure-play HDD leader with better scale in nearline drives. WDC's valuation premium is unjustified given Seagate's superior focus and margins in the AI storage segment.</li></p>
+<p><li>The broader tech peer set (<a href="../companies/MSI.html">MSI</a>, <a href="../companies/MPWR.html">MPWR</a>, <a href="../companies/NXPI.html">NXPI</a>) trades at 20-35x earnings, making WDC's current multiple a clear outlier.</li></p>
+<p></ul></p>
+
+<p><p><strong>Assessment</strong>: The market is pricing WDC for sustained hyper-growth in AI storage. However, the recent 39% drawdown from highs suggests the market is beginning to question the sustainability of this cycle. The current valuation is <strong>not justified</strong> on a mid-cycle basis; it only makes sense if FY2025 earnings are the new baseline, which is unlikely given the cyclicality of memory and storage.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Storage Cycle Correction</strong> <code>#critical</code></li></p>
+<p><p>The current demand surge for high-capacity HDDs is driven by AI data center buildouts. History shows storage is highly cyclical. A slowdown in AI capex by hyperscalers (<a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>, <a href="../companies/AMZN.html">AMZN</a>) would cause a sharp revenue decline. The stock's 39% drop from its high already hints at this risk materializing.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Insider Selling Signals</strong> <code>#critical</code></li></p>
+<p><p>Recent SEC filings show a series of open-market sales by insiders at prices between $424 and $465. This is a significant red flag, as insiders are selling into strength. While not always a definitive signal, the consistency and volume of sales suggest management believes the stock is fairly valued or overvalued at current levels.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>NAND Flash Oversupply</strong> <code>#medium</code></li></p>
+<p><p>The NAND flash market is prone to oversupply as competitors (Samsung, SK Hynix, Kioxia) add capacity. If AI-driven demand for enterprise SSDs slows, NAND pricing could collapse, pressuring WDC's flash segment margins. The FY2025 gross margin of 38.8% could revert to FY2024 levels (28.1%) or lower.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>High Beta and Volatility</strong> <code>#medium</code></li></p>
+<p><p>With a beta of 2.217, WDC is highly sensitive to market and sector swings. The recent 10-day price action (high of $580, low of $407) demonstrates extreme volatility. This makes the stock unsuitable for risk-averse investors and could lead to outsized losses in a market downturn.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#medium</code></li></p>
+<p><p>A significant portion of revenue comes from a small number of hyperscale data center customers. Any shift in their procurement strategy (e.g., moving to <a href="../companies/STX.html">STX</a> or in-house designs) could materially impact WDC's revenue.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Debt and Interest Rate Risk</strong> <code>#low</code></li></p>
+<p><p>While debt has been reduced, the company still carries $4.71B in debt. With interest expense not explicitly shown in the provided data (but implied by the "total interest expense" line being NaN), rising rates could increase financing costs. However, the current cash flow generation ($1.69B OCF) provides adequate coverage.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Data Center Expansion</strong> <code>#near-term</code></li></p>
+<p><p>Continued announcements of new AI data center builds by hyperscalers and sovereign AI initiatives could drive further demand for high-capacity nearline HDDs. Any major contract win announcement would be a positive catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>HAMR Technology Ramp</strong> <code>#medium-term</code></li></p>
+<p><p>WDC's transition to Heat-Assisted Magnetic Recording (HAMR) technology promises higher storage densities and lower cost-per-terabyte. Successful commercialization and qualification with major cloud customers could extend the company's competitive advantage and justify a premium valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Flash Pricing Stabilization</strong> <code>#near-term</code></li></p>
+<p><p>If NAND flash prices stabilize or increase due to disciplined supply from manufacturers, WDC's flash segment margins could improve, providing an earnings tailwind.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Further Debt Reduction / Capital Returns</strong> <code>#medium-term</code></li></p>
+<p><p>The company has been aggressively paying down debt. If it continues this trajectory and initiates a larger buyback or increases its dividend (currently only $0.50 annualized), it could support the stock price.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential Spin-off or JV Restructuring</strong> <code>#medium-term</code></li></p>
+<p><p>Speculation about separating the HDD and Flash businesses (similar to what was previously planned) could unlock value, as the market might value the high-margin HDD business more favorably on a standalone basis.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: HOLD (Conviction: Medium)</strong></p></p>
+
+<p><p><strong>12-Month Price Target: $450</strong> (downside from current $487.29)</p></p>
+
+<p><p><strong>Thesis</strong>: Western Digital has executed a remarkable operational turnaround, with FY2025 revenue up 50.7% and a swing to profitability. The company is a key beneficiary of the AI storage supercycle. However, the current valuation (~95x trailing P/E, ~61x EV/EBITDA) is pricing in perfection. The recent insider selling at $424-$465, combined with the stock's extreme volatility (beta 2.2) and the cyclical nature of the storage industry, suggests the risk/reward is now skewed to the downside.</p></p>
+
+<p><p><strong>Upside Scenario</strong>: If AI demand persists and HAMR technology ramps successfully, earnings could grow to $10+ EPS, supporting a price target of $600+.</p></p>
+
+<p><p><strong>Downside Scenario</strong>: A correction in AI capex or a NAND oversupply could drive earnings back to FY2024 levels (-$2.61 EPS), which would imply a fair value of $150-$200.</p></p>
+
+<p><p><strong>Action</strong>: Investors should not initiate new positions at current levels. Existing holders should consider trimming positions into strength, given the insider selling signal. Wait for a pullback to the $350-$400 range (which would represent a more reasonable ~40x forward earnings) before establishing a position.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>WDC — Western Digital Corporation</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-14 10:29</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>WDC</td></tr></p>
+<p><tr><td>Name</td><td>Western Digital Corporation</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>40,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-06-27</td><td>9520000000.0</td><td>2334000000.0</td><td>1889000000.0</td><td>5.1</td></tr></p>
+<p><tr><td>2024-06-28</td><td>6317000000.0</td><td>-403000000.0</td><td>-798000000.0</td><td>-2.6</td></tr></p>
+<p><tr><td>2023-06-30</td><td>12318000000.0</td><td>-1285000000.0</td><td>-1684000000.0</td><td>-5.4</td></tr></p>
+<p><tr><td>2022-07-01</td><td>18793000000.0</td><td>2391000000.0</td><td>1500000000.0</td><td>4.8</td></tr></p>
+<p><tr><td>2021-07-02</td><td>16922000000.0</td><td>1220000000.0</td><td>821000000.0</td><td>2.7</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-06-27</td><td>14002000000.0</td><td>8462000000.0</td><td>5311000000.0</td><td>2114000000.0</td></tr></p>
+<p><tr><td>2024-06-28</td><td>24188000000.0</td><td>13141000000.0</td><td>10818000000.0</td><td>1551000000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>24546000000.0</td><td>12706000000.0</td><td>10964000000.0</td><td>2023000000.0</td></tr></p>
+<p><tr><td>2022-07-01</td><td>26259000000.0</td><td>14038000000.0</td><td>12221000000.0</td><td>2327000000.0</td></tr></p>
+<p><tr><td>2021-07-02</td><td>26132000000.0</td><td>15411000000.0</td><td>10721000000.0</td><td>3370000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-06-27</td><td>1691000000.0</td><td>334000000.0</td></tr></p>
+<p><tr><td>2024-06-28</td><td>-294000000.0</td><td>350000000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>-408000000.0</td><td>828000000.0</td></tr></p>
+<p><tr><td>2022-07-01</td><td>1880000000.0</td><td>929000000.0</td></tr></p>
+<p><tr><td>2021-07-02</td><td>1898000000.0</td><td>1212000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-07-31</td><td>569.1</td><td>580.0</td><td>530.6</td><td>544.8</td><td>9,502,270</td></tr></p>
+<p><tr><td>2026-08-03</td><td>524.4</td><td>539.4</td><td>501.3</td><td>527.2</td><td>8,279,886</td></tr></p>
+<p><tr><td>2026-08-04</td><td>555.0</td><td>559.8</td><td>537.3</td><td>548.6</td><td>7,806,175</td></tr></p>
+<p><tr><td>2026-08-05</td><td>544.9</td><td>564.7</td><td>518.3</td><td>519.2</td><td>9,633,584</td></tr></p>
+<p><tr><td>2026-08-06</td><td>428.9</td><td>477.6</td><td>407.5</td><td>451.5</td><td>16,190,097</td></tr></p>
+<p><tr><td>2026-08-07</td><td>457.4</td><td>457.6</td><td>422.5</td><td>434.3</td><td>11,820,839</td></tr></p>
+<p><tr><td>2026-08-10</td><td>434.6</td><td>452.7</td><td>424.4</td><td>438.3</td><td>7,258,569</td></tr></p>
+<p><tr><td>2026-08-11</td><td>442.2</td><td>448.9</td><td>431.5</td><td>437.9</td><td>6,095,147</td></tr></p>
+<p><tr><td>2026-08-12</td><td>457.1</td><td>467.8</td><td>450.9</td><td>454.1</td><td>5,750,492</td></tr></p>
+<p><tr><td>2026-08-13</td><td>453.1</td><td>502.6</td><td>451.6</td><td>487.3</td><td>8,699,102</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-21</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='STX' name='Seagate Technology Holdings plc' price=921.37 market_cap=206597873730, symbol='DDOG' name='Datadog, Inc.' price=252.24 market_cap=89787394290, symbol='MSI' name='Motorola Solutions, Inc.' price=465.04 market_cap=77194779840, symbol='MPWR' name='Monolithic Power Systems, Inc.' price=1362.55 market_cap=66942081500, symbol='GRMN' name='Garmin Ltd.' price=311.93 market_cap=60156636290, symbol='NXPI' name='NXP Semiconductors N.V.' price=231.91 market_cap=58479393592, symbol='EA' name='Electronic Arts Inc.' price=209.7 market_cap=52924891248, symbol='INFY' name='Infosys Limited' price=12.41 market_cap=50354567800, symbol='XYZ' name='Block, Inc.' price=83.09 market_cap=49453586963, symbol='SMCI' name='Super Micro Computer, Inc.' price=39.16 market_cap=25331546680</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-14 10:29</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-14 10:29 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/WDC.html">WDC</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTC — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>INTC</strong></span>
+  <span>Intel Corporation</span>
+  <span>Technology</span>
+  <span>2026-08-25</span>
+</div>
+<hr>
+
+<h1>📊 INTC — Intel Corporation</h1>
+<blockquote><em>Investment Research Report · August 25, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/INTC.html">INTC</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> ~$5170 亿</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/INTC Valuation.html">INTC Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要（Executive Summary）</div><div class="callout-body"><ul></p>
+<p><li><strong>INTC 是 2026 年最戏剧化的半导体"困境反转"标的</strong>：过去一年暴涨 ~363%（$22 → 高点 $142），已从高点回撤 ~37% 至 ~$95，市值 ~$5170 亿。</li></p>
+<p><li><strong>反转有真东西</strong>：Q2 FY2026 营收 <strong>$161.3 亿（+25.4%，15 年来最强）</strong>，数据中心与 AI（DCAI）<strong>+59%</strong>（占营收 ~39%）；18A 节点量产、良率 ~80% 领先目标；NVIDIA（$50 亿入股 + DGX Rubin 主机 CPU 订单）、Google、SoftBank（$20 亿）战略背书。</li></p>
+<p><li><strong>但财务仍是"故事"，不是"盈利"</strong>：GAAP 净亏 $110 亿（含 $125 亿 CHIPS 非现金减值）、代工（Foundry）单季亏 $21 亿、外部代工收入仅 $2.93 亿（微乎其微）、并通过 <strong>$200 亿股权增发</strong>大幅稀释。</li></p>
+<p><li><strong>估值已定价成功</strong>：前瞻 P/E ~54–77x（一家 GAAP 仍亏损的公司），共识 Hold、目标价 ~$114–115。</li></p>
+<p><li><strong>结论：HOLD（中性，二元催化驱动）——这是一场"代工翻身"的豪赌，不是稳健复利。</strong> 胜负手是<strong>代工何时盈亏平衡（指引 Q4 2027）+ 能否拿下 14A 的外部大客户</strong>。成了再重估，输了再杀估值。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览（Business Overview）</div><div class="callout-body"><p><strong>Intel Corporation</strong> 曾是不可一世的 IDM（设计+制造一体）龙头，过去五年因制程落后 + 错失 AI + 客户流失而持续衰退（营收从 2021 年 $747 亿跌到 FY2025 $529 亿）。现任 CEO <strong>陈立武（Lip-Bu Tan）</strong> 的翻身赌注是"<strong>Intel Foundry</strong>"——把 Intel 变成美国本土的晶圆代工（foundry）龙头，对抗台积电（<a href="../companies/TSM.html">TSM</a>）。</p></p>
+
+<p><p><strong>三大业务（Q2 FY2026）</strong>：</p></p>
+<p><ol></p>
+<p><li><strong>数据中心与 AI（DCAI）$62.6 亿（+59%）</strong>：最强引擎，Xeon 6 拿下 NVIDIA DGX Rubin 主机 CPU 订单；</li></p>
+<p><li><strong>客户端计算（CCG）</strong>：PC 基本盘，稳定但低增长；</li></p>
+<p><li><strong>Intel Foundry（代工）$58 亿（+31%）</strong>：翻身核心，但<strong>仍单季亏 $21 亿</strong>（较去年同期 $31.7 亿改善）。</li></p>
+<p></ol></p>
+
+<p><p><strong>关键节点</strong>：<strong>18A 制程</strong>已量产（Panther Lake，良率 ~80% 领先目标，使用 ASML High-NA EUV）；<strong>14A</strong> PDK 0.9 预计 10 月发布、2028 年量产；<strong>先进封装 EMIB-T</strong> 良率 ~90%、号称比台积电 CoWoS-L 便宜 ~50%、2027 年量产。</p></p>
+<p></div></div></p>
+<blockquote><strong>竞争地位</strong>：Intel 的护城河是"<strong>美国唯一具备先进制程制造能力的本土厂商</strong>"——在地缘政治 + CHIPS 法案 + 供应链本地化背景下，这是稀缺的<strong>战略资产</strong>。但这目前是"战略价值"而非"商业护城河"：外部代工收入仅 $2.93 亿，说明市场（AWS、微软、谷歌等）<strong>还没用真金白银投票</strong>。它真正的护城河能否成立，取决于 14A 能否兑现 + 外部大客户能否落地。</blockquote>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析（Financial Analysis）</div><div class="callout-body"><p><strong>营收（转正）</strong>：Q2 FY2026 营收 $161.3 亿（+25.4% YoY，<strong>15 年来最强增速</strong>），超预期 11.6%；FY2026 共识 ~$626–630 亿（较 FY2025 的 $529 亿回升）。数据中心 +59% 是主驱动。</p></p>
+
+<p><p><strong>盈利（仍是黑洞）</strong>：非 GAAP EPS $0.42（几乎翻倍超预期），但 <strong>GAAP 净亏 $110 亿</strong>（主因 $125 亿 CHIPS 法案托管股份的非现金减值）。代工单季营业亏损 $21 亿，TTM 净亏 ~$11.3 亿，<strong>账面上仍未真正盈利</strong>。</p></p>
+
+<p><p><strong>现金流与资本结构（最弱环节）</strong>：总债务 ~$505 亿 vs 现金 ~$297 亿，<strong>股息已停发</strong>；FY2025 自由现金流深度为负（资本开支 ~$177 亿 > 经营现金流 ~$97 亿）。2026 年 8 月通过 <strong>$200 亿股权增发</strong>（发行价 $95，1971 年上市以来首次公开增发）融资，<strong>大幅稀释现有股东</strong>。</p></p>
+
+<p><p><strong>指引（Q3 FY2026）</strong>：营收 $158–168 亿、非 GAAP EPS $0.38。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估（Valuation Assessment）</div><div class="callout-body"><p><strong>当前倍数（贵，定价的是"翻身成功"）</strong>：</p></p>
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>股价</td><td>~$95（发行价）</td></tr></p>
+<p><tr><td>市值</td><td>~$5170 亿</td></tr></p>
+<p><tr><td>前瞻市盈率</td><td>~54–77x</td></tr></p>
+<p><tr><td>市销率</td><td>~3.3x</td></tr></p>
+<p><tr><td>追踪 EPS</td><td>仍为负（~-$2.09）</td></tr></p>
+<p></table></p>
+
+<p><p><strong>分析师分歧极大</strong>：Rosenblatt <strong>$65（卖出）</strong> 到 BofA <strong>$160（买入）</strong>，共识 Hold、均价 ~$114–115（GF 证券 $136）。</p></p>
+
+<p><p><strong>估值判断</strong>：INTC 的前瞻 P/E 建立在"<strong>代工 2027 年盈亏平衡 + 14A 成功 + 外部大客户落地</strong>"这个尚未兑现的假设上。也就是说，<strong>市场已经按"翻身成功"给它定价了</strong>——这既是风险（假设证伪则杀估值），也是它和 QCOM（18x 便宜）的本质区别：一个买"现实"，一个买"预期"。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险（Risks）</div><div class="callout-body"><ol></p>
+<p><li><strong>代工持续失血 + 盈亏平衡遥遥无期</strong> <code>#critical</code></li></p>
+<p><p>Foundry 单季亏 $21 亿、外部收入仅 $2.93 亿，盈亏平衡指引在 Q4 2027。若 14A 或外部客户不及预期，失血会持续，估值逻辑崩塌。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>14A 无"招牌外部客户"</strong> <code>#critical</code></li></p>
+<p><p>目前外部代工收入微乎其微，14A 尚未签下能证明其竞争力的标志性大客户。这是股价最核心的"二元催化"——拿下则重估，拿不下则跌回。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>巨额稀释 + 资本开支黑洞</strong> <code>#high</code></li></p>
+<p><p>$200 亿增发大幅摊薄，且资本开支（俄亥俄工厂已延期至 2030–2031）仍在吞噬现金流，股息已停发。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>估值已高（54–77x 前瞻）</strong> <code>#high</code></li></p>
+<p><p>对一家 GAAP 仍亏损的公司，估值几乎没有容错空间。任何"安静季度"或 14A 推迟都可能引发大跌。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>执行与竞争风险</strong> <code>#medium</code></li></p>
+<p><p>TSMC、AMD、NVIDIA 的竞争压制；CHIPS 法案相关的诉讼（政府被指控胁迫换股权）增加不确定性。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂（Catalysts）</div><div class="callout-body"><ul></p>
+<p><li><strong>14A 招牌外部客户落地</strong> <code>#near-term</code>（<strong>最关键二元催化</strong>）</li></p>
+<p><p>市场传闻 AWS Trainium3（2027 用 EMIB-T）、AWS/微软 ASIC（2028 用 EMIB）等；任一"名牌大客户"官宣都是强催化。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>代工盈亏平衡进度（目标 Q4 2027）</strong> <code>#medium-term</code></li></p>
+<p><p>每个季度的 Foundry 亏损收窄幅度，是市场判断"翻身是否兑现"的直接证据。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>18A-P / 14A 量产里程碑</strong> <code>#medium-term</code></li></p>
+<p><p>18A-P 年底风险生产、14A 2028 量产，技术兑现决定客户信心。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>NVIDIA/Google/SoftBank 合作深化</strong> <code>#near-term</code></li></p>
+<p><p>NVIDIA $50 亿入股 + DGX Rubin 订单，若放大为长期代工/芯片供应关系，是基本面实锤。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 评级（Recommendation）</div><div class="callout-body"><p><strong>评级：HOLD（中性，二元催化驱动）</strong> — Conviction: <strong>中</strong></p></p>
+
+<p><p><strong>12 个月观点</strong>：INTC 是"<strong>已经涨过一波的翻身豪赌</strong>"——过去一年 +363%（$22→$142）已经把大量乐观预期打进去了，现在 $95 是"<strong>博弈 14A + 代工盈亏平衡能否兑现</strong>"的位置。它不是稳健复利股，也不是便宜价值股，而是一只<strong>由少数几个二元催化剂决定方向的股票</strong>。</p></p>
+
+<p><p><strong>它已经不是"新鲜十倍股"</strong>（$22 到 $142 的 6.5 倍已经发生过了），但它和 ALAB 不同：ALAB 的十倍是"业绩兑现型"，INTC 的上涨是"预期重估型"，而<strong>预期重估一旦证伪，回撤会非常快</strong>（已从高点 -37%）。</p></p>
+
+<p><p><strong>行动</strong>：<strong>不追高，把它当"事件驱动"对待，而非"长期持有"</strong>。真正的决策点只有两个：① <strong>14A 招牌外部客户官宣</strong>（买点）；② <strong>代工盈亏平衡时间表再推迟 / 外部客户落空</strong>（卖点）。在此之前，它的估值（54–77x 前瞻 + 巨额稀释 + GAAP 亏损）不支持"闭眼长期持有"。CEO 陈立武自掏腰包 $1000 万按发行价买入，是"管理层下注"，值得作为积极信号参考，但不能替代你自己对 14A 兑现的判断。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录（Financial Data Appendix）</div><div class="callout-body"></p>
+<p><h1>INTC — Intel Corporation</h1></p>
+
+<p><blockquote><em>数据快照：2026-08-25（来源：公司财报、Investing.com、TipRanks、Simply Wall St）</em></blockquote></p>
+
+<p><h2>公司概况</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>Ticker</td><td>INTC</td></tr></p>
+<p><tr><td>公司</td><td>Intel Corporation</td></tr></p>
+<p><tr><td>板块</td><td>Technology（IDM + 晶圆代工）</td></tr></p>
+<p><tr><td>股价</td><td>~$95（2026 年 8 月增发价）</td></tr></p>
+<p><tr><td>52 周区间</td><td>$22.78 – $142.35</td></tr></p>
+<p><tr><td>市值</td><td>~$5170 亿</td></tr></p>
+<p><tr><td>过去一年涨幅</td><td>~+363%</td></tr></p>
+<p><tr><td>股息</td><td>已停发</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标（Q2 FY2026）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>营收</td><td>$161.3 亿（+25.4% YoY，15 年最强）</td></tr></p>
+<p><tr><td>数据中心与 AI（DCAI）</td><td>$62.6 亿（+59%）</td></tr></p>
+<p><tr><td>Intel Foundry 营收</td><td>$58 亿（+31%）</td></tr></p>
+<p><tr><td>Foundry 营业利润</td><td><strong>-$21 亿</strong></td></tr></p>
+<p><tr><td>外部代工收入</td><td>$2.93 亿</td></tr></p>
+<p><tr><td>非 GAAP EPS</td><td>$0.42</td></tr></p>
+<p><tr><td>GAAP 净亏</td><td>-$110 亿（含 $125 亿 CHIPS 非现金减值）</td></tr></p>
+<p><tr><td>总债务 / 现金</td><td>$505 亿 / $297 亿</td></tr></p>
+<p><tr><td>FY2026 营收共识</td><td>~$626–630 亿</td></tr></p>
+<p></table></p>
+
+<p><h2>Q3 FY2026 指引</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>指引</th></tr></p>
+<p><tr><td>营收</td><td>$158–168 亿</td></tr></p>
+<p><tr><td>非 GAAP EPS</td><td>$0.38</td></tr></p>
+<p></table></p>
+
+<p><h2>估值与分析师目标价</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标 / 机构</th><th>数值 / 评级</th></tr></p>
+<p><tr><td>前瞻市盈率</td><td>~54–77x</td></tr></p>
+<p><tr><td>市销率</td><td>~3.3x</td></tr></p>
+<p><tr><td>BofA</td><td>Buy，$160</td></tr></p>
+<p><tr><td>GF 证券</td><td>Buy，$136</td></tr></p>
+<p><tr><td>Benchmark</td><td>$105</td></tr></p>
+<p><tr><td>共识</td><td>Hold，~$114–115</td></tr></p>
+<p><tr><td>Rosenblatt</td><td>Sell，$65</td></tr></p>
+<p></table></p>
+
+<p><h2>关键战略合作与里程碑</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>事项</th><th>状态</th></tr></p>
+<p><tr><td>NVIDIA</td><td>$50 亿入股 + DGX Rubin 主机 CPU（Xeon 6）</td></tr></p>
+<p><tr><td>SoftBank</td><td>$20 亿入股</td></tr></p>
+<p><tr><td>Google</td><td>多代 CPU/ASIC 合作</td></tr></p>
+<p><tr><td>18A 制程</td><td>量产，良率 ~80% 领先目标</td></tr></p>
+<p><tr><td>14A 制程</td><td>2028 量产（风险生产 2027H2）</td></tr></p>
+<p><tr><td>EMIB-T 封装</td><td>良率 ~90%，2027 量产，较 CoWoS-L 便宜 ~50%</td></tr></p>
+<p><tr><td>代工盈亏平衡</td><td>指引 Q4 2027</td></tr></p>
+<p></table></p>
+
+<p><p><em>Last data refresh: 2026-08-25</em></p></p>
+<p></div></div></p>
+<hr>
+<p><em>Report generated 2026-08-25 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/INTC.html">INTC</a> · <a href="../companies/NVDA.html">NVDA</a> · <a href="../companies/TSM.html">TSM</a> · <a href="../companies/AMD.html">AMD</a> · <a href="../companies/AVGO.html">AVGO</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

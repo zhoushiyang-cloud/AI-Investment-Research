@@ -20,6 +20,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.data_engine import fetch_all_for_ticker, get_price_targets
 from src.markdown import generate_report_md
 from src.config import load_config
+from scripts.prediction_ledger import (
+    record_prediction,
+    extract_prediction_from_text,
+    extract_structured_prediction,
+    strip_prediction_line,
+)
 
 
 def build_analysis_prompt(ticker: str, data: dict) -> str:
@@ -168,7 +174,10 @@ Write a comprehensive investment memo. **Use Obsidian callout syntax** throughou
 > What could drive upside in 6-18 months. Tag each: `#near-term` or `#medium-term`.
 
 > [!quote] Recommendation
-> **Buy / Hold / Sell** with conviction (High/Medium/Low). Price target and 12-month thesis.
+> **Rating: Buy / Hold / Sell** with conviction (High/Medium/Low). Include an explicit numeric 12-month price target — a specific dollar figure YOU would stand behind, not the analyst consensus.
+>
+> End the Recommendation block with EXACTLY one machine-readable line (for prediction tracking). Use this exact format and nothing else on that line:
+> PREDICTION|rating=BUY|conviction=high|price_target=123.45|horizon_months=12
 
 IMPORTANT:
 - Output ONLY the callout blocks above, filled with analysis. No preamble, no sign-off.
@@ -184,6 +193,7 @@ IMPORTANT:
   >    ...
   ```
 - Keep each section concise. The reader is an experienced investor.
+- The PREDICTION|... line is REQUIRED as the last line of the Recommendation block. rating must be exactly BUY/SELL/HOLD; conviction must be exactly high/medium_high/medium/low; price_target must be a number; horizon_months must be 12.
 """
 
     return prompt
@@ -314,6 +324,37 @@ def run_deepseek(prompt: str, config: dict) -> str | None:
         return None
 
 
+def record_prediction_from_report(ticker: str, data: dict, analysis: str, report_file: str, structured: dict | None = None) -> None:
+    """从生成的研报里提取评级/信心/目标价并记录到预测台账（反馈闭环）。
+
+    优先用机器可读的 structured 预测；缺失时回退到正则提取 analysis 文本。
+    用 data["price_history"] 的最后收盘价作为预测时的起点价（point-in-time）。
+    """
+    today = datetime.now().strftime("%Y-%m-%d")
+    pred = structured or extract_prediction_from_text(ticker, today, analysis)
+    if pred is None:
+        print("  [Ledger] 未从研报中提取到评级，跳过记录（可在 prediction_ledger.py 里优化正则）。")
+        return
+
+    start_price = None
+    ph = data.get("price_history")
+    if ph is not None and not ph.empty and "close" in ph.columns:
+        start_price = float(ph["close"].iloc[-1])
+
+    record_prediction(
+        ticker=ticker,
+        date=today,
+        rating=pred["rating"],
+        conviction=pred.get("conviction"),
+        start_price=start_price,
+        price_target=pred.get("price_target"),
+        horizon_months=pred.get("horizon_months", 12),
+        report_file=report_file,
+    )
+    print(f"  [Ledger] 已记录预测: {ticker} {pred['rating']} ({pred.get('conviction') or '-'}) "
+          f"start=${start_price} target=${pred.get('price_target') or '—'}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate LLM investment research reports")
     parser.add_argument("--ticker", type=str, help="Single ticker to analyze")
@@ -379,12 +420,22 @@ def main() -> None:
             print(f"  [WARN] Report generation failed for {ticker}.")
             continue
 
+        # 提取机器可读的预测行（并剥离，保持人读报告干净）
+        structured = extract_structured_prediction(analysis)
+        analysis = strip_prediction_line(analysis)
+
         # Generate and save report
         report = generate_report_md(ticker, data, analysis)
         report_path = reports_dir / f"{ticker}_report_{datetime.now().strftime('%Y-%m-%d')}.md"
         report_path.write_text(report, encoding="utf-8")
 
         print(f"  [OK]Report saved to {report_path}")
+
+        # 记录预测到台账（反馈闭环）
+        try:
+            record_prediction_from_report(ticker, data, analysis, report_path.name, structured)
+        except Exception as e:
+            print(f"  [WARN] 记录预测失败: {e}")
 
     print(f"\n[Done] Report generation complete.")
 

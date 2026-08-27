@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADI — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ADI</strong></span>
+  <span>Analog Devices, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-25</span>
+</div>
+<hr>
+
+<h1>📊 ADI — Analog Devices, Inc.</h1>
+<blockquote><em>Investment Research Report · August 25, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ADI.html">ADI</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> ~$1800 亿</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ADI Valuation.html">ADI Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要（Executive Summary）</div><div class="callout-body"><ul></p>
+<p><li><strong>ADI 是全球模拟芯片（analog）双龙头之一</strong>（与 <a href="../companies/TXN.html">TXN</a> 并立），业务高度分散于工业（~49%）、通信（含数据中心）、汽车、消费四大市场，是典型的"高质量、高毛利、有股息"的复利型蓝筹。</li></p>
+<p><li><strong>刚交出创纪录财报</strong>：Q3 FY2026 营收 <strong>$40.22 亿</strong>（首个 $40 亿季度，+40% YoY）、调整后 EPS <strong>$3.45</strong>（+68%）、毛利率 72.5%，并<strong>上调 Q4 指引</strong>（营收 $43 亿、毛利率 ~74%、EPS $3.86）。</li></p>
+<p><li><strong>AI 是新增量</strong>：数据中心已占通信业务 ~80%，光通信/电源营收均 +100% YoY；"grid-to-chip"（电网到芯片）全链路电源/监控布局，2030 数据中心 TAM 较一年前翻倍。</li></p>
+<p><li><strong>估值不便宜</strong>：~44x 市盈率（高于行业 ~40x），但<strong>远非泡沫</strong>；分析师共识 Strong Buy、均价 ~$447。</li></p>
+<p><li><strong>结论：BUY（逢低布局）——高质量复利股，不是十倍股。</strong> ADI 是"稳健成长 + 股息 + AI 边际增量"的核心仓配置标的，适合长期持有、赚业绩增长的钱；它的赔率来自"工业复苏 + AI 电源/光互联放量"，而非叙事泡沫。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览（Business Overview）</div><div class="callout-body"><p><strong>Analog Devices, Inc.</strong>（亚德诺）是全球模拟/混合信号半导体龙头，总部马萨诸塞州威尔明顿。模拟芯片是连接"真实物理世界"（温度、声音、电流、光、无线电波）与"数字世界"的桥梁，ADI 在此领域与 TI（<a href="../companies/TXN.html">TXN</a>）形成双寡头格局。</p></p>
+
+<p><p><strong>四大终端市场（Q3 FY2026）</strong>：</p></p>
+<p><ol></p>
+<p><li><strong>工业 ~49%（$19.7 亿，+53% YoY）</strong>：最大头，含自动化、仪器仪表、能源管理；</li></p>
+<p><li><strong>通信 ~16%（$6.5 亿，+84% YoY）</strong>：数据中心已占其中 ~80%，是当前 AI 增量核心；</li></p>
+<p><li><strong>汽车 ~25%（$9.98 亿，+16% YoY）</strong>：电动车/ADAS 带来的单车模拟含量提升；</li></p>
+<p><li><strong>消费 ~10%（$3.97 亿，+6% YoY）</strong>。</li></p>
+<p></ol></p>
+
+<p><p><strong>"grid-to-chip"战略</strong>：ADI 卡位 AI 数据中心的<strong>电源与信号链</strong>——从电网监控、储能、机架电源，一直到处理器电源交付（2026 年 7 月以 $15 亿收购 Empower Semiconductor，把电源转换延伸到处理器封装内）。光电路交换（OCS）营收预计 2026、2027 连续两年翻倍；能源业务（>$5 亿）预计 2030 年前翻倍。</p></p>
+<p></div></div></p>
+<blockquote><strong>竞争地位</strong>：模拟芯片具备<strong>"产品生命周期极长、客户认证周期长、单颗芯片价值低但系统依赖度高"</strong>的行业特性，天然形成强粘性护城河。ADI 的壁垒在于：① 数万种 SKU 的广覆盖（客户一站式采购）；② 高毛利（72.5%）体现的定价权；③ 长生命周期带来的稳定现金流；④ 高频并购（Linear Tech、Maxim、Empower）持续补强产品线。其护城河是<strong>"规模 + 广度 + 客户切换成本"</strong>，而非单一技术垄断。</blockquote>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析（Financial Analysis）</div><div class="callout-body"><p><strong>营收</strong>：Q3 FY2026 营收 $40.22 亿（+40% YoY、+11% QoQ），<strong>首次突破 $40 亿</strong>，连续 9 个季度超季节性增长，管理层预计第 10 个。全公司各终端市场、各区域需求全面走强。</p></p>
+
+<p><p><strong>盈利质量（突出优点）</strong>：调整后 EPS $3.45（+68% YoY，创纪录）、调整后毛利率 <strong>72.5%</strong>、调整后营业利润率 <strong>50%</strong>、GAAP 净利 ~$13.4 亿——<strong>这是一家真金白银、高毛利、已经盈利的公司</strong>，与前面看的 EOSE/REA（深亏）形成鲜明对比。</p></p>
+
+<p><p><strong>指引（关键亮点）</strong>：Q4 营收指引 $43 亿（±$1 亿）、调整后 EPS $3.86（±$0.15）、毛利率上调至 ~74%、营业利润率 ~52%。CFO 称"需求在组合与区域层面全面走强，支撑创纪录的 Q4 展望"。</p></p>
+
+<p><p><strong>现金流与回报</strong>：持续高自由现金流，季度股息 <strong>$1.10/股</strong>（股息率 ~1.2%，9/15 派发）。这是"现金奶牛 + 股东回报"的典型形态。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估（Valuation Assessment）</div><div class="callout-body"><p><strong>当前倍数</strong>：股价 $371（8/24），市值 ~$1800 亿，年内 +36%。~<strong>44x 市盈率</strong>（略高于行业 ~40x）。</p></p>
+
+<p><p><strong>同行对比</strong>：与 TI（<a href="../companies/TXN.html">TXN</a>，~35x）、以及盈利的模拟同行相比，ADI 因 AI/工业复苏弹性享受一定溢价，但远未到 CRWD（174x）、ALAB（~50x P/S）那种泡沫级。</p></p>
+
+<p><p><strong>分析师口径与估值分歧</strong>：</p></p>
+<p><ul></p>
+<p><li><strong>看多</strong>：Bernstein 上调至 $465（Outperform）、Stifel $450、Wells Fargo $470、Cantor Fitzgerald $510、Needham/TD Cowen $400；共识 Strong Buy、均价 ~$447（约 +20% 空间）。</li></p>
+<p><li><strong>谨慎</strong>：Morningstar 公允价值 $380（认为略高估）、GuruFocus GF Value $325（认为高估 ~15%）。</li></p>
+<p></ul></p>
+
+<p><p><strong>估值判断</strong>：ADI 的估值是"<strong>偏贵但合理</strong>"——贵在其 AI 增量与工业复苏被市场认可，合理在于它有 72.5% 毛利、真实盈利、股息和 9 个季度的超季节性增长做支撑。它不是"便宜买点"，而是"优质资产的合理溢价"。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险（Risks）</div><div class="callout-body"><ol></p>
+<p><li><strong>AI 增长"结构性 vs 周期性"之争</strong> <code>#high</code></li></p>
+<p><p>Q3 财报会上分析师核心质疑：AI 驱动的增长是长期结构性的，还是周期补库的顶部？若 AI 资本开支见顶、或数据中心电源/光互联需求回落，估值会先杀。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>工业复苏节奏不确定</strong> <code>#medium</code></li></p>
+<p><p>ADI 核心工业业务仍比历史峰值低 ~20%，复苏是大概率但节奏可能反复；若全球制造业再度走弱，工业这块（占 ~49%）会拖累。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>估值偏贵、安全边际薄</strong> <code>#medium</code></li></p>
+<p><p>~44x 市盈率已反映较多乐观预期，若下季度指引不及，回撤空间大于"便宜股"。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>竞争与地缘</strong> <code>#medium</code></li></p>
+<p><p>TI 扩产带来的价格竞争、中国模拟厂商的低成本替代、以及半导体出口管制/关税摩擦。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>内部人减持</strong> <code>#low</code></li></p>
+<p><p>近 12 个月内部人净卖出 ~$1.07 亿（无买入），属需留意的常规信号（但 8/24 有机构 Elefante +$1028 万增持形成对冲）。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂（Catalysts）</div><div class="callout-body"><ul></p>
+<p><li><strong>AI 数据中心电源/光互联放量（2026–2027）</strong> <code>#near-term</code></li></p>
+<p><p>OCS 营收连续两年翻倍、光/电源 +100% YoY，是当前最确定的成长引擎。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>工业补库复苏（2026–2027）</strong> <code>#medium-term</code></li></p>
+<p><p>工业业务较峰值低 ~20%、渠道库存仅 6–7 周，一旦下游重启补库，弹性可观。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>汽车电动化/ADAS 含量提升</strong> <code>#medium-term</code></li></p>
+<p><p>电动车单车模拟芯片价值量显著高于燃油车，长期结构性利好。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Empower 整合 + 并购能力</strong> <code>#medium-term</code></li></p>
+<p><p>从"板级电源"延伸到"处理器封装内电源"，打开单机价值量天花板。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 评级（Recommendation）</div><div class="callout-body"><p><strong>评级：BUY（逢低布局）</strong> — Conviction: <strong>中高</strong></p></p>
+
+<p><p><strong>12 个月观点</strong>：ADI 是<strong>高质量复利股，而非十倍股</strong>。它的赚钱逻辑是"业绩增长 + 股息复利"，而不是叙事重估。当前 ~44x 估值不便宜，但公司刚交出创纪录财报 + 上调指引 + 9 个季度超季节性增长，基本面动能向上。</p></p>
+
+<p><p><strong>定位</strong>：它适合作为组合里的"<strong>压舱石/核心仓</strong>"——与前面那些高波动的十倍股候选（ALAB、CRCL、量子、太空）形成对冲。它的护城河（模拟双寡头 + 高毛利 + 长生命周期 + 广覆盖）是真护城河，盈利能持续增长是确定事件，只是<strong>增速（~20–40%）决定了它只能 2–3 倍，不可能 10 倍</strong>。</p></p>
+
+<p><p><strong>行动</strong>：不追当天的财报跳空。理想做法是<strong>在回撤到 ~44x 以下、或 AI/工业叙事出现阶段性恐慌时分批建仓</strong>，用"股息 + 业绩增长"慢慢复利。若追求短期爆发力，ADI 不是合适标的；若追求"睡得着觉的长期复利"，它是优质选择。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录（Financial Data Appendix）</div><div class="callout-body"></p>
+<p><h1>ADI — Analog Devices, Inc.</h1></p>
+
+<p><blockquote><em>数据快照：2026-08-25（来源：公司财报、Futurum、Simply Wall St、Morningstar、TipRanks）</em></blockquote></p>
+
+<p><h2>公司概况</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>Ticker</td><td>ADI</td></tr></p>
+<p><tr><td>公司</td><td>Analog Devices, Inc.</td></tr></p>
+<p><tr><td>板块</td><td>Technology（模拟半导体）</td></tr></p>
+<p><tr><td>股价</td><td>$371.17（2026-08-24）</td></tr></p>
+<p><tr><td>52 周区间</td><td>$223.47 – $445.91</td></tr></p>
+<p><tr><td>市值</td><td>~$1800 亿</td></tr></p>
+<p><tr><td>股息</td><td>$1.10/季度（股息率 ~1.2%）</td></tr></p>
+<p><tr><td>机构持仓</td><td>~86.8%</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标（Q3 FY2026，截至 2026-08-01）</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>营收</td><td>$40.22 亿（+40% YoY，首次破 $40 亿）</td></tr></p>
+<p><tr><td>调整后 EPS</td><td>$3.45（+68% YoY，创纪录）</td></tr></p>
+<p><tr><td>调整后毛利率</td><td>72.5%</td></tr></p>
+<p><tr><td>调整后营业利润率</td><td>50%</td></tr></p>
+<p><tr><td>GAAP 净利</td><td>~$13.4 亿</td></tr></p>
+<p><tr><td>工业营收</td><td>$19.7 亿（+53%）</td></tr></p>
+<p><tr><td>通信营收</td><td>$6.5 亿（+84%，数据中心占 ~80%）</td></tr></p>
+<p><tr><td>汽车营收</td><td>$9.98 亿（+16%）</td></tr></p>
+<p><tr><td>消费营收</td><td>$3.97 亿（+6%）</td></tr></p>
+<p></table></p>
+
+<p><h2>Q4 FY2026 指引</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>指引</th></tr></p>
+<p><tr><td>营收</td><td>$43 亿（±$1 亿）</td></tr></p>
+<p><tr><td>调整后 EPS</td><td>$3.86（±$0.15）</td></tr></p>
+<p><tr><td>调整后毛利率</td><td>~74%（上调）</td></tr></p>
+<p><tr><td>调整后营业利润率</td><td>~52%</td></tr></p>
+<p></table></p>
+
+<p><h2>估值与分析师目标价</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>机构</th><th>评级</th><th>目标价</th></tr></p>
+<p><tr><td>Cantor Fitzgerald</td><td>—</td><td>$510</td></tr></p>
+<p><tr><td>Wells Fargo</td><td>—</td><td>$470</td></tr></p>
+<p><tr><td>Bernstein</td><td>Outperform</td><td>$465</td></tr></p>
+<p><tr><td>Stifel</td><td>—</td><td>$450</td></tr></p>
+<p><tr><td>Needham / TD Cowen</td><td>—</td><td>$400</td></tr></p>
+<p><tr><td><strong>共识（Strong Buy）</strong></td><td>—</td><td><strong>~$447</strong></td></tr></p>
+<p></table></p>
+
+<p><p><em>Last data refresh: 2026-08-25</em></p></p>
+<p></div></div></p>
+<hr>
+<p><em>Report generated 2026-08-25 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ADI.html">ADI</a> · <a href="../companies/TXN.html">TXN</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

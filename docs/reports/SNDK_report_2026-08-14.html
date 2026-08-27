@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNDK — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>SNDK</strong></span>
+  <span>Sandisk Corporation</span>
+  <span>Technology</span>
+  <span>2026-08-14</span>
+</div>
+<hr>
+
+<h1>📊 SNDK — Sandisk Corporation</h1>
+<blockquote><em>Investment Research Report · August 14, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/SNDK.html">SNDK</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/SNDK Valuation.html">SNDK Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Sandisk (SNDK) is a pure-play NAND flash memory supplier</strong> spun out from <a href="../companies/WDC.html">WDC</a> in February 2025, with a $226B market cap and shares trading at $1,528.11 — a massive re-rating from its $42.82 52-week low, driven by the AI storage cycle.</li></p>
+<p><li><strong>FY2025 (ended June 2025) was a turnaround year</strong>: Revenue grew 10.4% YoY to $7.355B, but the company still posted a <strong>net loss of -$1.641B</strong> (diluted EPS -$11.32), though this included a <strong>$1.83B impairment charge</strong> and a <strong>-$130M restructuring charge</strong> that mask underlying operational improvement.</li></p>
+<p><li><strong>Gross margin expanded dramatically</strong> from 16.1% in FY2024 to 30.1% in FY2025, reflecting the NAND pricing recovery and cost discipline — a 1,400 bps improvement that signals the cyclical trough is behind.</li></p>
+<p><li><strong>Balance sheet is stretched</strong>: Total debt of $2.254B (current + long-term) vs. just $1.481B cash, with negative common equity of -$1.784B (accumulated deficit) — though the company generated <strong>$84M positive operating cash flow</strong> in FY2025 vs. -$309M in FY2024.</li></p>
+<p><li><strong>We rate SNDK a HOLD with Medium conviction</strong> at current levels. The AI-driven NAND demand story is real, but the stock has already priced in significant recovery (35x forward revenue), and the balance sheet leaves little room for error if the memory cycle turns.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p><strong>Sandisk Corporation</strong> designs, manufactures, and supplies NAND flash-based storage solutions. Founded in 1988 and headquartered in Milpitas, CA, the company operates as an independent entity following its spin-off from <a href="../companies/WDC.html">WDC</a> in February 2025. CEO David V. Goeckeler leads a workforce of ~11,000 employees.</p></p>
+
+<p><p><strong>Product Portfolio & Segments</strong> (revenue split estimated based on industry disclosures):</p></p>
+<p><ul></p>
+<p><li><strong>Solid-State Drives (SSDs)</strong> — largest segment (~40-45% of revenue), serving enterprise/data center and client PC markets. This is the primary AI beneficiary as hyperscalers deploy high-capacity storage.</li></p>
+<p><li><strong>Embedded Memory Solutions</strong> (~25-30%) — NAND and storage controllers for smartphones, automotive, and IoT devices.</li></p>
+<p><li><strong>Removable Memory Cards & USB Devices</strong> (~15-20%) — consumer retail products (SanDisk Ultra, Extreme lines).</li></p>
+<p><li><strong>Wafers & Components</strong> (~10-15%) — raw NAND wafers sold to third-party module makers.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: SNDK is one of the top-3 global NAND suppliers alongside <a href="../companies/Samsung.html">Samsung</a> and <a href="../companies/Kioxia.html">Kioxia</a> (via the <a href="../companies/WDC.html">WDC</a>/Kioxia JV). The NAND industry is an oligopoly with high barriers to entry (capital intensity, process technology). The company's competitive moat lies in its 3D NAND process technology and vertical integration. However, it faces intense competition from <a href="../companies/Samsung.html">Samsung</a> (memory leader) and <a href="../companies/SK Hynix.html">SK Hynix</a>/<a href="../companies/Micron.html">Micron</a> (<a href="../companies/MU.html">MU</a>), and pricing power is dictated by the global supply-demand balance rather than product differentiation.</p></p>
+
+<p><p><strong>Key Strategic Focus</strong>: AI-driven enterprise storage (high-capacity QLC SSDs), automotive memory, and maintaining cost leadership in 3D NAND. The company's future is tied to the AI data center buildout, where storage density requirements are growing exponentially.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>FY2025 Revenue</strong>: $7.355B, up <strong>+10.4% YoY</strong> from $6.663B in FY2024. Growth is accelerating as NAND pricing recovered from the 2023-24 downturn.</li></p>
+<p><li><strong>Gross Profit</strong>: $2.212B (30.1% margin) vs. $1.072B (16.1% margin) in FY2024 — a <strong>+1,400 bps margin expansion</strong>, the single most important positive in the financials.</li></p>
+<p><li><strong>Operating Income</strong>: -$1.377B in FY2025 vs. -$468M in FY2024. The deterioration is entirely due to the <strong>$1.83B impairment charge</strong> (likely goodwill/write-downs related to the spin-off) and <strong>-$130M restructuring</strong>. Excluding these one-time items, adjusted operating income would be approximately <strong>+$323M</strong>, a swing of ~$800M YoY.</li></p>
+<p><li><strong>Net Loss</strong>: -$1.641B (EPS -$11.32) vs. -$672M (EPS -$4.63) in FY2024. The impairment is non-cash but drags reported earnings.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow</strong>: $84M in FY2025, a <strong>+$393M improvement</strong> from -$309M in FY2024. The company is now self-funding operations.</li></p>
+<p><li><strong>CapEx</strong>: $204M in FY2025, down from $166M in FY2024 — disciplined spending during the recovery phase.</li></p>
+<p><li><strong>Cash Position</strong>: $1.481B at FY2025 end, up from $328M in FY2024 (boosted by $1.97B debt issuance).</li></p>
+<p><li><strong>Total Debt</strong>: $2.254B (current portion $425M + long-term $1.829B). Net debt of ~$773M.</li></p>
+<p><li><strong>Equity</strong>: Negative common equity of <strong>-$1.784B</strong> (accumulated deficit of -$1.784B), a red flag for balance sheet strength. Total assets of $12.985B vs. total liabilities of $3.769B (excluding equity).</li></p>
+<p><li><strong>R&D Investment</strong>: $1.132B in FY2025 (15.4% of revenue), up from $1.061B — critical for maintaining 3D NAND process leadership.</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Ratios</strong>: Beta of 5.19 (extremely volatile), no dividend, no buybacks. The company is in a capital-intensive industry with cyclical earnings.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Market Data</strong>:</p></p>
+<p><table class="md-table"></p>
+<p><tr><td>- <strong>Price</strong>: $1,528.11</td><td><strong>Market Cap</strong>: $226.3B</td><td><strong>52-Week Range</strong>: $42.82 – $2,354.39</td></tr></p>
+<p></table></p>
+<p><ul></p>
+<p><li><strong>P/E (TTM)</strong>: Not meaningful (negative earnings). On a forward basis, if the company earns $5-6B in FY2026 (consensus for a full NAND upcycle), the forward P/E would be ~40-45x — <strong>expensive</strong>.</li></p>
+<p><li><strong>EV/Revenue (TTM)</strong>: ~$227B EV / $7.355B revenue = <strong>~31x</strong> — an extreme premium to hardware peers.</li></p>
+<p><li><strong>EV/EBITDA (adjusted)</strong>: Using ~$1.5B adjusted EBITDA, EV/EBITDA is ~150x — <strong>unsustainable</strong> without massive earnings growth.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong> (from available data):</p></p>
+<p><ul></p>
+<p><li><a href="../companies/HPE.html">HPE</a>: $79.2B market cap, 1.2x sales — SNDK trades at ~25x HPE's multiple.</li></p>
+<p><li><a href="../companies/TER.html">TER</a>: $64.2B market cap, ~10x sales — SNDK is 3x more expensive.</li></p>
+<p><li><a href="../companies/SMCI.html">SMCI</a>: $25.3B market cap, ~1.5x sales — SNDK trades at a 20x premium.</li></p>
+<p><li>SNDK's valuation is <strong>only justified if the AI storage supercycle delivers 3-4x revenue growth</strong> over the next 2-3 years, taking revenue to $20B+ with 40%+ gross margins.</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context</strong>: The stock has rallied from $42.82 to $1,528.11 (a <strong>~3,500% move</strong>) in under a year, reflecting the spin-off re-rating and AI enthusiasm. At $2,354.39 high, the market was pricing in near-perfect execution. The current pullback (-35% from highs) suggests some froth has been removed, but the stock remains priced for perfection.</p></p>
+
+<p><p><strong>Verdict</strong>: The valuation embeds aggressive assumptions. At ~31x trailing revenue, SNDK is priced as a hyper-growth AI company, not a cyclical memory maker. Historically, NAND suppliers trade at 1-3x revenue at cycle peaks. Current pricing implies the market expects a structural shift in the memory industry (oligopoly discipline, AI-driven demand). This is possible but not guaranteed.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>NAND Price Cyclicality</strong> <code>#critical</code></li></p>
+<p><p>Memory prices are notoriously volatile. The current upcycle could reverse if <a href="../companies/Samsung.html">Samsung</a>, <a href="../companies/SK Hynix.html">SK Hynix</a>, or <a href="../companies/MU.html">MU</a> increase supply. A 20% NAND price decline would erase most of the FY2025 gross margin gains (30.1% margin is highly sensitive to ASPs). The company's own history shows FY2024 gross margins of just 16.1% — a 1,400 bps swing in one year.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Balance Sheet / Negative Equity</strong> <code>#critical</code></li></p>
+<p><p>Common equity is -$1.784B with $2.254B total debt. The company has no cushion for a downturn. If the memory cycle turns, SNDK may need to raise equity at depressed prices or face covenant issues. The $1.481B cash balance covers only ~65% of total debt.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration & AI Demand Sustainability</strong> <code>#medium</code></li></p>
+<p><p>The AI storage buildout is concentrated among a few hyperscalers (<a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>, <a href="../companies/AMZN.html">AMZN</a>, <a href="../companies/META.html">META</a>). If AI capex slows or these customers shift to in-house storage solutions, demand could evaporate. The $1.83B impairment in FY2025 suggests prior acquisitions (likely from the <a href="../companies/WDC.html">WDC</a> spin-off) have already disappointed.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Extreme Volatility / Beta</strong> <code>#medium</code></li></p>
+<p><p>With a beta of 5.19, SNDK is one of the most volatile large-cap stocks. A 10% market correction could translate to a 50%+ drawdown. Insider selling (multiple open-market sales at $1,162-$2,088) suggests management is monetizing at high prices — a cautionary signal.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Technology Disruption</strong> <code>#low</code></li></p>
+<p><p>Emerging storage technologies (e.g., MRAM, ReRAM, or <a href="../companies/NVDA.html">NVDA</a>-driven compute-storage integration) could disrupt NAND's dominance. However, NAND is expected to remain the workhorse for mass storage through the decade, making this a longer-term risk.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Enterprise SSD Design Wins</strong> <code>#near-term</code></li></p>
+<p><p>Announcements of new contracts with hyperscalers for high-capacity QLC SSDs could drive upside. The company's enterprise SSD segment is the primary AI beneficiary, and any large deal disclosure would validate the premium valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>NAND Pricing Momentum</strong> <code>#near-term</code></li></p>
+<p><p>If NAND contract prices continue rising through H2 2026 (driven by AI demand and supply discipline), FY2026 revenue could exceed $10B with gross margins above 35%. Watch quarterly ASP data from <a href="../companies/MU.html">MU</a> and <a href="../companies/Samsung.html">Samsung</a> as leading indicators.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Debt Refinancing / Equity Strengthening</strong> <code>#medium-term</code></li></p>
+<p><p>If the company generates strong FCF in FY2026, it could reduce the $2.254B debt load and move equity positive. A return to positive book value would be a major sentiment shift for institutional investors.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Automotive & Industrial Memory Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>The shift to software-defined vehicles (SDV) and edge AI creates new demand for embedded NAND. SNDK's automotive segment could grow 20-30% annually, diversifying revenue away from volatile consumer markets.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential Inclusion in Major Indices</strong> <code>#medium-term</code></li></p>
+<p><p>As a newly spun-off company with a $226B market cap, SNDK is a candidate for <a href="../companies/SPX.html">SPX</a> and <a href="../companies/NDX.html">NDX</a> inclusion. Passive fund inflows could provide a structural bid to the stock.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: HOLD</strong></td><td><strong>Conviction: Medium</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>12-Month Price Target: $1,650</strong> (implying ~8% upside from current levels)</p></p>
+
+<p><p><strong>Thesis</strong>: Sandisk is a high-quality NAND franchise benefiting from the AI storage supercycle, with FY2025 showing clear operational improvement (gross margin +1,400 bps, positive OCF). However, the stock at $1,528 already prices in a flawless execution scenario — ~31x trailing revenue and ~40x forward earnings. The negative equity position and $2.25B debt load introduce financial risk that is not reflected in the valuation. We see a balanced risk/reward: the AI demand tailwind is real, but the memory cycle is historically mean-reverting, and the current price leaves no margin of safety.</p></p>
+
+<p><p><strong>Upside Scenario</strong> ($2,200+): NAND prices stay elevated through 2027, FY2026 revenue exceeds $12B with 40% gross margins, and the company deleverages. This would justify the current multiple.</p></p>
+
+<p><p><strong>Downside Scenario</strong> ($900-1,000): Memory cycle peaks in H2 2026, NAND prices correct 30%, and the company returns to losses. The stock would re-rate to 10-12x revenue, consistent with historical memory valuations.</p></p>
+
+<p><p><strong>Action</strong>: Existing investors should hold but trim on strength above $1,800. New investors should wait for either a pullback to $1,200-1,300 (better entry) or confirmation of sustained NAND price increases through two consecutive quarters before initiating a position.</p></p>
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>SNDK — Sandisk Corporation</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-14 10:27</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>SNDK</td></tr></p>
+<p><tr><td>Name</td><td>Sandisk Corporation</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>11,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-06-27</td><td>7355000000.0</td><td>-1377000000.0</td><td>-1641000000.0</td><td>-11.3</td></tr></p>
+<p><tr><td>2024-06-28</td><td>6663000000.0</td><td>-468000000.0</td><td>-672000000.0</td><td>-4.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-06-27</td><td>12985000000.0</td><td>3769000000.0</td><td>9216000000.0</td><td>1481000000.0</td></tr></p>
+<p><tr><td>2024-06-28</td><td>13506000000.0</td><td>2424000000.0</td><td>11082000000.0</td><td>328000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-06-27</td><td>84000000.0</td><td>163000000.0</td></tr></p>
+<p><tr><td>2024-06-28</td><td>-309000000.0</td><td>224000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p><tr><td>2026-06-22</td></tr></p>
+<p><tr><td>2026-06-05</td></tr></p>
+<p><tr><td>2026-06-02</td></tr></p>
+<p><tr><td>2026-05-27</td></tr></p>
+<p><tr><td>2026-05-27</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='HPE' name='Hewlett Packard Enterprise Company' price=59.83 market_cap=79227096661, symbol='TER' name='Teradyne, Inc.' price=410.52 market_cap=64181107320, symbol='KEYS' name='Keysight Technologies, Inc.' price=353.85 market_cap=60471325967, symbol='CRDO' name='Credo Technology Group Holding Ltd' price=265.99 market_cap=49601256089, symbol='FLEX' name='Flex Ltd.' price=124.3 market_cap=45916790165, symbol='JBL' name='Jabil Inc.' price=370.36 market_cap=38808946282, symbol='MDB' name='MongoDB, Inc.' price=472.29 market_cap=37987194803, symbol='TDY' name='Teledyne Technologies Incorporated' price=673.66 market_cap=31226899638, symbol='SMCI' name='Super Micro Computer, Inc.' price=39.16 market_cap=25331546680, symbol='WIT' name='Wipro Limited' price=1.96 market_cap=19389008730</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-14 10:27</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-14 10:27 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/SNDK.html">SNDK</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

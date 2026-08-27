@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EOSE — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>EOSE</strong></span>
+  <span>Eos Energy Enterprises, Inc.</span>
+  <span>Industrials</span>
+  <span>2026-08-24</span>
+</div>
+<hr>
+
+<h1>📊 EOSE — Eos Energy Enterprises, Inc.</h1>
+<blockquote><em>Investment Research Report · August 24, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/EOSE.html">EOSE</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><strong>Market Cap:</strong> ~$13.9 亿</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/EOSE Valuation.html">EOSE Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 执行摘要（Executive Summary）</div><div class="callout-body"><ul></p>
+<p><li><strong>EOSE 是锌基长时储能（LDES）的纯标的</strong>，产品为 Z3 模块 + Eos Indensity 架构 + DawnOS 控制软件，主打 4–16+ 小时电网级储能，以"非易燃锌化学"作为锂电的安全替代。</li></p>
+<p><li><strong>营收在爆发，但盈利在恶化</strong>：FY2025 营收 $1.142 亿（+632%），Q2 2026 营收 $6877.5 万（+351%），2026 指引 $3–3.5 亿；但 FY2025 净亏损高达 ~$9.70 亿，Q2 2026 调整后毛利率 <strong>-62%（深负）</strong>，现金从 $6.25 亿快速降到 $3.64 亿。</li></p>
+<p><li><strong>政策背书真实存在</strong>：获 DOE $3.035 亿贷款担保（AMAZE，8 GWh 年产能目标 2027）、贷款契约延期至 2027 年 3 月季度、"持续经营重大疑虑"已解除；2026 年 7 月斩获 <strong>Golden Dome 国防合同</strong>（91% 本土含量，FEOC/NDAA 合规）。</li></p>
+<p><li><strong>但基本面极弱</strong>：~32% 做空比例、负账面价值、Altman Z 处于危区、持续股权稀释（rights offering ~$2.63 亿）、Q2 营收中 <strong>$5500 万为关联方收入</strong>（占 $6877.5 万的 80%）。</li></p>
+<p><li><strong>结论：AVOID（回避）——高投机彩票，非十倍股形态。</strong> 长时储能 TAM 真实（BNEF 预计到 2030 年 15 倍增长），但 EOSE 缺乏定价权、成本不占优、财务在恶化，属于"政策故事强、商业兑现弱"的困境股。</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 业务概览（Business Overview）</div><div class="callout-body"><p><strong>Eos Energy Enterprises, Inc.</strong> 总部位于新泽西 Edison，主营<strong>锌基（zinc-hybrid）长时储能电池系统</strong>，制造基地位于宾州 Turtle Creek / Thorn Hill。核心卖点：</p></p>
+
+<p><ol></p>
+<p><li><strong>化学差异化</strong>：锌化学不易燃、无热失控风险，定位为锂离子电池的"安全替代"，适用于 4–16+ 小时的电网级长时储能（调峰、微电网、工商业）。</li></p>
+<p><li><strong>Eos Indensity 架构</strong>：Z3 模块 + DawnOS 控制，号称"空间智能"实现 <strong>1 GWh/英亩</strong>（约为多数锂电系统的 4 倍能量密度），公司计划 2026 下半年转向 Indensity 量产以改善单位经济。</li></p>
+<p><li><strong>本土化/政策护城河</strong>：约 <strong>91% 美国本土含量</strong>，符合 FEOC 和 NDAA §842 条款，因而拿到国防（Golden Dome）与 DOE 背书，主打"去中国供应链"的电网/国防安全叙事。</li></p>
+<p></ol></p>
+<p></div></div></p>
+<blockquote><strong>竞争地位</strong>：处于"政策友好但商业脆弱"的位置。锌溴电池市场<strong>由中国厂商主导</strong>（澳洲 Redflow 2024 年破产清算后产能进一步向中国集中）；同时锂电储能系统价格 2025 年跌到 <strong>$70/kWh（同比 -45%）</strong>，长时储能经济性虽改善，但也大幅压缩了 EOSE 这类替代化学的成本空间。EOSE 的护城河不是"成本"或"技术垄断"，而是<strong>"本土含量 + 政策准入"</strong>。</blockquote>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 财务分析（Financial Analysis）</div><div class="callout-body"><p><strong>营收趋势</strong>：从 FY2024 的 $1560 万暴增至 FY2025 的 $1.142 亿（+632%），再至 H1 2026 的 $1.257 亿。增速极高，但基数极低、且含大量关联方交易。</p></p>
+
+<p><p><strong>盈利质量（核心问题）</strong>：公司<strong>结构性深亏</strong>。FY2025 净亏损 ~$9.70 亿；Q2 2026 GAAP 净亏损 $2.577 亿、<strong>调整后毛利率 -62%</strong>（意味着每卖一块电池倒贴钱）。TTM EPS 约 -$4.4~-6.7，营业利润率约 -122%。这是"收入增长 vs 盈利崩塌"的典型困境股形态。</p></p>
+
+<p><p><strong>现金流与资产负债表</strong>：现金从 Q4 2025 的 $6.25 亿降至 2026-06-30 的 <strong>$3.64 亿</strong>，债务约 <strong>$6.41 亿</strong>，账面价值为负。公司靠 rights offering（~$2.63 亿）和注册直接发行持续融资，稀释压力大。</p></p>
+
+<p><p><strong>关联方收入红旗</strong>：Q2 2026 营收 $6877.5 万中，<strong>$5500 万来自关联方</strong>（Frontier Power USA / FPUSA 平台），占比约 80%。这意味着"真实第三方需求"的可验证性存疑，投资者需重点追问其收入质量。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ 估值评估（Valuation Assessment）</div><div class="callout-body"><p><strong>当前倍数</strong>：市值 ~$13.9 亿、股价 $3.81（52 周区间 $3.11–$19.86，已从高点跌超 80%）。无 P/E（亏损）；<strong>P/S ~7–8x</strong>、EV/Revenue ~8x。</p></p>
+
+<p><p><strong>同行对比</strong>：相比盈利的储能/电力设备同行（多为 1–5x P/S），EOSE 的 7–8x P/S 并不便宜，尤其考虑到它毛利率为负、还在烧钱。</p></p>
+
+<p><p><strong>分析师口径</strong>：共识 Moderate Buy，均价 <strong>$6.67</strong>（约 75% 上行空间），但目标价一路下调且高度分散——Needham $11、Stifel $9、Truist $7、JPM $6、B. Riley $5、TD Cowen $4、Roth $4。GuruFocus GF Value 给 $13.78（理论低估 72%），但<strong>明确警告可能是"价值陷阱"</strong>。</p></p>
+
+<p><p><strong>估值判断</strong>：对一家毛利率 -62%、现金半年腰斩、被 32% 做空的公司，任何"估值锚"都建立在"它能不能活到兑现"这个前提上。当前价格<strong>既不算便宜，也谈不上安全边际</strong>。</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ 风险（Risks）</div><div class="callout-body"><ol></p>
+<p><li><strong>持续经营与流动性风险</strong> <code>#critical</code></li></p>
+<p><p>现金半年从 $6.25 亿降到 $3.64 亿，配合 -62% 毛利率和 ~$6.41 亿债务，若 2026 下半年制造爬坡不及、或关联方需求证伪，可能在 2027 年再次触及流动性红线（尽管贷款契约已延到 2027 年 3 月）。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>盈利模式未成立</strong> <code>#critical</code></li></p>
+<p><p>营收暴涨但毛利率深负，说明<strong>当前成本结构下"卖得越多亏得越多"</strong>。Indensity 量产能否真正把单位经济转正，是公司能否存活的核心，目前未被证明。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>股权稀释</strong> <code>#critical</code></li></p>
+<p><p>rights offering + 注册直接发行持续摊薄股本，每股价值被不断稀释。对早期股东是慢性失血。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>收入质量存疑</strong> <code>#high</code></li></p>
+<p><p>Q2 营收 80% 来自关联方（FPUSA），第三方真实需求的可见性不足。若审计或做空机构进一步质疑，可能引发信任危机。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>竞争与成本劣势</strong> <code>#high</code></li></p>
+<p><p>锂电价格一年跌 45%（$70/kWh），中国锌溴厂商主导市场，EOSE 的"安全 + 本土化"卖点能否对冲成本劣势，长期存疑。</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>高做空与高波动</strong> <code>#medium</code></li></p>
+<p><p>~32% 做空比例 + beta ~2.8，股价易被逼空或踩踏，波动极端（52 周 $3.11–$19.86）。</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 催化剂（Catalysts）</div><div class="callout-body"><ul></p>
+<p><li><strong>Eos Indensity 量产切换（2026 下半年）</strong> <code>#near-term</code></li></p>
+<p><p>若自动化产线爬坡顺利、单位经济转正，是估值重估的最强催化；反之则是加速失血的雷。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>DOE 贷款 + 8 GWh 产能目标（2027）</strong> <code>#medium-term</code></li></p>
+<p><p>$3.035 亿贷款担保与宾州扩产落地，是"活下去并规模化"的关键外部背书。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>Golden Dome 国防订单放量</strong> <code>#medium-term</code></li></p>
+<p><p>91% 本土含量 + FEOC/NDAA 合规，若国防/电网安全采购从"原型"转"批量"，打开一个高粘性、低价格敏感的细分市场。</p></p>
+<p></ul></p>
+
+<p><ul></p>
+<p><li><strong>FPUSA 平台订单转化（Blanquilla $1 亿等）</strong> <code>#near-term</code></li></p>
+<p><p>积压订单已到 $8.07 亿，但关键在于<strong>能否在正毛利率下交付</strong>，而非订单金额本身。</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 评级（Recommendation）</div><div class="callout-body"><p><strong>评级：AVOID（回避）</strong> — Conviction: <strong>高（对"回避"判断）</strong></p></p>
+
+<p><p><strong>12 个月观点</strong>：EOSE 是一个<strong>"政策故事强、商业兑现弱"的高投机困境股</strong>。长时储能 TAM 真实、本土化/国防叙事有稀缺性，但公司毛利率 -62%、现金半年腰斩、80% 收入来自关联方、被 32% 做空——这些是"活不活得下去"的问题，不是"能涨几倍"的问题。</p></p>
+
+<p><p><strong>它不是我之前框架里的"十倍股形态"</strong>：护城河（无定价权）❌、盈利能 10x（当前是深亏）❌、估值起点（7–8x P/S 对负毛利并不便宜）❌。它属于"<strong>彩票仓</strong>"，只有用"亏光不心疼的钱"、且必须在 Indensity 转正 + 国防订单放量这两个信号确认后才谈得上加仓。</p></p>
+
+<p><p><strong>行动</strong>：不新开仓。已在场者：以"彩票仓位"上限管理，盯死两个先行指标——<strong>① 毛利率何时转正；② 关联方收入占比何时下降</strong>。若 2026 下半年 Indensity 量产毛利率仍为负，则公司生存假设进一步恶化。</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 财务数据附录（Financial Data Appendix）</div><div class="callout-body"></p>
+<p><h1>EOSE — Eos Energy Enterprises, Inc.</h1></p>
+
+<p><blockquote><em>数据快照：2026-08-24（来源：公开财报、Yahoo Finance、StockAnalysis、TipRanks、GuruFocus）</em></blockquote></p>
+
+<p><h2>公司概况</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>Ticker</td><td>EOSE</td></tr></p>
+<p><tr><td>公司</td><td>Eos Energy Enterprises, Inc.</td></tr></p>
+<p><tr><td>板块</td><td>Industrials（电网级储能/资本品）</td></tr></p>
+<p><tr><td>股价</td><td>$3.81（2026-08-21 收盘）</td></tr></p>
+<p><tr><td>52 周区间</td><td>$3.11 – $19.86</td></tr></p>
+<p><tr><td>市值</td><td>~$13.9 亿</td></tr></p>
+<p><tr><td>Beta</td><td>~2.8</td></tr></p>
+<p><tr><td>做空比例</td><td>~32% of float</td></tr></p>
+<p></table></p>
+
+<p><h2>关键指标</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>指标</th><th>数值</th></tr></p>
+<p><tr><td>FY2025 营收</td><td>$1.142 亿（+632% YoY）</td></tr></p>
+<p><tr><td>Q2 2026 营收</td><td>$6877.5 万（+351% YoY，含 $5500 万关联方收入）</td></tr></p>
+<p><tr><td>H1 2026 营收</td><td>$1.257 亿</td></tr></p>
+<p><tr><td>2026 营收指引</td><td>$3–3.5 亿（由 $3–4 亿下调收紧）</td></tr></p>
+<p><tr><td>FY2025 净亏损</td><td>~$9.70 亿</td></tr></p>
+<p><tr><td>Q2 2026 调整后毛利率</td><td>-62%</td></tr></p>
+<p><tr><td>现金</td><td>$3.64 亿（2026-06-30，Q4 2025 为 $6.25 亿）</td></tr></p>
+<p><tr><td>债务</td><td>~$6.41 亿</td></tr></p>
+<p><tr><td>积压订单</td><td>$8.07 亿（Q2 2026）</td></tr></p>
+<p><tr><td>机会管道</td><td>$23.6 亿 / 商业管道 >100 GWh</td></tr></p>
+<p><tr><td>P/S</td><td>~7–8x</td></tr></p>
+<p><tr><td>分析师共识</td><td>Moderate Buy，均价 $6.67</td></tr></p>
+<p><tr><td>分析师目标区间</td><td>$4（TD Cowen/Roth）– $11（Needham）</td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<blockquote>## 估值与评级快照</blockquote>
+<p>></p>
+<blockquote>| 机构 | 目标价 |<br>|---|---|<br>| Needham | $11 |<br>| Stifel | $9 |<br>| Truist | $7 |<br>| JPMorgan | $6 |<br>| B. Riley | $5 |<br>| TD Cowen | $4 |<br>| Roth Capital | $4 |</blockquote>
+<p>></p>
+<blockquote><em>Last data refresh: 2026-08-24</em></blockquote>
+
+<hr>
+<p><em>Report generated 2026-08-24 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/EOSE.html">EOSE</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -7,6 +7,7 @@ Runs the full data → analysis → export pipeline in order:
   3. valuation.py       — run DCF + comps + Graham models
   4. export_obsidian.py — export everything to Obsidian vault
   5. generate_report.py — (optional) LLM investment reports
+  6. prediction_ledger.py — (optional) score tracked predictions
 
 Usage:
     python scripts/orchestrate.py [--tickers NVDA,AVGO] [--all]
@@ -61,6 +62,7 @@ def main() -> None:
     parser.add_argument("--skip-valuation", action="store_true", help="Skip valuation step")
     parser.add_argument("--skip-export", action="store_true", help="Skip Obsidian export step")
     parser.add_argument("--with-reports", action="store_true", help="Generate LLM reports")
+    parser.add_argument("--skip-score", action="store_true", help="Skip prediction scoring step")
     parser.add_argument("--days", type=int, default=7, help="Days of news (default: 7)")
     parser.add_argument("--wacc", type=float, default=0.10, help="Discount rate for DCF")
     parser.add_argument("--sensitivity", action="store_true", help="Run DCF sensitivity analysis")
@@ -141,6 +143,14 @@ def main() -> None:
             )
             results.setdefault(ticker, {})["report"] = ok
 
+    # ── Step 6: Score Predictions (feedback loop) ──
+    if args.with_reports and not args.skip_score:
+        ok, elapsed = run_step(
+            "Score Predictions (feedback loop)",
+            [str(SCRIPTS_DIR / "prediction_ledger.py"), "--score"],
+        )
+        results["_score"] = {"ok": ok}
+
     # ── Summary ──
     total_elapsed = time.time() - pipeline_start
     print(f"\n{'='*60}")
@@ -173,6 +183,9 @@ def main() -> None:
         print(f"  ✅ Obsidian Export: complete")
     else:
         print(f"  ⚠️  Obsidian Export: skipped or failed")
+
+    if "_score" in results:
+        print(f"  {'✅' if results['_score']['ok'] else '⚠️ '} Prediction Score: {'complete' if results['_score']['ok'] else 'failed'}")
 
     print(f"\n  Total: {success_count} successful, {fail_count} with errors")
     print(f"  Duration: {total_elapsed:.0f}s ({total_elapsed/60:.1f} min)")

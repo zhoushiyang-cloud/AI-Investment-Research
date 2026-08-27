@@ -8,13 +8,23 @@ REM              > Action: Start a program > This file
 
 cd /d D:\AI_Investment_System
 
+REM Windows console may be GBK; force UTF-8 so Chinese output doesn't garble/crash
+set PYTHONIOENCODING=utf-8
+
 echo ============================================================
 echo  AI Investment System — Daily Batch Update
 echo  Started: %date% %time%
 echo ============================================================
 
-REM Activate venv and run batch update
+REM Activate venv
 call .venv\Scripts\activate.bat
+
+echo.
+echo [1/2] Generating company catalyst calendar (earnings + 8-K events)...
+python scripts\catalyst_calendar.py --forward 60 --lookback 14
+
+echo.
+echo [2/2] Updating oldest company reports...
 python scripts\batch_update_reports.py --count 5
 
 echo.
