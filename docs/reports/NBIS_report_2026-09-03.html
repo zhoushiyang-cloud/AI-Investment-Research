@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBIS — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>NBIS</strong></span>
+  <span>Nebius Group N.V.</span>
+  <span>Technology</span>
+  <span>2026-09-03</span>
+</div>
+<hr>
+
+<h1>📊 NBIS — Nebius Group N.V.</h1>
+<blockquote><em>Investment Research Report · September 03, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/NBIS.html">NBIS</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/NBIS Valuation.html">NBIS Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Nebius Group (NBIS)</strong> is a pure-play AI infrastructure company, operating an AI-native cloud platform with GPU clusters, data solutions (Toloka AI), edtech (TripleTen), and autonomous driving (Avride). It was formerly Yandex N.V., rebranded in August 2024.</li></p>
+<p><li><strong>Revenue inflection is dramatic</strong>: FY2025 revenue of $529.8M represents a <strong>4.5x increase</strong> from FY2024's $117.5M, signaling strong early traction in AI cloud services.</li></p>
+<p><li><strong>Financial position is robust</strong>: $3.68B in cash and equivalents with $4.10B in long-term debt, providing substantial capital to fund GPU infrastructure expansion.</li></p>
+<p><li><strong>Valuation is demanding</strong>: At $204.09, the market cap is $48.98B, implying roughly <strong>92x FY2025 revenue</strong> — pricing in hyper-growth for several years.</li></p>
+<p><li><strong>Key risk</strong>: The company is still deeply unprofitable on an operating basis (-$611.7M operating income in FY2025) and faces intense competition from hyperscalers like <a href="../companies/NVDA.html">NVDA</a>-backed clouds and <a href="../companies/AVGO.html">AVGO</a>-powered alternatives.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Nebius Group N.V. is a technology company building comprehensive infrastructure for the global AI industry. Following its rebranding from Yandex N.V. in August 2024, the company has pivoted entirely toward AI infrastructure.</p></p>
+
+<p><p><strong>Key Segments:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Nebius (AI Cloud Platform)</strong> — Core business: end-to-end AI infrastructure with GPU computing clusters, cloud platforms, and developer tools. This is the primary growth engine, driving the FY2025 revenue surge.</li></p>
+<p><li><strong>Toloka AI</strong> — Data solutions provider for generative AI development (data labeling, RLHF, etc.).</li></p>
+<p><li><strong>TripleTen</strong> — EdTech venture focused on tech career training.</li></p>
+<p><li><strong>Avride</strong> — Autonomous driving technology for self-driving vehicles and delivery robots.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong> NBIS is positioning itself as a specialized, AI-first cloud alternative to general-purpose clouds. Its competitive advantage lies in deep expertise in GPU cluster management and AI workload optimization. The company maintains R&D facilities across Europe, North America, and Israel, with 1,543 full-time employees. The CEO is Arkady Volozh, the founder of Yandex. The company trades on NASDAQ with a beta of 1.44, indicating high sensitivity to tech-sector movements.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Trends:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 revenue: <strong>$529.8M</strong> (vs. $117.5M in FY2024) — a <strong>350% YoY growth rate</strong>.</li></p>
+<p><li>FY2023 revenue was $8.92B (legacy Yandex operations); the current figures reflect the post-divestiture, pure-play AI infrastructure business.</li></p>
+<p></ul></p>
+
+<p><p><strong>Margins:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 gross profit: <strong>$363.6M</strong> (68.6% gross margin), up from $44.1M (37.5% margin) in FY2024 — significant operating leverage as the GPU cloud scales.</li></p>
+<p><li>FY2025 operating loss: <strong>-$611.7M</strong> (vs. -$440.7M in FY2024), reflecting heavy investment in R&D ($177.3M) and SG&A ($380.1M).</li></p>
+<p><li>FY2025 net income: <strong>$82.5M</strong> (positive, driven by $112.4M in other income and tax benefits), though this is not indicative of core operating profitability.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 operating cash flow: <strong>$384.8M</strong> (positive, a major milestone).</li></p>
+<p><li>FY2025 capex: <strong>$4.066B</strong> — massive investment in GPU infrastructure, funded by $4.16B in debt issuance.</li></p>
+<p><li>Cash position: <strong>$3.68B</strong> in cash/equivalents at FY2025 end, plus $43.5M restricted cash.</li></p>
+<p><li>Total assets: <strong>$12.43B</strong>; total equity: <strong>$4.59B</strong>.</li></p>
+<p><li>The company carries <strong>$4.10B in long-term debt</strong>, a significant leverage increase to fund growth.</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Takeaway:</strong> The financials show a company in aggressive build-out mode. Revenue growth is exceptional, gross margins are healthy, and operating cash flow has turned positive. However, the scale of capex ($4.07B in FY2025 alone) means the company is reliant on continued capital markets access or debt financing to sustain growth.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples:</strong></p></p>
+<p><ul></p>
+<p><li>Market cap: <strong>$48.98B</strong> at $204.09/share.</li></p>
+<p><li>Price/Sales (FY2025): <strong>~92.5x</strong> — extremely rich by any historical standard.</li></p>
+<p><li>P/E: Not meaningful given the one-time nature of FY2025 net income; on an operating basis, the company is loss-making.</li></p>
+<p><li>EV/Revenue: ~$49.4B EV / $529.8M revenue ≈ <strong>93x</strong>.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison:</strong></p></p>
+<p><ul></p>
+<p><li>Peers like <a href="../companies/TWLO.html">TWLO</a> ($34.4B market cap), <a href="../companies/RDDT.html">RDDT</a> ($30.4B), and <a href="../companies/PINS.html">PINS</a> ($13.5B) trade at far lower revenue multiples despite being established, profitable or near-profitable businesses.</li></p>
+<p><li>NBIS's valuation is more comparable to early-stage hyper-growth AI names, pricing in a trajectory toward multi-billion-dollar revenue.</li></p>
+<p></ul></p>
+
+<p><p><strong>Justification:</strong> The valuation is justified <em>only if</em> NBIS can sustain >100% annual growth for the next 3-5 years and achieve meaningful operating leverage. At 92x sales, the market is pricing in a future where NBIS becomes a top-tier AI cloud provider. The $4.07B capex spend suggests management is betting aggressively on this outcome. However, the risk/reward is asymmetric — any growth deceleration would cause significant multiple compression. The stock has already corrected from its year high of $299.86 to $204.09 (-32%), reflecting some de-risking.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Execution Risk on GPU Infrastructure Build-Out</strong> <code>#critical</code></li></p>
+<p><p>The company spent $4.07B on capex in FY2025. If GPU delivery timelines slip, utilization rates disappoint, or the infrastructure is underutilized, the massive depreciation expense (projected to grow from $417.9M in FY2025) will crush margins. Any delay in bringing capacity online directly impacts revenue potential.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Hyper-Competitive AI Cloud Market</strong> <code>#critical</code></li></p>
+<p><p>NBIS competes directly with <a href="../companies/NVDA.html">NVDA</a>'s cloud partners, <a href="../companies/AVGO.html">AVGO</a>-powered custom silicon clouds, and hyperscalers (AWS, Azure, GCP) with virtually unlimited capital. These players can subsidize AI cloud pricing, potentially forcing NBIS into margin compression or forcing it to differentiate on service quality alone.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration & Churn Risk</strong> <code>#medium</code></li></p>
+<p><p>As a relatively new entrant, revenue may be concentrated among a few large AI labs or enterprises. Loss of a single anchor tenant could materially impact FY2026 revenue. Insider selling activity (multiple transactions at $196-$273 range) may signal insider concerns about near-term valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Geopolitical & Regulatory Risk</strong> <code>#medium</code></li></p>
+<p><p>Despite being Netherlands-headquartered, NBIS has Russian roots (formerly Yandex). Ongoing geopolitical tensions could lead to sanctions, regulatory scrutiny, or restrictions on technology exports, particularly around advanced AI chips.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Leverage & Capital Markets Dependency</strong> <code>#medium</code></li></p>
+<p><p>With $4.10B in long-term debt and a cash burn that requires continued heavy capex, NBIS is dependent on favorable capital markets conditions. A downturn in AI sentiment or rising interest rates could restrict access to capital, forcing a slowdown in growth plans.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Key Person Risk</strong> <code>#low</code></li></p>
+<p><p>CEO Arkady Volozh is the visionary founder. His departure or any legal/regulatory issues would be a significant negative for the stock.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Major Customer Announcements</strong> <code>#near-term</code></li></p>
+<p><p>Publicizing contracts with leading AI labs or enterprises would validate the platform and provide revenue visibility. Given the FY2025 revenue surge, there is likely existing traction that, if disclosed, could drive the stock higher.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Q3/Q4 FY2026 Earnings Beat</strong> <code>#near-term</code></li></p>
+<p><p>If the company demonstrates continued >100% YoY revenue growth while showing progress toward operating profitability, the stock could re-rate higher. The market is paying for growth; delivering it is the primary catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>New GPU Generation Availability</strong> <code>#medium-term</code></li></p>
+<p><p>Securing access to next-generation GPUs (e.g., NVIDIA's Rubin architecture) ahead of competitors would be a competitive advantage. Announcements of strategic partnerships with chip suppliers could be a positive catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Avride Commercialization</strong> <code>#medium-term</code></li></p>
+<p><p>While currently a small part of the business, a major autonomous driving or delivery robot partnership could unlock incremental value and diversify the revenue stream beyond pure cloud services.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential Index Inclusion</strong> <code>#medium-term</code></li></p>
+<p><p>As market cap grows, NBIS may be added to major indices (S&P 500, NASDAQ-100), driving passive fund inflows and reducing selling pressure.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: HOLD</strong> with <strong>Medium</strong> conviction.</p></p>
+
+<p><p><strong>12-Month Price Target: $220.00</strong></p></p>
+
+<p><p>NBIS is a high-quality, well-capitalized player in the most exciting secular growth trend in technology. The FY2025 results demonstrate exceptional execution — 350% revenue growth and positive operating cash flow are remarkable achievements. The company has the balance sheet ($3.68B cash) to fund its aggressive expansion.</p></p>
+
+<p><p>However, at ~92x revenue, the stock is priced for near-perfection. The recent 32% drawdown from highs suggests the market is becoming more discerning about AI infrastructure names. While the long-term opportunity is compelling, the risk/reward at current levels is balanced. We would become more constructive on a pullback toward $170-$180 (implying ~75x sales) or upon evidence of accelerating revenue growth and a clear path to operating profitability.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>NBIS — Nebius Group N.V.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-09-03 09:09</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>NBIS</td></tr></p>
+<p><tr><td>Name</td><td>Nebius Group N.V.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>1,543</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>529800000.0</td><td>-611700000.0</td><td>82500000.0</td><td>0.3</td></tr></p>
+<p><tr><td>2024-12-31</td><td>117500000.0</td><td>-440700000.0</td><td>-641400000.0</td><td>-2.3</td></tr></p>
+<p><tr><td>2023-12-31</td><td>8921200000.0</td><td>317400000.0</td><td>242800000.0</td><td>0.6</td></tr></p>
+<p><tr><td>2022-12-31</td><td>7417100000.0</td><td>188200000.0</td><td>677000000.0</td><td>1.2</td></tr></p>
+<p><tr><td>2021-12-31</td><td>4794200000.0</td><td>-178700000.0</td><td>-197200000.0</td><td>-0.5</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>12430600000.0</td><td>7836600000.0</td><td>4594000000.0</td><td>3678100000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>3548600000.0</td><td>294900000.0</td><td>3253700000.0</td><td>2449600000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>8770700000.0</td><td>5467100000.0</td><td>3303400000.0</td><td>1076200000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>8768000000.0</td><td>3960100000.0</td><td>4497000000.0</td><td>1181900000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>6938700000.0</td><td>3265000000.0</td><td>3475100000.0</td><td>1067100000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>384800000.0</td><td>417900000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>245600000.0</td><td>77300000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>783400000.0</td><td>445500000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>592800000.0</td><td>438900000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>125100000.0</td><td>324500000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-20</td><td>223.0</td><td>223.0</td><td>212.0</td><td>220.1</td><td>28,477,936</td></tr></p>
+<p><tr><td>2026-08-21</td><td>226.4</td><td>230.8</td><td>217.8</td><td>219.1</td><td>20,239,738</td></tr></p>
+<p><tr><td>2026-08-24</td><td>211.2</td><td>213.8</td><td>201.9</td><td>210.9</td><td>16,882,275</td></tr></p>
+<p><tr><td>2026-08-25</td><td>218.0</td><td>223.4</td><td>213.6</td><td>222.0</td><td>13,547,943</td></tr></p>
+<p><tr><td>2026-08-26</td><td>215.5</td><td>221.5</td><td>213.6</td><td>213.9</td><td>10,562,817</td></tr></p>
+<p><tr><td>2026-08-27</td><td>223.4</td><td>228.5</td><td>215.4</td><td>218.5</td><td>16,068,171</td></tr></p>
+<p><tr><td>2026-08-28</td><td>212.0</td><td>214.3</td><td>205.5</td><td>209.2</td><td>13,122,092</td></tr></p>
+<p><tr><td>2026-08-31</td><td>205.7</td><td>208.9</td><td>201.5</td><td>206.3</td><td>10,556,117</td></tr></p>
+<p><tr><td>2026-09-01</td><td>199.9</td><td>202.8</td><td>194.8</td><td>199.5</td><td>10,855,857</td></tr></p>
+<p><tr><td>2026-09-02</td><td>195.7</td><td>205.2</td><td>195.2</td><td>204.1</td><td>10,682,904</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-09-02</td></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-24</td></tr></p>
+<p><tr><td>2026-08-20</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='VOD' name='Vodafone Group Public Limited Company' price=16.07 market_cap=37006723151, symbol='TWLO' name='Twilio Inc.' price=226.75 market_cap=34414722755, symbol='RDDT' name='Reddit, Inc.' price=158.05 market_cap=30426054404, symbol='FOXA' name='Fox Corporation' price=67.52 market_cap=29607846999, symbol='TEF' name='Telefónica, S.A.' price=3.81 market_cap=21491091453, symbol='CHTR' name='Charter Communications, Inc.' price=158.97 market_cap=21425576631, symbol='PINS' name='Pinterest, Inc.' price=21.23 market_cap=13506205788, symbol='TME' name='Tencent Music Entertainment Group' price=8.39 market_cap=12895026432, symbol='Z' name='Zillow Group, Inc. Class C' price=34.58 market_cap=8309443875</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-09-03 09:09</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-09-03 09:09 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/NBIS.html">NBIS</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

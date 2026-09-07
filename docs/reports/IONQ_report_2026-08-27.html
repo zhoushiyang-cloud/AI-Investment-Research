@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IONQ — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>IONQ</strong></span>
+  <span>IonQ, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 IONQ — IonQ, Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/IONQ.html">IONQ</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/IONQ Valuation.html">IONQ Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>IonQ is a pure-play leader in quantum computing</strong>, generating $43.1M in FY2024 revenue (+95% YoY) and $130.0M in FY2025 revenue (+202% YoY), driven by cloud access via <a href="../companies/AMZN.html">AMZN</a> Braket, <a href="../companies/MSFT.html">MSFT</a> Azure, and <a href="../companies/GOOGL.html">GOOGL</a> Cloud.</li></p>
+<p><li><strong>The company remains deeply unprofitable</strong>, with FY2025 net loss of -$512.1M and negative operating cash flow of -$283.2M, though revenue growth is outpacing expense growth (R&D as % of revenue fell from 419% in FY2023 to 235% in FY2025).</li></p>
+<p><li><strong>Balance sheet is strong post-capital raise</strong>: $2.39B in cash + short-term investments as of FY2025, providing a multi-year runway despite ~$283M annual cash burn.</li></p>
+<p><li><strong>Stock has corrected -11% over the last 10 trading days</strong> to $40.03, down 53% from its 52-week high of $84.64, reflecting sector-wide de-risking of pre-revenue quantum names.</li></p>
+<p><li><strong>We rate IONQ a BUY with Medium conviction</strong> given the technology leadership, accelerating revenue, and strategic acquisitions (goodwill of $1.96B), but acknowledge valuation is pricing in significant future success.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>IonQ, Inc. designs and builds general-purpose quantum computing systems, primarily accessed via cloud platforms. The company's core product is its trapped-ion quantum computers, currently offering access to systems with up to 20+ qubits through:</p></p>
+<p><ul></p>
+<p><li><strong>Amazon Braket</strong> (<a href="../companies/AMZN.html">AMZN</a>) — primary distribution channel</li></p>
+<p><li><strong>Microsoft Azure Quantum</strong> (<a href="../companies/MSFT.html">MSFT</a>) — enterprise reach</li></p>
+<p><li><strong>Google Cloud Marketplace</strong> (<a href="../companies/GOOGL.html">GOOGL</a>) — additional distribution</li></p>
+<p><li><strong>Direct cloud service</strong> — proprietary access for enterprise customers</li></p>
+<p></ul></p>
+
+<p><p><strong>Revenue model</strong>: Usage-based cloud access, consulting, and managed services. FY2025 revenue of $130.0M represents a 202% YoY increase from $43.1M in FY2024.</p></p>
+
+<p><p><strong>Competitive positioning</strong>: IonQ is widely considered a technology leader in trapped-ion quantum computing, competing with <a href="../companies/IBM.html">IBM</a> (superconducting), <a href="../companies/GOOGL.html">GOOGL</a> (superconducting), and pure-play peers <a href="../companies/QBTS.html">QBTS</a> (D-Wave, annealing) and <a href="../companies/RGTI.html">RGTI</a> (Rigetti, superconducting). IonQ's advantage lies in higher qubit fidelity and error rates, though the industry remains pre-commercial.</p></p>
+
+<p><p><strong>Key strategic moves</strong>: The FY2025 balance sheet shows $1.96B in goodwill and $767M in intangible assets, indicating significant M&A activity (likely the acquisition of Oxford Ionics and other quantum startups) to consolidate technology and talent. Headcount stands at 1,132 employees, up from ~300 in FY2023.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Growth</strong>: Exceptional trajectory — FY2023: $22.0M → FY2024: $43.1M (+95%) → FY2025: $130.0M (+202%). This is a hyper-growth phase, though absolute revenue remains small.</p></p>
+
+<p><p><strong>Margins</strong>: Gross margin is not explicitly stated, but operating expenses reveal the story:</p></p>
+<p><ul></p>
+<p><li>R&D: $305.7M in FY2025 (235% of revenue), up from $136.8M in FY2024 (317% of revenue) — scaling but improving efficiency</li></p>
+<p><li>SG&A: $53.4M in FY2025 (41% of revenue), up from $28.4M in FY2024 (66% of revenue) — significant operating leverage</li></p>
+<p><li>Total operating loss: -$633.7M in FY2025 vs -$232.5M in FY2024</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow</strong>: Operating cash flow was -$283.2M in FY2025, an improvement from -$105.7M in FY2024 on a relative basis (cash burn as % of revenue fell from 245% to 218%). The company raised $3.31B in equity during FY2025, boosting cash position to $1.03B plus $1.36B in short-term investments.</p></p>
+
+<p><p><strong>Balance Sheet</strong>: Total assets of $6.57B, with $2.39B in cash/investments. Total liabilities of $2.76B, including $1.81B in noncurrent deferred tax liabilities (likely from acquisition accounting). Equity stands at $3.80B. The company has no meaningful debt.</p></p>
+
+<p><p><strong>EPS</strong>: FY2025 diluted EPS of -$1.82, improving from -$1.56 in FY2024 despite higher losses, due to share count expansion (280M weighted average diluted shares vs 213M in FY2024).</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current metrics</strong>:</p></p>
+<p><ul></p>
+<p><li>Market cap: $14.94B</li></p>
+<p><li>Price: $40.03 (down from $84.64 high)</li></p>
+<p><li>EV: ~$12.55B (market cap minus $2.39B cash)</li></p>
+<p><li>EV/Revenue (FY2025): ~96x</li></p>
+<p><li>EV/Revenue (FY2026E, assuming 100% growth): ~48x</li></p>
+<p><li>P/E: N/A (no earnings)</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer comparison</strong>:</p></p>
+<p><ul></p>
+<p><li><a href="../companies/QBTS.html">QBTS</a> (D-Wave): $6.43B market cap, ~$10M revenue → ~640x EV/S</li></p>
+<p><li><a href="../companies/RGTI.html">RGTI</a> (Rigetti): $5.30B market cap, ~$15M revenue → ~350x EV/S</li></p>
+<p><li>IONQ trades at a <strong>discount</strong> to pure-play peers on EV/S, reflecting its larger revenue base and market leadership</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical context</strong>: IONQ has traded at 50-150x forward revenue over the past year. At 96x trailing revenue, the stock is in the lower half of that range, suggesting the recent selloff has brought valuation closer to historical norms.</p></p>
+
+<p><p><strong>Justification</strong>: Quantum computing is a nascent industry with TAM estimates of $50-100B by 2035. IONQ's revenue growth rate (200%+) and technology leadership justify a premium multiple, but the current valuation implies the company will capture a significant share of a large market. We view the multiple as <strong>rich but defensible</strong> given the scarcity of pure-play quantum exposure and the company's execution track record.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Technology Risk — Quantum Advantage Not Yet Proven</strong> <code>#critical</code></li></p>
+<p><p>IonQ's 20-qubit systems have not demonstrated a clear commercial advantage over classical computers. If quantum supremacy in useful applications remains elusive, revenue growth could stall. The company's FY2025 revenue of $130M is still tiny relative to the $763M in total operating expenses.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Cash Burn and Dilution</strong> <code>#critical</code></li></p>
+<p><p>Operating cash flow of -$283M in FY2025 requires continuous capital raises. The company issued $3.31B in equity in FY2025, diluting shareholders significantly (share count up from 213M to 280M). At current burn rates, the $2.39B cash position provides ~8 years of runway, but accelerated R&D spending could shorten this.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competitive Threat from Tech Giants</strong> <code>#medium</code></li></p>
+<p><p><a href="../companies/IBM.html">IBM</a>, <a href="../companies/GOOGL.html">GOOGL</a>, and <a href="../companies/MSFT.html">MSFT</a> are investing billions in quantum computing. If their superconducting or topological approaches achieve commercial viability first, IonQ's trapped-ion advantage could be neutralized. These incumbents have distribution, talent, and capital advantages.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Acquisition Integration Risk</strong> <code>#medium</code></li></p>
+<p><p>The $1.96B goodwill and $767M intangible assets on the balance sheet indicate aggressive M&A. Integrating multiple quantum startups (Oxford Ionics, etc.) carries execution risk — technology overlap, talent retention, and culture clashes could impair value.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Insider Selling</strong> <code>#low</code></li></p>
+<p><p>Recent insider transactions show open market sales at ~$55.01-55.02 per share, suggesting insiders are monetizing at current levels. While not unusual for growth companies, sustained insider selling could signal lack of confidence in near-term upside.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Regulatory and Export Controls</strong> <code>#low</code></li></p>
+<p><p>Quantum computing is increasingly subject to export controls and national security regulations. Restrictions on technology transfer or cloud access to certain geographies could limit market expansion.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Commercial Quantum Advantage Demonstration</strong> <code>#near-term</code></li></p>
+<p><p>If IonQ or its customers demonstrate a quantum system solving a commercially valuable problem faster than classical computers, it would validate the technology and drive significant revenue acceleration. The company's 2025 revenue growth (202% YoY) suggests early enterprise adoption is gaining traction.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>System Size and Error Correction Milestones</strong> <code>#near-term</code></li></p>
+<p><p>Announcements of larger systems (50-100 qubits) or error-corrected logical qubits would be a major technical milestone, differentiating IONQ from peers <a href="../companies/QBTS.html">QBTS</a> and <a href="../companies/RGTI.html">RGTI</a>. The company's R&D spend of $305M in FY2025 supports this trajectory.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Major Enterprise or Government Contract</strong> <code>#near-term</code></li></p>
+<p><p>A large-scale contract (e.g., with a defense agency, pharmaceutical company, or financial institution) would provide revenue visibility and validate the cloud-based business model. The company's direct cloud service and partnerships position it for such wins.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Quantum-as-a-Service (QaaS) Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>As quantum hardware matures, recurring subscription revenue from QaaS could provide a more predictable revenue stream, improving valuation multiples. The current revenue mix (usage-based) is less predictable.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Strategic Acquisition or Partnership</strong> <code>#medium-term</code></li></p>
+<p><p>Given the company's M&A appetite (evidenced by $1.96B goodwill), further acquisitions of complementary technologies (cryogenics, control systems, or software) could strengthen the moat and drive synergies.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: BUY</strong></td><td><strong>Conviction: Medium</strong></td><td><strong>12-Month Price Target: $55.00</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>Rationale</strong>: IonQ is the clear leader in pure-play quantum computing, with accelerating revenue growth (202% YoY in FY2025), a strong balance sheet ($2.39B cash), and a technology edge in trapped-ion systems. The stock has corrected 53% from its high, bringing valuation to ~96x trailing revenue — a discount to peers <a href="../companies/QBTS.html">QBTS</a> and <a href="../companies/RGTI.html">RGTI</a> on relative growth-adjusted basis.</p></p>
+
+<p><p><strong>Key assumptions for our target</strong>:</p></p>
+<p><ul></p>
+<p><li>Revenue grows to ~$250M in FY2026 (92% YoY, conservative vs. recent trajectory)</li></p>
+<p><li>Cash burn moderates to ~$250M as operating leverage improves</li></p>
+<p><li>No major technology setback or competitive displacement</li></p>
+<p><li>Market assigns a 60x forward EV/S multiple (consistent with historical range)</li></p>
+<p></ul></p>
+
+<p><p><strong>Upside scenario</strong> ($70+): Commercial quantum advantage demonstrated, driving revenue acceleration to 150%+ growth and multiple expansion.</p></p>
+
+<p><p><strong>Downside scenario</strong> ($30): Technology milestones slip, cash burn accelerates, or competition from <a href="../companies/IBM.html">IBM</a>/<a href="../companies/GOOGL.html">GOOGL</a> intensifies, forcing additional dilutive raises.</p></p>
+
+<p><p><strong>We would add on weakness below $35 and trim above $65</strong> given the binary nature of quantum technology adoption.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>IONQ — IonQ, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 11:02</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>IONQ</td></tr></p>
+<p><tr><td>Name</td><td>IonQ, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>1,132</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>130016000.0</td><td>-633715000.0</td><td>-512121000.0</td><td>-1.8</td></tr></p>
+<p><tr><td>2024-12-31</td><td>43073000.0</td><td>-232455000.0</td><td>-331647000.0</td><td>-1.6</td></tr></p>
+<p><tr><td>2023-12-31</td><td>22042000.0</td><td>-157754000.0</td><td>-157771000.0</td><td>-0.8</td></tr></p>
+<p><tr><td>2022-12-31</td><td>11131000.0</td><td>-85746000.0</td><td>-48511000.0</td><td>-0.2</td></tr></p>
+<p><tr><td>2021-12-31</td><td>2099000.0</td><td>-38687000.0</td><td>-106186000.0</td><td>-0.8</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>6570358000.0</td><td>2756666000.0</td><td>3799517000.0</td><td>1030865000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>508388000.0</td><td>124526000.0</td><td>383862000.0</td><td>54393000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>553580000.0</td><td>68586000.0</td><td>484994000.0</td><td>35665000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>597992000.0</td><td>29781000.0</td><td>568211000.0</td><td>44367000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>642028000.0</td><td>50798000.0</td><td>591230000.0</td><td>399025000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-283187000.0</td><td>82000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-105683000.0</td><td>18600000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-78811000.0</td><td>10400000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-44698000.0</td><td>5600000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-26537000.0</td><td>1700800.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>44.9</td><td>47.9</td><td>44.7</td><td>45.0</td><td>21,098,769</td></tr></p>
+<p><tr><td>2026-08-14</td><td>44.7</td><td>47.3</td><td>44.4</td><td>46.3</td><td>18,133,532</td></tr></p>
+<p><tr><td>2026-08-17</td><td>46.0</td><td>47.2</td><td>44.9</td><td>46.8</td><td>13,863,053</td></tr></p>
+<p><tr><td>2026-08-18</td><td>44.4</td><td>46.5</td><td>43.6</td><td>44.1</td><td>16,881,414</td></tr></p>
+<p><tr><td>2026-08-19</td><td>43.4</td><td>44.2</td><td>42.2</td><td>43.4</td><td>15,005,891</td></tr></p>
+<p><tr><td>2026-08-20</td><td>43.4</td><td>43.6</td><td>40.3</td><td>41.5</td><td>17,163,545</td></tr></p>
+<p><tr><td>2026-08-21</td><td>42.2</td><td>45.5</td><td>42.0</td><td>44.9</td><td>19,707,839</td></tr></p>
+<p><tr><td>2026-08-24</td><td>43.3</td><td>43.5</td><td>41.0</td><td>41.1</td><td>17,251,147</td></tr></p>
+<p><tr><td>2026-08-25</td><td>42.1</td><td>42.7</td><td>41.0</td><td>42.0</td><td>12,364,095</td></tr></p>
+<p><tr><td>2026-08-26</td><td>41.1</td><td>41.9</td><td>40.0</td><td>40.0</td><td>13,106,054</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-13</td></tr></p>
+<p><tr><td>2026-08-10</td></tr></p>
+<p><tr><td>2026-08-10</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='CPAY' name='Corpay, Inc.' price=406.93 market_cap=26597725699, symbol='U' name='Unity Software Inc.' price=44.38 market_cap=19373423167, symbol='FTV' name='Fortive Corporation' price=60.25 market_cap=18196527383, symbol='GEN' name='Gen Digital Inc.' price=29.64 market_cap=17741824207, symbol='LOGI' name='Logitech International S.A.' price=100.19 market_cap=14383856600, symbol='IT' name='Gartner, Inc.' price=192.96 market_cap=12919038431, symbol='QBTS' name='D-Wave Quantum Inc.' price=17.515 market_cap=6432717831, symbol='RGTI' name='Rigetti Computing, Inc.' price=15.94 market_cap=5298436984</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 11:02</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 11:02 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/IONQ.html">IONQ</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

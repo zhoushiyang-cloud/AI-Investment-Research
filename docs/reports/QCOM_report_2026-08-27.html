@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCOM — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>QCOM</strong></span>
+  <span>QUALCOMM Incorporated</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 QCOM — QUALCOMM Incorporated</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/QCOM.html">QCOM</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/QCOM Valuation.html">QCOM Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>QCOM is a core holding for AI-edge and automotive compute exposure</strong>, trading at a significant discount to its semiconductor peers despite a diversified revenue base across QCT (handsets, automotive, IoT) and QTL (licensing).</li></p>
+<p><li><strong>FY2025 was a record year</strong>: Revenue grew 13.7% YoY to $44.28B, with operating income up 22.7% to $12.36B. However, GAAP EPS declined to $5.01 due to a one-time $4.45B tax expense, masking strong underlying operational performance.</li></p>
+<p><li><strong>The stock has de-rated sharply</strong>, down ~37% from its 52-week high of $259.92 to $163.72, presenting a compelling risk/reward for long-term investors.</li></p>
+<p><li><strong>Key debate</strong>: Can QCOM sustain growth beyond the smartphone cycle? We believe the diversification into automotive (design wins) and AI-enabled PCs (Snapdragon X) provides a credible second growth engine.</li></p>
+<p><li><strong>We rate QCOM a BUY</strong> with a 12-month price target of <strong>$210</strong>, representing ~28% upside from current levels.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>QUALCOMM operates through three primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>QCT (Qualcomm CDMA Technologies)</strong>: The core semiconductor business, supplying integrated circuits and system software for mobile devices, automotive, IoT, and networking. This is the primary revenue driver, generating ~$38B+ in FY2025 (est. ~85% of total revenue). Key products include Snapdragon mobile platforms and the Snapdragon X series for PCs.</li></p>
+<p><li><strong>QTL (Qualcomm Technology Licensing)</strong>: A high-margin licensing business that generates royalties on every 3G/4G/5G device sold, based on QCOM's extensive patent portfolio. This segment is the primary profit engine, contributing a disproportionate share of operating income with minimal capital requirements.</li></p>
+<p><li><strong>QSI (Qualcomm Strategic Initiatives)</strong>: Strategic investments in early-stage companies across 5G, AI, automotive, and IoT. This segment is small and primarily for ecosystem development, not near-term profit.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: QCOM holds a dominant position in smartphone modems and application processors, with a >40% share in premium Android. Its key competitive advantages are its <strong>patent portfolio</strong> (essential for 5G standards) and its <strong>modem-to-AP integration</strong>—a capability rivals like <a href="../companies/NVDA.html">NVDA</a> and <a href="../companies/AVGO.html">AVGO</a> lack. The company is now leveraging this into adjacent markets: automotive (digital cockpit and ADAS) and AI PCs, where it competes with <a href="../companies/INTC.html">INTC</a> and <a href="../companies/AMD.html">AMD</a>.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability (FY2025)</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Revenue</strong>: $44.28B, up 13.7% YoY from $38.96B in FY2024, driven by a strong handset recovery and diversification.</li></p>
+<p><li><strong>Gross Profit</strong>: $24.55B (55.4% margin), up from $21.90B (56.2% margin) in FY2024. Margin slightly compressed due to product mix.</li></p>
+<p><li><strong>Operating Income</strong>: $12.36B (27.9% margin), up 22.7% YoY from $10.07B. Strong operating leverage.</li></p>
+<p><li><strong>Net Income</strong>: $5.54B, down from $10.14B in FY2024. <strong>This is misleading</strong>—FY2025 includes a $4.45B income tax expense (vs. a $1.89B deferred tax benefit in FY2024), likely due to a one-time tax item. Pre-tax income grew 22.5% to $12.66B.</li></p>
+<p><li><strong>Adjusted EPS</strong>: Not provided, but GAAP diluted EPS of $5.01 understates earnings power. Normalizing for the tax item, EPS power is closer to $9.00+.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow</strong>: $14.01B in FY2025, up 14.8% YoY from $12.20B—a record. FCF after capex ($1.19B) is ~$12.8B.</li></p>
+<p><li><strong>Balance Sheet</strong>: Total cash & investments of $10.16B ($5.52B cash + $4.64B ST investments) vs. total debt of $14.81B. Net debt position of ~$4.65B is manageable for a company generating $14B in OCF.</li></p>
+<p><li><strong>Capital Returns</strong>: Returned $12.6B to shareholders in FY2025 ($8.79B buybacks + $3.81B dividends). Dividend yield is ~2.2% with a payout ratio well-covered by FCF.</li></p>
+<p></ul></p>
+
+<p><p><strong>Trend</strong>: FY2023 was a cyclical trough (revenue $35.82B). The company has since delivered two consecutive years of double-digit growth, demonstrating a strong recovery and execution.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong>:</p></p>
+<p><ul></p>
+<p><li><strong>P/E (GAAP)</strong>: ~32.7x based on FY2025 EPS of $5.01. However, this is distorted by the one-time tax charge. On a normalized basis (excluding the tax item), EPS is ~$9.00, implying a <strong>forward P/E of ~18x</strong>.</li></p>
+<p><li><strong>EV/EBITDA</strong>: EV = Market Cap ($171.9B) + Net Debt ($4.65B) ≈ $176.6B. FY2025 EBITDA = Operating Income ($12.36B) + D&A ($1.60B) ≈ $13.96B. <strong>EV/EBITDA ≈ 12.6x</strong>.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>:</p></p>
+<p><ul></p>
+<p><li><a href="../companies/AVGO.html">AVGO</a> trades at ~30x forward earnings; <a href="../companies/NVDA.html">NVDA</a> at ~35x; <a href="../companies/TXN.html">TXN</a> at ~25x. QCOM at ~18x normalized earnings is a <strong>significant discount</strong>.</li></p>
+<p><li>The discount is partly justified by QCOM's higher exposure to the cyclical smartphone market vs. AI infrastructure. However, we believe the market is <strong>under-appreciating QCOM's AI edge opportunity</strong> (on-device AI in phones/PCs) and its automotive growth trajectory.</li></p>
+<p><li><strong>Historical Context</strong>: QCOM has traded at 12-15x forward earnings over the past 5 years. The current ~18x is at the higher end of its historical range, but we believe this is justified given the improved growth profile and diversification.</li></p>
+<p></ul></p>
+
+<p><p><strong>Verdict</strong>: The valuation is attractive on an absolute basis and relative to peers, especially when considering the quality of the QTL licensing business (which generates >90% incremental margins).</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Apple Modem Transition</strong> <code>#critical</code></li></p>
+<p><p>Apple has been developing its own modem to replace QCOM's in iPhones. If Apple fully transitions away, QCOM could lose ~$8-10B in annual revenue (est. 20% of total). This is the single largest overhang on the stock. Timeline: 2026-2027.</p></p>
+<p><li><strong>Handset Market Cyclicality</strong> <code>#medium</code></li></p>
+<p><p>QCOM's QCT segment is heavily dependent on the global smartphone market. A prolonged downturn in consumer spending (as seen in 2023) would directly impact revenue and margins. China exposure adds geopolitical risk.</p></p>
+<p><li><strong>Licensing Legal/Regulatory Challenges</strong> <code>#medium</code></li></p>
+<p><p>QTL faces ongoing regulatory scrutiny and legal challenges from OEMs (e.g., <a href="../companies/AAPL.html">AAPL</a> historically, and now potentially others) regarding its royalty rates. A negative ruling could pressure the high-margin licensing model.</p></p>
+<p><li><strong>AI PC Competition</strong> <code>#medium</code></li></p>
+<p><p>While QCOM's Snapdragon X is gaining traction, it faces intense competition from <a href="../companies/NVDA.html">NVDA</a> (with MediaTek), <a href="../companies/AMD.html">AMD</a>, and <a href="../companies/INTC.html">INTC</a>. If QCOM fails to secure meaningful market share beyond the initial wave, the PC growth narrative could stall.</p></p>
+<p><li><strong>Valuation Multiple Compression</strong> <code>#low</code></li></p>
+<p><p>If the market continues to de-rate the stock due to Apple risk, the multiple could compress further, limiting upside even if fundamentals remain solid.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Apple Modem Deal Extension</strong> <code>#near-term</code></li></p>
+<p><p>Any news of an extended supply agreement with Apple (beyond the current 2026 agreement) would remove a major overhang and likely trigger a re-rating.</p></p>
+<p><li><strong>Automotive Design Win Momentum</strong> <code>#medium-term</code></li></p>
+<p><p>QCOM's automotive backlog (design wins) is estimated at $45B+. Continued announcements of new ADAS/digital cockpit wins with major OEMs would validate the diversification thesis.</p></p>
+<p><li><strong>AI PC Adoption Acceleration</strong> <code>#medium-term</code></li></p>
+<p><p>The Snapdragon X Elite/Plus is receiving strong reviews for performance-per-watt. If Windows on ARM ecosystem improves and enterprise adoption accelerates, this could become a meaningful revenue contributor by 2027.</p></p>
+<p><li><strong>Handset Recovery in China</strong> <code>#near-term</code></li></p>
+<p><p>A stronger-than-expected recovery in Chinese Android demand (especially premium) would drive upside to QCT revenue estimates.</p></p>
+<p><li><strong>Capital Return Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>With record FCF and a manageable net debt position, QCOM has ample capacity to increase buybacks or dividends, providing a floor under the stock.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: BUY</td><td>Conviction: High</td><td>12-Month Price Target: $210</strong></td></tr></p>
+<p></table></p>
+
+<p><p>We are initiating coverage with a BUY rating. The market is overly focused on the Apple modem risk and ignoring QCOM's fundamental strengths: a dominant position in 5G, a high-margin licensing business, record cash flow, and credible growth in automotive and AI PCs. At ~18x normalized earnings, the stock offers a compelling risk/reward. Our $210 target is based on a 20x multiple on our FY2026 normalized EPS estimate of $10.50, reflecting a modest re-rating as the market gains confidence in the diversification strategy. Key risks to our thesis are an accelerated Apple modem transition or a sharp global handset downturn.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>QCOM — QUALCOMM Incorporated</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 14:57</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>QCOM</td></tr></p>
+<p><tr><td>Name</td><td>QUALCOMM Incorporated</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>52,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-09-28</td><td>44284000000.0</td><td>12355000000.0</td><td>5541000000.0</td><td>5.0</td></tr></p>
+<p><tr><td>2024-09-29</td><td>38962000000.0</td><td>10071000000.0</td><td>10142000000.0</td><td>9.0</td></tr></p>
+<p><tr><td>2023-09-24</td><td>35820000000.0</td><td>7788000000.0</td><td>7232000000.0</td><td>6.4</td></tr></p>
+<p><tr><td>2022-09-25</td><td>44200000000.0</td><td>15860000000.0</td><td>12936000000.0</td><td>11.4</td></tr></p>
+<p><tr><td>2021-09-26</td><td>33566000000.0</td><td>9789000000.0</td><td>9043000000.0</td><td>7.9</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-09-28</td><td>50143000000.0</td><td>28937000000.0</td><td>21206000000.0</td><td>5520000000.0</td></tr></p>
+<p><tr><td>2024-09-29</td><td>55154000000.0</td><td>28880000000.0</td><td>26274000000.0</td><td>7849000000.0</td></tr></p>
+<p><tr><td>2023-09-24</td><td>51040000000.0</td><td>29459000000.0</td><td>21581000000.0</td><td>8450000000.0</td></tr></p>
+<p><tr><td>2022-09-25</td><td>49014000000.0</td><td>31001000000.0</td><td>18013000000.0</td><td>2773000000.0</td></tr></p>
+<p><tr><td>2021-09-26</td><td>41240000000.0</td><td>31290000000.0</td><td>9950000000.0</td><td>7116000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-09-28</td><td>14012000000.0</td><td>1602000000.0</td></tr></p>
+<p><tr><td>2024-09-29</td><td>12202000000.0</td><td>1706000000.0</td></tr></p>
+<p><tr><td>2023-09-24</td><td>11299000000.0</td><td>1809000000.0</td></tr></p>
+<p><tr><td>2022-09-25</td><td>9096000000.0</td><td>1762000000.0</td></tr></p>
+<p><tr><td>2021-09-26</td><td>10536000000.0</td><td>1582000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>163.3</td><td>166.8</td><td>162.5</td><td>164.8</td><td>7,716,553</td></tr></p>
+<p><tr><td>2026-08-14</td><td>165.6</td><td>167.0</td><td>163.2</td><td>165.8</td><td>5,807,737</td></tr></p>
+<p><tr><td>2026-08-17</td><td>166.2</td><td>166.3</td><td>161.4</td><td>162.2</td><td>8,967,659</td></tr></p>
+<p><tr><td>2026-08-18</td><td>157.9</td><td>161.8</td><td>156.7</td><td>160.2</td><td>11,069,527</td></tr></p>
+<p><tr><td>2026-08-19</td><td>163.0</td><td>166.5</td><td>160.2</td><td>161.9</td><td>8,099,520</td></tr></p>
+<p><tr><td>2026-08-20</td><td>163.2</td><td>165.1</td><td>159.4</td><td>160.7</td><td>8,509,930</td></tr></p>
+<p><tr><td>2026-08-21</td><td>162.9</td><td>163.3</td><td>159.2</td><td>160.8</td><td>8,523,097</td></tr></p>
+<p><tr><td>2026-08-24</td><td>159.4</td><td>160.2</td><td>156.2</td><td>158.5</td><td>10,517,619</td></tr></p>
+<p><tr><td>2026-08-25</td><td>160.3</td><td>161.8</td><td>159.1</td><td>160.6</td><td>11,424,247</td></tr></p>
+<p><tr><td>2026-08-26</td><td>160.1</td><td>163.9</td><td>159.9</td><td>163.7</td><td>10,480,308</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-21</td></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-03</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-31</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p><tr><td>2026-07-16</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='INTC' name='Intel Corp.' price=88.24 market_cap=445082537675, symbol='LRCX' name='Lam Research Corporation' price=312.88 market_cap=391278341600, symbol='AMAT' name='Applied Materials, Inc.' price=479.76 market_cap=380909769840, symbol='ARM' name='Arm Holdings plc American Depositary Shares' price=251.06 market_cap=268131720733, symbol='ANET' name='Arista Networks, Inc.' price=202.25 market_cap=254667018836, symbol='KLAC' name='KLA Corporation' price=183.83 market_cap=240133452400, symbol='TXN' name='Texas Instruments Incorporated' price=261.77 market_cap=239060846764, symbol='UBER' name='Uber Technologies, Inc.' price=78.49 market_cap=159774166530, symbol='SONY' name='Sony Group Corporation' price=24.12 market_cap=141643873745, symbol='INTU' name='Intuit Inc.' price=345.88 market_cap=94610977560</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 14:57</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 14:57 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/QCOM.html">QCOM</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

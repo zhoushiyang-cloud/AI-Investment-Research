@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLTR — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>PLTR</strong></span>
+  <span>Palantir Technologies Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 PLTR — Palantir Technologies Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/PLTR.html">PLTR</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> $407.6B</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/PLTR Valuation.html">PLTR Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Palantir is executing at an exceptional level</strong>, with TTM revenue of $4.48B growing 56% YoY, and net margins expanding to 49.0% — a rare combination of hyper-growth and profitability.</li></p>
+<p><li><strong>The stock trades at a significant premium</strong> (P/E of 140.9x, EV/EBITDA of 130.9x, P/S of 66.2x), reflecting market expectations for sustained AI-driven growth that leaves little room for error.</li></p>
+<p><li><strong>Balance sheet is fortress-like</strong>: $7.18B in cash and short-term investments, zero long-term debt, and a current ratio of 7.2x, providing ample flexibility for M&A or buybacks.</li></p>
+<p><li><strong>Key risk is valuation compression</strong>: with a PEG ratio of 0.50 on trailing earnings but 3.30 on forward estimates, the market is pricing in a significant growth deceleration that has not yet materialized.</li></p>
+<p><li><strong>We rate PLTR a HOLD with Medium conviction</strong>, with a 12-month price target of $185, reflecting strong fundamentals offset by extreme valuation risk.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Palantir Technologies Inc. engineers and deploys advanced software platforms primarily for the intelligence community, supporting counterterrorism investigations and operations across the United States, the United Kingdom, and internationally. Founded in 2003 and headquartered in Denver, Colorado, the company operates through four core product lines:</p></p>
+
+<p><ul></p>
+<p><li><strong>Palantir Gotham</strong> — The flagship intelligence platform that enables users to uncover hidden patterns within diverse datasets, from signals intelligence to confidential informant reports. It facilitates seamless handover between analysts and operational personnel for real-world threat response.</li></p>
+<p><li><strong>Palantir Foundry</strong> — A central data operating system that revolutionizes organizational operations, allowing individual users to integrate and analyze essential data in one cohesive environment. This is the primary commercial growth driver.</li></p>
+<p><li><strong>Palantir Apollo</strong> — A software delivery solution for deploying applications and updates across an enterprise, enabling clients to deploy software in virtually any setting (cloud, on-premise, edge).</li></p>
+<p><li><strong>Palantir Artificial Intelligence Platform (AIP)</strong> — Offers unified access to open-source, self-hosted, and commercial large language models (LLMs). AIP excels at transforming structured and unstructured data into LLM-understandable objects, converting organizational actions and processes into practical tools for human operators and LLM-driven agents.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: Palantir competes in the AI/analytics software space against <a href="../companies/CRM.html">CRM</a> (Salesforce), <a href="../companies/PANW.html">PANW</a> (Palo Alto Networks), <a href="../companies/CRWD.html">CRWD</a> (CrowdStrike), and <a href="../companies/PATH.html">PATH</a> (UiPath). Its key differentiator is the deep integration with government/intelligence workflows (Gotham) and the enterprise data fabric approach (Foundry + AIP). With only 4,401 employees and a market cap of $407.6B, the company generates $1.02M in revenue per employee — among the highest in the sector. The company has no direct comparable in the pure-play AI software space, which partially justifies its premium valuation.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Growth</strong>: TTM revenue stands at $4.48B (FY2025), up from $2.87B in FY2024 — a 56.2% YoY acceleration. This is a remarkable acceleration from the 28.8% growth seen in FY2024 over FY2023 ($2.23B). The inflection point is clearly driven by AIP adoption.</p></p>
+
+<p><p><strong>Profitability</strong>: The margin profile is exceptional:</p></p>
+<p><ul></p>
+<p><li>Gross margin: <strong>84.8%</strong> (up from 80.2% in FY2024)</li></p>
+<p><li>Operating margin: <strong>42.8%</strong> (up from 10.8% in FY2024)</li></p>
+<p><li>Net margin: <strong>49.0%</strong> (up from 16.1% in FY2024)</li></p>
+<p><li>EBITDA margin: <strong>50.4%</strong> (up from 18.2% in FY2024)</li></p>
+<p></ul></p>
+
+<p><p><strong>Earnings</strong>: FY2025 net income of $1.63B (diluted EPS of $0.63), versus $462M (EPS $0.19) in FY2024. TTM diluted EPS is $1.26, reflecting continued momentum into FY2026.</p></p>
+
+<p><p><strong>Cash Flow</strong>: Operating cash flow of $2.13B in FY2025 (up from $1.15B in FY2024), with free cash flow of $2.10B — a 47% FCF margin. Capex is minimal at $33.9M (0.76% of revenue), reflecting the asset-light software model. The company's cash conversion cycle is 86.9 days, driven by DSO of 88.1 days — a slight deterioration from prior years but manageable given the government contract mix.</p></p>
+
+<p><p><strong>Balance Sheet</strong>: Cash and short-term investments of $7.18B, zero long-term debt, and net cash position of $1.19B (net debt to EBITDA of -0.59x). Current ratio of 7.2x and quick ratio of 7.2x indicate exceptional liquidity. Book value per share of $4.12, with tangible book value equal to book value (no goodwill or intangibles).</p></p>
+
+<p><p><strong>Key Concern</strong>: Stock-based compensation is 13.6% of revenue ($684M in FY2025), which is high and dilutes shareholders. This is partially offset by the company's share repurchase activity ($75M in FY2025), but dilution remains a structural overhang.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples</strong> (TTM):</p></p>
+<p><ul></p>
+<p><li>P/E: <strong>140.9x</strong> (vs. sector median ~35x)</li></p>
+<p><li>EV/EBITDA: <strong>130.9x</strong></li></p>
+<p><li>P/S: <strong>66.2x</strong></li></p>
+<p><li>EV/FCF: <strong>120.8x</strong></li></p>
+<p><li>P/B: <strong>43.5x</strong></li></p>
+<p><li>PEG (trailing): <strong>0.50x</strong> (attractive on trailing growth)</li></p>
+<p><li>PEG (forward): <strong>3.30x</strong> (expensive on expected growth deceleration)</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>:</p></p>
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>PLTR</th><th><a href="../companies/PANW.html">PANW</a></th><th><a href="../companies/CRWD.html">CRWD</a></th><th><a href="../companies/CRM.html">CRM</a></th></tr></p>
+<p><tr><td>P/S</td><td>66.2x</td><td>~12x</td><td>~15x</td><td>~6x</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>130.9x</td><td>~25x</td><td>~40x</td><td>~15x</td></tr></p>
+<p><tr><td>Net Margin</td><td>49.0%</td><td>~15%</td><td>~10%</td><td>~15%</td></tr></p>
+<p></table></p>
+
+<p><p><strong>Justification</strong>: Palantir's premium is partially justified by:</p></p>
+<p><ol></p>
+<p><li><strong>Superior growth</strong>: 56% revenue growth vs. peers at 15-25%</li></p>
+<p><li><strong>Best-in-class margins</strong>: 49% net margin vs. peers at 10-15%</li></p>
+<p><li><strong>AI pure-play scarcity</strong>: No direct comparable in the market</li></p>
+<p><li><strong>Government moat</strong>: Deep entrenchment in intelligence workflows</li></p>
+<p></ol></p>
+
+<p><p><strong>However</strong>, the market cap of $407.6B implies the market is pricing in sustained 40%+ growth for the next 5+ years. At current revenue of $4.48B, a 10x revenue multiple (still premium) would imply a fair value of $44.8B — the stock is pricing in a 9x expansion from that level. The analyst consensus target of $176.33 (median $200) suggests the sell-side sees limited upside from current levels.</p></p>
+
+<p><p><strong>Historical Context</strong>: The stock trades at $177.50, below its 52-week high of $207.52 but well above the 50-day MA of $141.58 and 200-day MA of $151.37. The stock has been range-bound between $168-182 over the past 10 sessions, suggesting consolidation after a strong run.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Valuation Compression Risk</strong> <code>#critical</code></li></p>
+<p><p>At 140.9x trailing P/E and 130.9x EV/EBITDA, any growth deceleration or macro-driven de-rating could result in 40-60% downside. A reversion to a still-generous 50x P/E would imply a price of ~$63, an 65% decline from current levels. The forward PEG of 3.30x indicates the market expects growth to slow dramatically.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration & Government Dependency</strong> <code>#medium</code></li></p>
+<p><p>Palantir's roots in the intelligence community mean a significant portion of revenue comes from government contracts, which are subject to political cycles, budget cuts, and procurement delays. The company's DSO of 88.1 days reflects the slow-pay nature of government clients. Any shift in US defense spending priorities could materially impact growth.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Stock-Based Compensation Dilution</strong> <code>#medium</code></li></p>
+<p><p>SBC of $684M in FY2025 represents 15.3% of revenue and 32% of operating cash flow. While the company repurchased $75M in stock, this is insufficient to offset dilution. Over time, this could suppress EPS growth and shareholder returns. The company's share count has grown from 2.30B (FY2023) to 2.57B (FY2025), a 11.7% increase.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competitive Threat from Big Tech</strong> <code>#medium</code></li></p>
+<p><p><a href="../companies/ORCL.html">ORCL</a>, <a href="../companies/CRM.html">CRM</a>, and hyperscalers are rapidly integrating AI capabilities into their platforms. While Palantir has a first-mover advantage in enterprise AI, the moat is unproven. The company's R&D spend of $557.7M (12.5% of revenue) is significantly lower than peers like <a href="../companies/CRM.html">CRM</a> (~15%) and <a href="../companies/PANW.html">PANW</a> (~20%), which could limit innovation velocity.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Insider Selling Activity</strong> <code>#low</code></li></p>
+<p><p>Recent insider transactions show consistent open-market sales at prices between $172.65-$176.31, with no reported insider purchases. While not unusual for a high-flying tech stock, the pattern suggests insiders are monetizing at current levels rather than adding exposure.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Interest Rate Sensitivity</strong> <code>#low</code></li></p>
+<p><p>With a beta of 1.56, PLTR is highly sensitive to changes in the discount rate. A 100bps increase in the 10-year Treasury could compress the multiple by 10-15%, translating to a $18-27 downside per share.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>AIP Commercial Expansion</strong> <code>#near-term</code></li></p>
+<p><p>The AIP platform is the primary growth driver, and continued enterprise wins could push revenue growth above 60%. Watch for announcements of large commercial contracts (e.g., Fortune 500 deployments) in upcoming earnings calls.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Government Contract Wins</strong> <code>#near-term</code></li></p>
+<p><p>With geopolitical tensions elevated, Palantir is well-positioned for expanded defense and intelligence contracts. Any announcement of a major new government deal (e.g., DoD, NATO, or allied nations) could be a significant catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>S&P 500 Index Inclusion</strong> <code>#medium-term</code></li></p>
+<p><p>Palantir is already a mega-cap with $407.6B market cap. If not already included, index inclusion would drive significant passive inflows. (Note: As of the data date, this appears to have already occurred given the market cap size, but any additional index additions would be accretive.)</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>With operating margins at 42.8% and still expanding, continued operating leverage could push net margins toward 55-60%, justifying a higher multiple on forward earnings.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>International Expansion</strong> <code>#medium-term</code></li></p>
+<p><p>The company's international footprint remains underpenetrated relative to its US presence. Expansion into European and Asian markets, particularly for AIP, could open new revenue streams.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>M&A Activity</strong> <code>#medium-term</code></li></p>
+<p><p>With $7.18B in cash and no debt, Palantir has significant firepower for strategic acquisitions. A bolt-on acquisition in AI infrastructure or vertical-specific software could accelerate growth and broaden the moat.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: HOLD</td><td>Conviction: Medium</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>12-Month Price Target: $185</strong></p></p>
+
+<p><p>Palantir is a best-in-class AI software company with exceptional growth (56% YoY), best-in-class margins (49% net), and a fortress balance sheet ($7.18B cash, zero debt). The company's position at the intersection of AI and government/enterprise data is strategically valuable and difficult to replicate.</p></p>
+
+<p><p><strong>However, the current valuation leaves no margin of safety.</strong> At 140.9x trailing earnings and 66.2x sales, the market has already priced in years of flawless execution. The analyst consensus target of $176.33 is essentially at the current price, and the wide range ($80-$215) reflects the extreme uncertainty in fair value.</p></p>
+
+<p><p>Our $185 target implies a modest 4.2% upside from current levels, based on:</p></p>
+<p><ul></p>
+<p><li>Continued revenue growth of 40-50% over the next 12 months</li></p>
+<p><li>Sustained net margins above 45%</li></p>
+<p><li>A slight multiple compression to ~120x forward earnings (still extremely rich)</li></p>
+<p></ul></p>
+
+<p><p><strong>We would become buyers at $140 or below</strong> (approximately 100x forward earnings), which would provide a more reasonable risk/reward. Conversely, a break above $207.52 (52-week high) on strong volume could signal a new leg higher, warranting a re-rating.</p></p>
+
+<p><p><strong>For existing holders</strong>: Maintain positions but consider trimming if the stock approaches $200+ without fundamental acceleration.</p></p>
+
+<p><p><strong>For new investors</strong>: Wait for a pullback or a clearer demonstration that growth can sustain above 50% for multiple quarters.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>PLTR — Palantir Technologies Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 14:54</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>PLTR</td></tr></p>
+<p><tr><td>Name</td><td>Palantir Technologies Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>$407.6B</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>$405.7B</td></tr></p>
+<p><tr><td>Employees</td><td>4,401</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics (TTM)</h2></p>
+
+<p><h3>Valuation & Profitability</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>P/E Ratio</td><td>140.9</td></tr></p>
+<p><tr><td>P/B Ratio</td><td>43.5</td></tr></p>
+<p><tr><td>P/S Ratio</td><td>66.2</td></tr></p>
+<p><tr><td>P/FCF Ratio</td><td>121.3</td></tr></p>
+<p><tr><td>PEG Ratio</td><td>0.5</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>130.9</td></tr></p>
+<p><tr><td>EV/Sales</td><td>65.9</td></tr></p>
+<p><tr><td>ROE</td><td>37.5%</td></tr></p>
+<p><tr><td>ROA</td><td>25.8%</td></tr></p>
+<p><tr><td>ROIC</td><td>25.6%</td></tr></p>
+<p><tr><td>Gross Margin</td><td>84.8%</td></tr></p>
+<p><tr><td>Operating Margin</td><td>42.8%</td></tr></p>
+<p><tr><td>Net Margin</td><td>49.0%</td></tr></p>
+<p><tr><td>EBITDA Margin</td><td>50.4%</td></tr></p>
+<p><tr><td>Debt/Equity</td><td>0.0</td></tr></p>
+<p><tr><td>Current Ratio</td><td>7.2</td></tr></p>
+<p><tr><td>Dividend Yield</td><td>0.0%</td></tr></p>
+<p><tr><td>Earnings Yield</td><td>0.7%</td></tr></p>
+<p><tr><td>FCF Yield</td><td>0.8%</td></tr></p>
+<p></table></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>gross_profit</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th><th>ebitda</th><th>cost_of_revenue</th><th>r_and_d</th></tr></p>
+<p><tr><td>2025-12-31</td><td>4,475,446,000</td><td>3,686,269,000</td><td>1,414,015,000</td><td>1,625,033,000</td><td>0.6</td><td>1,683,513,000</td><td>789,177,000</td><td>557,677,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>2,865,507,000</td><td>2,299,517,000</td><td>310,403,000</td><td>462,190,000</td><td>0.2</td><td>520,760,000</td><td>565,990,000</td><td>507,878,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>2,225,012,000</td><td>1,793,907,000</td><td>119,966,000</td><td>209,825,000</td><td>0.1</td><td>273,915,000</td><td>431,105,000</td><td>404,624,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>1,905,871,000</td><td>1,497,322,000</td><td>-161,201,000</td><td>-373,705,000</td><td>-0.2</td><td>-334,447,000</td><td>408,549,000</td><td>359,679,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>1,541,889,000</td><td>1,202,485,000</td><td>-411,046,000</td><td>-520,379,000</td><td>-0.3</td><td>-469,957,000</td><td>339,404,000</td><td>387,487,000</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>total_debt</th><th>net_debt</th><th>cash_and_equivalents</th><th>goodwill_intangibles</th></tr></p>
+<p><tr><td>2025-12-31</td><td>8,900,392,000</td><td>1,412,381,000</td><td>7,387,268,000</td><td>229,338,000</td><td>-1,194,458,000</td><td>1,423,796,000</td><td>0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>6,340,884,000</td><td>1,246,477,000</td><td>5,003,275,000</td><td>239,219,000</td><td>-1,859,305,000</td><td>2,098,524,000</td><td>18,058,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>4,522,425,000</td><td>961,460,000</td><td>3,475,561,000</td><td>229,392,000</td><td>-601,655,000</td><td>831,047,000</td><td>25,902,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>3,461,239,000</td><td>818,802,000</td><td>2,565,326,000</td><td>249,404,000</td><td>-2,349,136,000</td><td>2,598,540,000</td><td>0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>3,247,450,000</td><td>956,420,000</td><td>2,291,030,000</td><td>260,073,000</td><td>-2,030,601,000</td><td>2,290,674,000</td><td>0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>capital_expenditure</th><th>free_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>2,134,473,000</td><td>-33,882,000</td><td>2,100,591,000</td><td>26,145,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>1,153,865,000</td><td>-12,634,000</td><td>1,141,231,000</td><td>31,587,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>712,183,000</td><td>-15,114,000</td><td>697,069,000</td><td>33,354,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>223,737,000</td><td>-40,027,000</td><td>183,710,000</td><td>22,522,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>333,851,000</td><td>-12,627,000</td><td>321,224,000</td><td>14,897,000</td></tr></p>
+<p></table></p>
+
+<p><h2>Current Price</h2></p>
+
+<p><h3>Quote</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Last Price</td><td>$177.5</td></tr></p>
+<p><tr><td>Open</td><td>$170.4</td></tr></p>
+<p><tr><td>High</td><td>$178.5</td></tr></p>
+<p><tr><td>Low</td><td>$168.9</td></tr></p>
+<p><tr><td>Previous Close</td><td>$172.7</td></tr></p>
+<p><tr><td>Change %</td><td>2.8%</td></tr></p>
+<p><tr><td>Volume</td><td>27,720,671</td></tr></p>
+<p><tr><td>52-Week High</td><td>$207.5</td></tr></p>
+<p><tr><td>52-Week Low</td><td>$106.4</td></tr></p>
+<p><tr><td>50-Day MA</td><td>$141.6</td></tr></p>
+<p><tr><td>200-Day MA</td><td>$151.4</td></tr></p>
+<p><tr><td>Market Cap</td><td>$407.6B</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>173.4</td><td>179.9</td><td>172.3</td><td>179.0</td><td>36,511,200</td></tr></p>
+<p><tr><td>2026-08-14</td><td>179.5</td><td>180.2</td><td>173.8</td><td>174.0</td><td>24,065,839</td></tr></p>
+<p><tr><td>2026-08-17</td><td>174.1</td><td>176.3</td><td>172.3</td><td>172.6</td><td>24,590,900</td></tr></p>
+<p><tr><td>2026-08-18</td><td>172.0</td><td>175.0</td><td>170.6</td><td>171.5</td><td>28,082,100</td></tr></p>
+<p><tr><td>2026-08-19</td><td>172.6</td><td>176.8</td><td>169.8</td><td>175.2</td><td>36,132,642</td></tr></p>
+<p><tr><td>2026-08-20</td><td>175.9</td><td>176.5</td><td>172.0</td><td>174.0</td><td>27,018,414</td></tr></p>
+<p><tr><td>2026-08-21</td><td>174.0</td><td>182.4</td><td>172.6</td><td>179.9</td><td>41,076,203</td></tr></p>
+<p><tr><td>2026-08-24</td><td>177.4</td><td>178.8</td><td>171.3</td><td>175.9</td><td>35,115,500</td></tr></p>
+<p><tr><td>2026-08-25</td><td>176.6</td><td>179.9</td><td>172.2</td><td>172.7</td><td>24,558,542</td></tr></p>
+<p><tr><td>2026-08-26</td><td>170.4</td><td>178.5</td><td>168.9</td><td>177.5</td><td>27,720,671</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Analyst Estimates</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>symbol</th><th>target_high</th><th>target_low</th><th>target_consensus</th><th>target_median</th></tr></p>
+<p><tr><td>PLTR</td><td>215.0</td><td>80.0</td><td>176.3</td><td>200.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-24</td></tr></p>
+<p><tr><td>2026-08-24</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-10</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-03</td></tr></p>
+<p><tr><td>2026-07-24</td></tr></p>
+<p><tr><td>2026-07-17</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='AMD' name='Advanced Micro Devices, Inc.' price=480.93 market_cap=784204458000, symbol='ASML' name='ASML Holding N.V.' price=1745.64 market_cap=672801061809, symbol='CSCO' name='Cisco Systems, Inc.' price=112.36 market_cap=442859598959, symbol='ORCL' name='Oracle Corporation' price=148.84 market_cap=428729154800, symbol='PANW' name='Palo Alto Networks, Inc.' price=339.31 market_cap=276537650000, symbol='SAP' name='SAP SE' price=211.53 market_cap=246482194241, symbol='CRWD' name='CrowdStrike Holdings, Inc.' price=189.18 market_cap=192634290590, symbol='CRM' name='Salesforce, Inc.' price=205.62 market_cap=168402780000, symbol='ADBE' name='Adobe Inc.' price=273.47 market_cap=108704325000, symbol='PATH' name='UiPath Inc.' price=16.76 market_cap=8914837947</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 14:54</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 14:54 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/PLTR.html">PLTR</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

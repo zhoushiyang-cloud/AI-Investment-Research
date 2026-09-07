@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDS — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ONDS</strong></span>
+  <span>Ondas Holdings Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 ONDS — Ondas Holdings Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ONDS.html">ONDS</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ONDS Valuation.html">ONDS Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Ondas Holdings (ONDS)</strong> is a high-risk, high-reward speculative technology company operating in private wireless (FullMAX) and autonomous drones (American Robotics), with a market cap of ~$4.68B despite generating only $50.7M in revenue in FY2025.</li></p>
+<p><li><strong>Revenue inflection is real but unprofitable:</strong> FY2025 revenue surged 605% YoY to $50.7M, yet the company posted a net loss of -$133.4M, with gross margins of only 39.7% and negative operating income of -$58.4M.</li></p>
+<p><li><strong>Balance sheet is the key asset:</strong> The company raised ~$829.5M in equity financing during FY2025, ending the year with $550.7M in cash and equivalents — a war chest that funds operations for ~14 quarters at current burn rates.</li></p>
+<p><li><strong>Valuation is extreme:</strong> At $8.22/share, the stock trades at ~92x trailing revenue with no clear path to profitability, pricing in massive commercial success for both the railroad wireless business and drone autonomy platform.</li></p>
+<p><li><strong>We rate ONDS a HOLD</strong> with medium conviction. The cash position eliminates near-term bankruptcy risk, but the valuation leaves no margin of safety for execution missteps. Our 12-month price target is <strong>$9.50</strong>, reflecting modest upside from current levels.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Ondas Holdings operates two distinct segments targeting mission-critical industrial applications:</p></p>
+
+<p><p><strong>1. Ondas Networks (Private Wireless)</strong></p></p>
+<p><ul></p>
+<p><li>Develops FullMAX, a software-defined radio (SDR) platform for wide-area broadband communication</li></p>
+<p><li>Primary target: railway systems (positive train control, rail operations), energy, and utility infrastructure</li></p>
+<p><li>This segment is the primary revenue driver, with the FY2025 revenue surge largely attributable to railroad-related contracts</li></p>
+<p><li>Competitive positioning: competes against <a href="../companies/AVGO.html">AVGO</a>-backed private LTE solutions and legacy narrowband providers; FullMAX offers a differentiated, secure, industrial-grade alternative</li></p>
+<p></ul></p>
+
+<p><p><strong>2. American Robotics (Autonomous Drones)</strong></p></p>
+<p><ul></p>
+<p><li>Provides the AI-driven Scout Drone, ScoutBase (housing/charging/data hub), and ScoutView analytics software</li></p>
+<p><li>Targets agriculture, mining, and critical infrastructure inspection</li></p>
+<p><li>This segment is earlier-stage with less revenue contribution but represents the longer-term growth optionality</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Financial Metrics:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 total revenue: $50.7M (up from $7.2M in FY2024)</li></p>
+<p><li>Cost of revenue: $30.6M (60.3% of revenue)</li></p>
+<p><li>SGA expenses: $13.2M; R&D expenses: $20.9M</li></p>
+<p><li>477 full-time employees</li></p>
+<p><li>CEO: Eric Ashley Brock; HQ in West Palm Beach, FL</li></p>
+<p><li>Beta: 2.75 (highly volatile)</li></p>
+<p><li>52-week range: $4.90 – $15.28</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong></p></p>
+<p><ul></p>
+<p><li><strong>FY2025 revenue:</strong> $50.7M vs $7.2M in FY2024 — a <strong>605% YoY increase</strong>, indicating meaningful commercial traction, likely from railroad contracts</li></p>
+<p><li><strong>Gross profit:</strong> $20.2M (39.7% margin) vs $0.3M (4.8% margin) in FY2024 — margin expansion is positive but still low for a technology company</li></p>
+<p><li><strong>Operating loss:</strong> -$58.4M in FY2025, improving from -$34.6M in FY2024 on an absolute basis but worse relative to the smaller revenue base</li></p>
+<p><li><strong>Net loss:</strong> -$133.4M in FY2025, including -$74.5M in other income/expenses (likely non-cash items, possibly warrant revaluations or debt-related charges)</li></p>
+<p><li><strong>EPS:</strong> -$0.62 diluted for FY2025 vs -$0.61 in FY2024</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating cash flow:</strong> -$38.7M in FY2025 (improved from -$33.5M in FY2024)</li></p>
+<p><li><strong>Investing activities:</strong> -$260.1M, primarily from acquisitions and purchases of investments</li></p>
+<p><li><strong>Financing activities:</strong> +$862.7M, driven by $829.5M in common equity issuance — massive dilution but necessary for survival</li></p>
+<p><li><strong>Cash position:</strong> $550.7M in cash and equivalents + $37.6M restricted cash = <strong>$588.3M total liquidity</strong></li></p>
+<p><li><strong>Total assets:</strong> $1.13B; <strong>Total liabilities:</strong> $661.2M</li></p>
+<p><li><strong>Shareholder equity:</strong> $437.8M (positive, but heavily reliant on the recent capital raise)</li></p>
+<p><li><strong>Working capital:</strong> $685.9M current assets vs $141.8M current liabilities — strong liquidity position</li></p>
+<p></ul></p>
+
+<p><p><strong>Key Ratios:</strong></p></p>
+<p><ul></p>
+<p><li>Current ratio: ~4.8x</li></p>
+<p><li>Cash runway: ~14 quarters at current burn rate</li></p>
+<p><li>Revenue per employee: ~$106K (low for tech)</li></p>
+<p><li>R&D as % of revenue: 41.2% (heavy investment phase)</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Market cap:</strong> $4.68B</li></p>
+<p><li><strong>Enterprise value:</strong> ~$4.1B (net of $588M cash)</li></p>
+<p><li><strong>Price/Sales (trailing):</strong> ~92x — extraordinarily expensive for a company with $50M in revenue</li></p>
+<p><li><strong>Price/Book:</strong> ~10.7x based on $437.8M equity</li></p>
+<p><li><strong>EV/Revenue:</strong> ~81x</li></p>
+<p><li><strong>P/E:</strong> N/A (no earnings)</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison:</strong></p></p>
+<p><ul></p>
+<p><li>Traditional wireless equipment peers (<a href="../companies/AVGO.html">AVGO</a>, <a href="../companies/CSCO.html">CSCO</a>, <a href="../companies/ERIC.html">ERIC</a>) trade at 3-8x sales with positive earnings</li></p>
+<p><li>Drone/autonomy peers (<a href="../companies/ACHR.html">ACHR</a>, <a href="../companies/JOBY.html">JOBY</a>) trade at 20-50x sales with similar negative profitability</li></p>
+<p><li>ONDS trades at a significant premium to both groups, reflecting either (a) the market pricing in massive railroad contract wins, or (b) speculative excess</li></p>
+<p></ul></p>
+
+<p><p><strong>Historical Context:</strong></p></p>
+<p><ul></p>
+<p><li>Stock range over past year: $4.90 – $15.28</li></p>
+<p><li>Current price of $8.22 is 46% below the 52-week high, suggesting momentum has cooled</li></p>
+<p><li>The company went public in December 2020 and has never been profitable</li></p>
+<p></ul></p>
+
+<p><p><strong>Justification Assessment:</strong></p></p>
+<p><p>The valuation implies the market expects ONDS to scale to $300-500M in revenue within 3-4 years at 15-20x sales. This is possible if the railroad wireless contracts expand significantly, but the current revenue base is tiny and competition is intense. The valuation is <strong>not justified</strong> by current fundamentals; it is a bet on future execution.</p></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Dilution Risk</strong> <code>#critical</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>The company issued $829.5M in common equity in FY2025. With 221.8M weighted average shares outstanding, further dilution is likely as the company continues to burn cash. Each future raise will dilute existing shareholders significantly.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Valuation Compression</strong> <code>#critical</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>At 92x trailing revenue, any revenue miss or contract delay could trigger a 30-50% drawdown. The stock already fell from $15.28 to $8.22 (-46%) in the past year, demonstrating extreme volatility.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Execution Risk on Railroad Contracts</strong> <code>#high</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>Revenue growth is heavily dependent on a few large railroad customers. If deployment timelines slip or contracts are renegotiated, the revenue trajectory could reverse. The FY2025 revenue surge may not be repeatable.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Negative Gross Margin Sustainability</strong> <code>#medium</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>While gross margin improved to 39.7%, this is still low for a software-defined radio company. If the product mix shifts toward lower-margin hardware, margins could compress further.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Competitive Pressure</strong> <code>#medium</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li><a href="../companies/AVGO.html">AVGO</a> and other private LTE providers are investing heavily in industrial wireless. Ondas's FullMAX must differentiate on security and reliability to maintain market share.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Key Person Risk</strong> <code>#low</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>CEO Eric Ashley Brock is central to the company's strategy and capital-raising efforts. His departure would likely trigger a significant sell-off.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Regulatory Risk</strong> <code>#low</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>Drone operations are subject to FAA regulations. Changes in drone policy could impact American Robotics' growth trajectory.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Major Railroad Contract Expansion</strong> <code>#near-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>If ONDS announces additional large-scale deployments with Class I railroads, revenue could accelerate significantly. The FY2025 revenue jump suggests this is already underway.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>American Robotics Commercial Scale-Up</strong> <code>#near-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>If the drone segment secures its first major agricultural or mining customer, it would validate the second growth engine and support a higher valuation.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Gross Margin Expansion</strong> <code>#near-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>As revenue scales, fixed costs should spread, potentially pushing gross margins above 50%. This would signal improving unit economics.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Path to Cash Flow Breakeven</strong> <code>#medium-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>With $588M in cash, the company has time, but investors will want to see operating cash flow trending toward breakeven within 12-18 months. Any guidance suggesting this would be a major positive.</li></p>
+<p></ul></p>
+
+<p><ol></p>
+<p><li><strong>Strategic Acquisition or Partnership</strong> <code>#medium-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>The company has $550M+ in cash and could acquire complementary technology or enter a strategic partnership with a larger industrial player, potentially re-rating the stock.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<hr>
+
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: HOLD</strong></td><td><strong>Conviction: Medium</strong></td></tr></p>
+<p></table></p>
+
+<p><p><strong>12-Month Price Target: $9.50</strong> (implied upside of ~15.6% from $8.22)</p></p>
+
+<p><p><strong>Rationale:</strong></p></p>
+<p><ul></p>
+<p><li>The company has eliminated near-term solvency risk with a $588M cash position, providing a floor for the stock</li></p>
+<p><li>Revenue growth of 605% YoY demonstrates genuine commercial traction, particularly in the railroad vertical</li></p>
+<p><li>However, the valuation at 92x trailing revenue leaves no room for error, and the company remains deeply unprofitable</li></p>
+<p><li>The stock's high beta (2.75) and recent 46% drawdown from highs suggest significant downside risk if momentum stalls</li></p>
+<p><li>We would become more constructive on a pullback to $6-7 (implying ~70x sales) or upon evidence of sustained quarterly revenue growth above $20M with improving margins</li></p>
+<p></ul></p>
+
+<p><p><strong>Price Target Derivation:</strong></p></p>
+<p><ul></p>
+<p><li>Base case: FY2026 revenue of $90-110M (80-100% growth), applied at 45-50x forward sales, yields a fair value range of $8.50-$10.50</li></p>
+<p><li>Our $9.50 target sits at the midpoint, reflecting continued growth but acknowledging execution risk</li></p>
+<p></ul></p>
+
+<p><p><strong>Action:</strong> Existing holders should maintain positions but consider trimming on strength above $10. New investors should wait for a better entry point or evidence of accelerating revenue growth.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>ONDS — Ondas Holdings Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:22</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>ONDS</td></tr></p>
+<p><tr><td>Name</td><td>Ondas Holdings Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>477</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>50731000.0</td><td>-58384000.0</td><td>-133380000.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2024-12-31</td><td>7192694.0</td><td>-34609304.0</td><td>-38007757.0</td><td>-0.6</td></tr></p>
+<p><tr><td>2023-12-31</td><td>15691430.0</td><td>-39729300.0</td><td>-44844872.0</td><td>-0.9</td></tr></p>
+<p><tr><td>2022-12-31</td><td>2125817.0</td><td>-69429522.0</td><td>-87092000.0</td><td>-1.7</td></tr></p>
+<p><tr><td>2021-12-31</td><td>2906771.0</td><td>-17973617.0</td><td>-43663000.0</td><td>-0.4</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>1132841000.0</td><td>661226000.0</td><td>437808000.0</td><td>550744000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>109622288.0</td><td>73677776.0</td><td>16583307.0</td><td>29999321.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>92164682.0</td><td>47108861.0</td><td>33135127.0</td><td>15022000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>97945245.0</td><td>39722338.0</td><td>58222907.0</td><td>29775096.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>117438575.0</td><td>5205743.0</td><td>112232832.0</td><td>40815123.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>-38746000.0</td><td>946000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>-33469623.0</td><td>602000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>-34019519.0</td><td>4991925.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>-37963076.0</td><td>4019548.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>-16895416.0</td><td>1396364.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>9.0</td><td>9.6</td><td>8.8</td><td>8.9</td><td>125,170,089</td></tr></p>
+<p><tr><td>2026-08-14</td><td>9.4</td><td>9.6</td><td>9.0</td><td>9.2</td><td>96,853,915</td></tr></p>
+<p><tr><td>2026-08-17</td><td>9.1</td><td>9.1</td><td>8.5</td><td>9.0</td><td>69,737,342</td></tr></p>
+<p><tr><td>2026-08-18</td><td>8.6</td><td>9.3</td><td>8.6</td><td>9.1</td><td>79,491,812</td></tr></p>
+<p><tr><td>2026-08-19</td><td>8.9</td><td>9.0</td><td>8.6</td><td>8.9</td><td>72,041,087</td></tr></p>
+<p><tr><td>2026-08-20</td><td>8.9</td><td>8.9</td><td>8.2</td><td>8.4</td><td>68,546,002</td></tr></p>
+<p><tr><td>2026-08-21</td><td>8.4</td><td>8.8</td><td>8.4</td><td>8.7</td><td>58,792,157</td></tr></p>
+<p><tr><td>2026-08-24</td><td>8.5</td><td>8.5</td><td>8.2</td><td>8.2</td><td>49,325,169</td></tr></p>
+<p><tr><td>2026-08-25</td><td>8.3</td><td>8.3</td><td>8.2</td><td>8.2</td><td>41,611,088</td></tr></p>
+<p><tr><td>2026-08-26</td><td>8.1</td><td>8.3</td><td>8.0</td><td>8.2</td><td>55,499,128</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:22</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:22 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ONDS.html">ONDS</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

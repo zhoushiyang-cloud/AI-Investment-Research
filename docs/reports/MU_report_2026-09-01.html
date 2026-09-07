@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MU — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>MU</strong></span>
+  <span>Micron Technology, Inc.</span>
+  <span>Technology</span>
+  <span>2026-09-01</span>
+</div>
+<hr>
+
+<h1>📊 MU — Micron Technology, Inc.</h1>
+<blockquote><em>Investment Research Report · September 01, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/MU.html">MU</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/MU Valuation.html">MU Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Micron is in the midst of a historic cyclical upswing</strong>, with FY2025 revenue surging 49% YoY to $37.4B and diluted EPS swinging from $0.70 to $7.59, driven by the AI-driven demand for HBM and high-capacity DRAM.</li></p>
+<p><li><strong>The balance sheet has been transformed</strong>, with net cash position improving dramatically and total equity growing from $44.1B to $54.2B in a single year, providing significant financial flexibility for continued capacity expansion.</li></p>
+<p><li><strong>The stock has already re-rated dramatically</strong>, trading at $958.73 (up ~740% from the 52-week low of $114.25), which embeds high expectations for continued AI memory demand; valuation is now a key risk.</li></p>
+<p><li><strong>We maintain a BUY rating with High conviction</strong>, driven by the structural AI memory shortage through 2027, but we temper our 12-month price target to $1,150, reflecting the need for continued flawless execution against a backdrop of elevated expectations.</li></p>
+<p><li><strong>Key risks include</strong> the inherent cyclicality of memory pricing, aggressive insider selling at high prices, and the potential for demand digestion in the AI server market.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Micron Technology, Inc. (<a href="../companies/MU.html">MU</a>) is a global leader in semiconductor memory and storage solutions, operating through four primary segments: <strong>Compute and Networking, Mobile, Storage, and Embedded</strong>. The company designs, manufactures, and sells DRAM, NAND, and NOR memory products under the Micron and Crucial brands.</p></p>
+
+<p><p><strong>Competitive Position:</strong> Micron is one of only three major DRAM suppliers globally (alongside Samsung and SK Hynix) and a top-tier NAND supplier. This oligopolistic structure has historically led to rational capacity discipline, which is currently amplifying the upcycle. The company is a key supplier for AI accelerators, with its HBM (High Bandwidth Memory) solutions being critical for <a href="../companies/NVDA.html">NVDA</a> and other AI GPU platforms.</p></p>
+
+<p><p><strong>Key Segments & Revenue Share (FY2025):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Compute and Networking:</strong> Largest segment, driven by data center and AI server demand for DRAM and HBM.</li></p>
+<p><li><strong>Mobile:</strong> Memory for smartphones; stable but lower growth.</li></p>
+<p><li><strong>Storage:</strong> NAND-based SSDs for enterprise and consumer markets.</li></p>
+<p><li><strong>Embedded:</strong> Automotive, industrial, and consumer electronics memory.</li></p>
+<p></ul></p>
+
+<p><p><em>Note: Specific segment-level revenue breakdown for FY2025 is not provided in the available data, but the overall revenue mix is heavily weighted toward data center/AI applications given the current demand environment.</em></p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong> FY2025 was a breakout year. Revenue grew <strong>48.9% YoY</strong> to <strong>$37.38B</strong> (from $25.11B in FY2024). Gross profit more than doubled to <strong>$14.87B</strong> (39.8% gross margin vs 22.4% in FY2024), demonstrating significant operating leverage. Operating income surged to <strong>$9.77B</strong> (from $1.30B), and net income reached <strong>$8.54B</strong> (from $0.78B). Diluted EPS came in at <strong>$7.59</strong>, a massive inflection from $0.70 in FY2024 and a loss of -$5.34 in FY2023.</p></p>
+
+<p><p><strong>Cash Flow:</strong> Operating cash flow nearly doubled to <strong>$17.53B</strong> (from $8.51B). This robust cash generation funded <strong>$15.86B</strong> in capital expenditures (up from $8.39B) while still increasing cash on hand.</p></p>
+
+<p><p><strong>Balance Sheet:</strong> The company ended FY2025 with <strong>$9.64B</strong> in cash and equivalents. Total debt, including long-term debt and capital leases, stands at approximately <strong>$15.0B</strong> ($11.53B LT debt + $3.04B capital leases). This implies a <strong>net debt position of ~$5.4B</strong>, a significant improvement from the prior year. Total equity grew to <strong>$54.17B</strong>, and inventory was managed down slightly to <strong>$8.36B</strong>, indicating strong demand absorbing supply.</p></p>
+
+<p><p><strong>Key Metric:</strong> The swing from a -$5.34 EPS loss in FY2023 to a $7.59 profit in FY2025 highlights the extreme cyclicality and the current peak-cycle earnings power.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p>At the current price of <strong>$958.73</strong>, Micron trades at a <strong>P/E of ~126x</strong> based on trailing FY2025 EPS of $7.59. This is optically extreme, but the market is pricing forward earnings.</p></p>
+
+<p><p><strong>Forward View:</strong> If we assume FY2026 EPS can grow to ~$15-$18 (given the AI-driven demand and continued HBM ramp), the stock trades at a forward P/E of <strong>~53-64x</strong>. This is a premium to the broader market and to peers like <a href="../companies/LRCX.html">LRCX</a> and <a href="../companies/AMAT.html">AMAT</a>, but it reflects the scarcity value of HBM capacity and the magnitude of the earnings inflection.</p></p>
+
+<p><p><strong>Peer Comparison:</strong> Micron's market cap of <strong>$1.08T</strong> now exceeds that of <a href="../companies/CSCO.html">CSCO</a>, <a href="../companies/TXN.html">TXN</a>, and <a href="../companies/QCOM.html">QCOM</a>, making it one of the largest semiconductor companies. This valuation is justified only if the memory supercycle persists for multiple years, not just a single quarter.</p></p>
+
+<p><p><strong>Conclusion:</strong> The valuation is <strong>not cheap</strong> and embeds high expectations. However, in the context of a structural supply shortage for AI memory, the premium is warranted. We believe the market is beginning to price in a multi-year upcycle, but the risk/reward is balanced at current levels.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Memory Price Cyclicality</strong> <code>#critical</code></li></p>
+<p><p>The memory industry is notoriously cyclical. A sudden slowdown in AI server deployments or a faster-than-expected supply response from Samsung/SK Hynix could cause DRAM/NAND prices to fall, compressing margins and EPS rapidly. The FY2023 loss of -$5.34/share is a stark reminder of the downside.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>AI Demand Digestion</strong> <code>#medium</code></li></p>
+<p><p>Hyperscalers (<a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>, <a href="../companies/AMZN.html">AMZN</a>) are spending aggressively on AI infrastructure. If the ROI on these investments fails to materialize, there could be a pause in orders, leading to inventory build-up at Micron. The recent stock price volatility (range of $887 to $990 in the last 10 days) suggests the market is sensitive to any AI demand wobble.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Insider Selling</strong> <code>#medium</code></li></p>
+<p><p>The recent insider trading data shows a consistent pattern of open-market sales at prices between $959 and $1,132. While some selling is normal for compensation, the frequency and size of these sales at current levels could signal that insiders believe the stock is fully valued or that near-term headwinds exist.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Geopolitical/Trade Restrictions</strong> <code>#medium</code></li></p>
+<p><p>Micron has significant exposure to China. Any escalation in export controls or tariffs on semiconductor components could restrict access to a key market or disrupt the supply chain, impacting revenue and profitability.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Execution Risk on HBM Ramp</strong> <code>#low</code></li></p>
+<p><p>The company's growth is heavily tied to its ability to ramp HBM production to meet <a href="../companies/NVDA.html">NVDA</a>'s specifications. Any yield issues or delays in qualification for next-generation HBM (e.g., HBM4) could cause market share losses to SK Hynix, which is currently the leader in HBM.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Continued HBM Market Share Gains</strong> <code>#near-term</code></li></p>
+<p><p>Any announcements of expanded supply agreements with <a href="../companies/NVDA.html">NVDA</a> or other AI chip designers for HBM3E or HBM4 would be a significant positive, validating demand visibility into 2027.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Fiscal Q1 2026 Earnings Report (December 2026)</strong> <code>#near-term</code></li></p>
+<p><p>A strong guide for revenue and gross margin, driven by continued pricing power in DRAM, could drive the stock higher. The market will be looking for EPS estimates to be raised.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>AI PC and Edge AI Adoption</strong> <code>#medium-term</code></li></p>
+<p><p>The proliferation of AI capabilities in PCs and mobile devices (requiring higher DRAM/NAND content per unit) provides a second wave of demand growth beyond data centers, extending the cycle's longevity.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Supply Discipline by Peers</strong> <code>#medium-term</code></li></p>
+<p><p>If Samsung and SK Hynix continue to focus on profitability over market share (by not aggressively adding new capacity), the favorable supply/demand balance could persist longer than expected, supporting higher memory prices.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: BUY</strong> (Conviction: High)</p></p>
+
+<p><p><strong>12-Month Price Target: $1,150</strong></p></p>
+
+<p><p>Micron is the premier play on the AI memory supercycle. The company has demonstrated exceptional execution, turning a cyclical downturn into a record-breaking year. The balance sheet is strong, and the demand for HBM and high-capacity DRAM is structurally supported by the AI infrastructure build-out. While the stock is not inexpensive, the earnings power in FY2026 and FY2027 has the potential to grow into the current valuation. We believe the risk of a near-term demand pullback is outweighed by the multi-year visibility provided by AI server backlogs. Our $1,150 target implies a forward P/E of ~65x on our estimated FY2026 EPS of $17.50, which we believe is justified given the growth trajectory.</p></p>
+
+<p><p><strong>Key Monitoring Points:</strong> Watch for any signs of memory price declines, changes in hyperscaler capex guidance, and the pace of insider selling.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>MU — Micron Technology, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-09-01 10:48</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>MU</td></tr></p>
+<p><tr><td>Name</td><td>Micron Technology, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>53,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-08-28</td><td>37378000000.0</td><td>9770000000.0</td><td>8539000000.0</td><td>7.6</td></tr></p>
+<p><tr><td>2024-08-29</td><td>25111000000.0</td><td>1304000000.0</td><td>778000000.0</td><td>0.7</td></tr></p>
+<p><tr><td>2023-08-31</td><td>15540000000.0</td><td>-5745000000.0</td><td>-5833000000.0</td><td>-5.3</td></tr></p>
+<p><tr><td>2022-09-01</td><td>30758000000.0</td><td>9702000000.0</td><td>8687000000.0</td><td>7.8</td></tr></p>
+<p><tr><td>2021-09-02</td><td>27705000000.0</td><td>6283000000.0</td><td>5861000000.0</td><td>5.1</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-08-28</td><td>82798000000.0</td><td>28633000000.0</td><td>54165000000.0</td><td>9642000000.0</td></tr></p>
+<p><tr><td>2024-08-29</td><td>69416000000.0</td><td>24285000000.0</td><td>45131000000.0</td><td>7041000000.0</td></tr></p>
+<p><tr><td>2023-08-31</td><td>64254000000.0</td><td>20134000000.0</td><td>44120000000.0</td><td>8577000000.0</td></tr></p>
+<p><tr><td>2022-09-01</td><td>66283000000.0</td><td>16376000000.0</td><td>49907000000.0</td><td>8262000000.0</td></tr></p>
+<p><tr><td>2021-09-02</td><td>58849000000.0</td><td>14916000000.0</td><td>43933000000.0</td><td>7763000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-08-28</td><td>17525000000.0</td><td>8352000000.0</td></tr></p>
+<p><tr><td>2024-08-29</td><td>8507000000.0</td><td>7780000000.0</td></tr></p>
+<p><tr><td>2023-08-31</td><td>1559000000.0</td><td>7756000000.0</td></tr></p>
+<p><tr><td>2022-09-01</td><td>15181000000.0</td><td>7116000000.0</td></tr></p>
+<p><tr><td>2021-09-02</td><td>12468000000.0</td><td>6214000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-18</td><td>957.1</td><td>978.7</td><td>926.6</td><td>940.8</td><td>37,305,990</td></tr></p>
+<p><tr><td>2026-08-19</td><td>959.4</td><td>960.0</td><td>915.2</td><td>937.1</td><td>26,901,876</td></tr></p>
+<p><tr><td>2026-08-20</td><td>935.0</td><td>977.3</td><td>929.1</td><td>974.3</td><td>25,212,225</td></tr></p>
+<p><tr><td>2026-08-21</td><td>989.7</td><td>990.0</td><td>958.3</td><td>966.8</td><td>21,823,443</td></tr></p>
+<p><tr><td>2026-08-24</td><td>934.8</td><td>936.5</td><td>887.6</td><td>910.4</td><td>30,012,631</td></tr></p>
+<p><tr><td>2026-08-25</td><td>929.0</td><td>946.7</td><td>916.3</td><td>933.0</td><td>19,163,180</td></tr></p>
+<p><tr><td>2026-08-26</td><td>925.7</td><td>945.7</td><td>924.6</td><td>938.4</td><td>18,721,684</td></tr></p>
+<p><tr><td>2026-08-27</td><td>967.0</td><td>968.7</td><td>906.9</td><td>935.4</td><td>28,838,465</td></tr></p>
+<p><tr><td>2026-08-28</td><td>919.3</td><td>946.8</td><td>909.1</td><td>932.9</td><td>22,890,088</td></tr></p>
+<p><tr><td>2026-08-31</td><td>931.4</td><td>960.0</td><td>930.8</td><td>958.7</td><td>22,569,478</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-28</td></tr></p>
+<p><tr><td>2026-08-26</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-20</td></tr></p>
+<p><tr><td>2026-07-28</td></tr></p>
+<p><tr><td>2026-07-28</td></tr></p>
+<p><tr><td>2026-07-27</td></tr></p>
+<p><tr><td>2026-07-17</td></tr></p>
+<p><tr><td>2026-07-06</td></tr></p>
+<p><tr><td>2026-07-02</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='CSCO' name='Cisco Systems, Inc.' price=110.49 market_cap=435489116136, symbol='LRCX' name='Lam Research Corporation' price=301.49 market_cap=377034349300, symbol='AMAT' name='Applied Materials, Inc.' price=458.39 market_cap=363942866010, symbol='ARM' name='Arm Holdings plc American Depositary Shares' price=241.91 market_cap=258359533827, symbol='SAP' name='SAP SE' price=220.855 market_cap=257348012145, symbol='TXN' name='Texas Instruments Incorporated' price=260.91 market_cap=238275453754, symbol='KLAC' name='KLA Corporation' price=175.45 market_cap=229186826000, symbol='IBM' name='International Business Machines Corporation' price=233.87 market_cap=220336878580, symbol='CRM' name='Salesforce, Inc.' price=257.54 market_cap=210925260000, symbol='QCOM' name='QUALCOMM Incorporated' price=170.48 market_cap=179004000000</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-09-01 10:48</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-09-01 10:48 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/MU.html">MU</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

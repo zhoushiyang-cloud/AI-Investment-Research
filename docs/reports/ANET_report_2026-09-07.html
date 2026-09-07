@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANET — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ANET</strong></span>
+  <span>ANET</span>
+  <span>Unknown</span>
+  <span>2026-09-07</span>
+</div>
+<hr>
+
+<h1>📊 ANET — ANET</h1>
+<blockquote><em>Investment Research Report · September 07, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ANET.html">ANET</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><strong>Market Cap:</strong> $244.4B</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ANET Valuation.html">ANET Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Unknown.html">Sector — Unknown</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Arista Networks remains a best-in-class franchise</strong> in high-speed data center networking, with FY2025 revenue of $9.01B (+28.6% YoY) and a dominant position in 400G/800G Ethernet switching for AI backends.</li></p>
+<p><li><strong>Financial quality is exceptional</strong>: 63.0% gross margin, 45.4% operating margin, 38.4% net margin, and $4.37B operating cash flow in FY2025 — all while holding ~$2.0B cash with zero debt.</li></p>
+<p><li><strong>Growth is accelerating, not decelerating</strong>: FY2025 revenue growth of 28.6% and EPS growth of 23.3% YoY, with quarterly earnings growth of 36.5% signaling continued momentum into FY2026.</li></p>
+<p><li><strong>Valuation is demanding but justified</strong> at 61.3x trailing P/E and 37.6x forward P/E, given the AI networking TAM expansion and Arista's share gains vs. <a href="../companies/CSCO.html">CSCO</a> and <a href="../companies/JNPR.html">JNPR</a>.</li></p>
+<p><li><strong>We rate ANET a BUY with High conviction</strong>, 12-month price target of <strong>$245</strong>, representing ~26% upside from the current $193.78 quote.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Arista Networks designs and sells high-performance, software-driven Ethernet switching and routing platforms for large-scale data centers, cloud, and AI clusters. The company's core differentiator is the <strong>Extensible Operating System (EOS)</strong> — a single, consistent software image across all platforms — which simplifies operations and drives customer stickiness.</p></p>
+
+<p><p><strong>Key revenue segments (FY2025, estimated):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Data center switching (Cloud/AI)</strong>: ~85-90% of revenue — 400G/800G platforms (7060X, 7800R series) for hyperscalers, cloud service providers, and large enterprises.</li></p>
+<p><li><strong>Routing (Edge/Spine)</strong>: ~10% — 7280R/7500R platforms for WAN and data center interconnect.</li></p>
+<p><li><strong>Services & subscriptions</strong>: ~5-10% — EOS licensing, Arista CloudVision (network automation/telemetry), and professional services.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive position:</strong> Arista is the <strong>#2 player in data center Ethernet switching</strong> (behind <a href="../companies/CSCO.html">CSCO</a>) but the <strong>clear leader in high-speed (400G+) AI/ML fabrics</strong>, with a 20%+ share of the overall data center switch market. Key competitive advantages:</p></p>
+<p><ul></p>
+<p><li><strong>Zero-touch provisioning and single-OS simplicity</strong> vs. fragmented legacy stacks.</li></p>
+<p><li><strong>Superior telemetry</strong> via CloudVision and DANZ monitoring.</li></p>
+<p><li><strong>Deep hyperscaler relationships</strong> (Microsoft, Meta, Oracle) and expanding enterprise traction.</li></p>
+<p><li><strong>Direct competition with <a href="../companies/NVDA.html">NVDA</a>'s InfiniBand</strong> — Arista's Ethernet-based Spectrum-X alternative is gaining share as AI clusters scale beyond InfiniBand's limits.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Growth:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 revenue: <strong>$9.01B</strong>, up <strong>28.6%</strong> from FY2024's $7.00B (which itself grew 19.5% from FY2023's $5.86B). Growth is accelerating.</li></p>
+<p><li>Quarterly earnings growth of <strong>36.5%</strong> suggests FY2026 revenue trajectory remains robust.</li></p>
+<p></ul></p>
+
+<p><p><strong>Margins (FY2025):</strong></p></p>
+<p><ul></p>
+<p><li>Gross margin: <strong>63.0%</strong> (up from 64.1% in FY2024 — slight compression from mix but still sector-leading).</li></p>
+<p><li>Operating margin: <strong>45.4%</strong> (up from 42.1% in FY2024) — operating leverage is powerful.</li></p>
+<p><li>EBITDA margin: <strong>44.0%</strong>; Net profit margin: <strong>38.4%</strong>.</li></p>
+<p></ul></p>
+
+<p><p><strong>Earnings & Cash Flow:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 net income: <strong>$3.51B</strong> (up from $2.85B in FY2024, +23.1%).</li></p>
+<p><li>Diluted EPS: <strong>$2.75</strong> (FY2025) vs. $2.23 (FY2024) — <strong>+23.3% YoY</strong>.</li></p>
+<p><li>Operating cash flow: <strong>$4.37B</strong> (FY2025), up from $3.71B (FY2024). FCF after capex (~$120M) is ~$4.25B.</li></p>
+<p></ul></p>
+
+<p><p><strong>Balance Sheet (FY2025):</strong></p></p>
+<p><ul></p>
+<p><li>Cash & equivalents: <strong>$1.96B</strong>; Total current assets: <strong>$16.39B</strong>.</li></p>
+<p><li>Total liabilities: <strong>$7.08B</strong> vs. total equity of <strong>$12.37B</strong> — net cash position is strong.</li></p>
+<p><li>Current ratio: <strong>3.05x</strong>; Quick ratio: <strong>2.29x</strong> — ample liquidity.</li></p>
+<p><li><strong>Zero debt</strong>; no dividend (payout ratio 0%), but aggressive buybacks: <strong>$1.60B</strong> repurchased in FY2025.</li></p>
+<p></ul></p>
+
+<p><p><strong>Key concern:</strong> Inventory rose to <strong>$2.25B</strong> (up 22% YoY) and accounts receivable to <strong>$1.89B</strong> (up 65% YoY) — likely building for AI backlog fulfillment. Days sales outstanding may be creeping up; monitor.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current multiples (at $193.78):</strong></p></p>
+<p><ul></p>
+<p><li>Market cap: <strong>$244.4B</strong></li></p>
+<p><li>Trailing P/E: <strong>61.3x</strong> (vs. peer <a href="../companies/LRCX.html">LRCX</a> at ~25x, <a href="../companies/AMAT.html">AMAT</a> at ~22x)</li></p>
+<p><li>Forward P/E: <strong>37.6x</strong> (implies FY2026 EPS of ~$5.16, or ~88% growth — aggressive but plausible given backlog)</li></p>
+<p><li>EV/EBITDA: <strong>49.8x</strong> (vs. sector average ~20-25x)</li></p>
+<p><li>P/B: <strong>16.5x</strong> (vs. ROE of 31.5% — high ROE justifies premium)</li></p>
+<p><li>PEG (TTM): <strong>1.43x</strong> — growth-adjusted valuation is reasonable.</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer comparison:</strong> ANET trades at a <strong>significant premium</strong> to semiconductor capital equipment peers (<a href="../companies/LRCX.html">LRCX</a>, <a href="../companies/AMAT.html">AMAT</a>) and even software peers (<a href="../companies/NOW.html">NOW</a> at ~30x forward). This premium is justified by:</p></p>
+<p><ol></p>
+<p><li><strong>Superior growth durability</strong> — AI networking spend is in early innings vs. semi capex cyclicality.</li></p>
+<p><li><strong>Software-like margins</strong> (63% gross, 45% operating) with hardware scale.</li></p>
+<p><li><strong>Recurring revenue mix</strong> growing via CloudVision subscriptions.</li></p>
+<p><li><strong>Net cash balance sheet</strong> and 30%+ ROE.</li></p>
+<p></ol></p>
+
+<p><p><strong>Analyst consensus:</strong> Target $241.04 (median $246.50), range $185–$289. Our $245 target is within range but reflects our view that AI Ethernet adoption will accelerate through 2027.</p></p>
+
+<p><p><strong>Historical context:</strong> Stock trades at ~1.2x its 50-day MA ($182.93) and ~1.28x its 200-day MA ($151.94). Year high $214.89; year low $114.52. Current price is ~10% below 52-week high — a reasonable entry point.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Backend Architecture Shift to <a href="../companies/NVDA.html">NVDA</a> InfiniBand/Co-Packaged Optics</strong> <code>#critical</code></li></p>
+<p><p>If <a href="../companies/NVDA.html">NVDA</a>'s proprietary InfiniBand or next-gen NVLink fabrics gain dominant share in AI clusters, Arista's Ethernet-based solutions could be marginalized. Current 800G Ethernet is winning at Meta/Microsoft, but 1.6T transition (2027) is a battleground.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#critical</code></li></p>
+<p><p>Top 2-3 hyperscalers (Microsoft, Meta, Oracle) likely represent >40% of revenue. Any slowdown in their AI capex or shift to in-house switching (e.g., Meta's open networking) would materially impact growth. FY2025 AR growth of 65% suggests heavy concentration.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Valuation Compression Risk</strong> <code>#medium</code></li></p>
+<p><p>At 61x trailing earnings, any guidance miss or macro tech selloff could trigger 20-30% de-rating. The stock fell from $214 to $181 (-15%) in the past 2 weeks on no company-specific news — sentiment is fragile.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Inventory and Supply Chain Risk</strong> <code>#medium</code></li></p>
+<p><p>Inventory of $2.25B (+22% YoY) and receivables of $1.89B (+65% YoY) suggest aggressive build for AI orders. If orders slip or are cancelled, working capital drag and potential write-downs could hit margins.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competitive Pressure from <a href="../companies/CSCO.html">CSCO</a> and <a href="../companies/JNPR.html">JNPR</a></strong> <code>#low</code></li></p>
+<p><p>Cisco's new Silicon One-based platforms and Juniper's (now <a href="../companies/HPE.html">HPE</a>) AI networking push could erode Arista's enterprise share gains. However, Arista's EOS software ecosystem remains a strong moat.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Macro/Geopolitical</strong> <code>#low</code></li></p>
+<p><p>Export controls on advanced networking gear to China (revenue exposure minimal but sentiment risk) and potential US recession impacting enterprise IT budgets.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>FY2026 Guidance Raise on Q3 Earnings (Late Oct 2026)</strong> <code>#near-term</code></li></p>
+<p><p>Given FY2025 revenue of $9.01B and 36.5% quarterly earnings growth, expect FY2026 guidance of $11.5-12.0B (+28-33%). Any upside to this would push shares toward $220+.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>1.6T Ethernet Platform Launch (2027)</strong> <code>#medium-term</code></li></p>
+<p><p>Arista's next-gen 1.6T switches (expected 2027) could cement leadership in AI backends. Early design wins with hyperscalers would be a major re-rating catalyst.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>CloudVision / Software Attach Rate Expansion</strong> <code>#near-term</code></li></p>
+<p><p>As AI clusters grow, demand for network automation (CloudVision) increases. Software revenue growing >30% with 90%+ gross margins would lift overall margin profile.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Enterprise AI Networking Adoption</strong> <code>#medium-term</code></li></p>
+<p><p>As enterprises deploy private AI infrastructure, Arista's campus and data center switching could see a second growth wave beyond hyperscalers. Current enterprise mix is ~30-35% of revenue.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential S&P 500 Index Rebalancing / Institutional Inflows</strong> <code>#near-term</code></li></p>
+<p><p>With $244B market cap, ANET is already in major indices. However, continued earnings beats could trigger active manager buying.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Buyback Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>$1.6B repurchased in FY2025. With $2.0B cash and strong FCF, management could announce an expanded buyback program, supporting EPS growth.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: BUY</td><td>Conviction: High</td><td>12-Month Price Target: $245</strong></td></tr></p>
+<p></table></p>
+
+<p><p>Arista Networks is the <strong>highest-quality growth franchise in networking</strong>, with software-like margins, accelerating revenue growth (28.6% in FY2025), and a clear leadership position in the AI Ethernet switching market. The 61x trailing P/E looks expensive, but on forward earnings (37.6x) and PEG (1.43x), the stock is reasonably priced for a company growing EPS 35%+ annually with 45% operating margins and zero debt.</p></p>
+
+<p><p>Our $245 target is based on <strong>~47x FY2026E EPS of $5.20</strong> (assuming 35% growth from FY2025's $2.75, plus buyback benefit), which is a discount to the current forward multiple and reflects a modest derating as the company scales. This implies ~26% upside from $193.78.</p></p>
+
+<p><p><strong>Key monitorables:</strong> (1) Q3 FY2026 earnings (late Oct) for guidance; (2) hyperscaler capex commentary from <a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/META.html">META</a>, <a href="../companies/ORCL.html">ORCL</a>; (3) 1.6T Ethernet design win announcements; (4) inventory/DSO trends.</p></p>
+
+<p><p><strong>Downside protection:</strong> $185 (analyst low) represents ~4.5% downside — supported by strong fundamentals and buyback. We see risk/reward as favorable at current levels.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>ANET — ANET</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-09-07 09:31</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>ANET</td></tr></p>
+<p><tr><td>Name</td><td>—</td></tr></p>
+<p><tr><td>Sector</td><td>—</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>$244.4B</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>$231.1B</td></tr></p>
+<p><tr><td>Employees</td><td>—</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics (TTM)</h2></p>
+
+<p><h3>Valuation & Profitability</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>P/E Ratio</td><td>61.3</td></tr></p>
+<p><tr><td>P/B Ratio</td><td>16.5</td></tr></p>
+<p><tr><td>P/S Ratio</td><td>—</td></tr></p>
+<p><tr><td>P/FCF Ratio</td><td>—</td></tr></p>
+<p><tr><td>PEG Ratio</td><td>1.4</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>—</td></tr></p>
+<p><tr><td>EV/Sales</td><td>—</td></tr></p>
+<p><tr><td>ROE</td><td>31.5%</td></tr></p>
+<p><tr><td>ROA</td><td>14.1%</td></tr></p>
+<p><tr><td>ROIC</td><td>—</td></tr></p>
+<p><tr><td>Gross Margin</td><td>63.0%</td></tr></p>
+<p><tr><td>Operating Margin</td><td>45.4%</td></tr></p>
+<p><tr><td>Net Margin</td><td>—</td></tr></p>
+<p><tr><td>EBITDA Margin</td><td>44.0%</td></tr></p>
+<p><tr><td>Debt/Equity</td><td>—</td></tr></p>
+<p><tr><td>Current Ratio</td><td>3.0</td></tr></p>
+<p><tr><td>Dividend Yield</td><td>—</td></tr></p>
+<p><tr><td>Earnings Yield</td><td>—</td></tr></p>
+<p><tr><td>FCF Yield</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>9005700000.0</td><td>3856100000.0</td><td>3511400000.0</td><td>2.8</td></tr></p>
+<p><tr><td>2024-12-31</td><td>7003100000.0</td><td>2944600000.0</td><td>2852100000.0</td><td>2.2</td></tr></p>
+<p><tr><td>2023-12-31</td><td>5860168000.0</td><td>2257249000.0</td><td>2087321000.0</td><td>1.6</td></tr></p>
+<p><tr><td>2022-12-31</td><td>4381310000.0</td><td>1527106000.0</td><td>1352446000.0</td><td>4.3</td></tr></p>
+<p><tr><td>2021-12-31</td><td>2948037000.0</td><td>924739000.0</td><td>840854000.0</td><td>2.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>19448600000.0</td><td>7078100000.0</td><td>12370500000.0</td><td>1963900000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>14043900000.0</td><td>4049100000.0</td><td>9994800000.0</td><td>2762400000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>9956635000.0</td><td>2737576000.0</td><td>7219059000.0</td><td>1938606000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>6775410000.0</td><td>1889590000.0</td><td>4885820000.0</td><td>671707000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>5734429000.0</td><td>1755829000.0</td><td>3978600000.0</td><td>620813000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>4371900000.0</td><td>72600000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>3708200000.0</td><td>62000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>2034014000.0</td><td>70630000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>492813000.0</td><td>62700000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>1015856000.0</td><td>50334000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Current Price</h2></p>
+
+<p><h3>Quote</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Last Price</td><td>$193.8</td></tr></p>
+<p><tr><td>Open</td><td>$192.8</td></tr></p>
+<p><tr><td>High</td><td>$197.1</td></tr></p>
+<p><tr><td>Low</td><td>$190.6</td></tr></p>
+<p><tr><td>Previous Close</td><td>$191.4</td></tr></p>
+<p><tr><td>Volume</td><td>4,190,753</td></tr></p>
+<p><tr><td>52-Week High</td><td>$214.9</td></tr></p>
+<p><tr><td>52-Week Low</td><td>$114.5</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-24</td><td>186.0</td><td>190.2</td><td>186.0</td><td>188.2</td><td>5,308,866</td></tr></p>
+<p><tr><td>2026-08-25</td><td>192.3</td><td>193.2</td><td>188.1</td><td>190.9</td><td>4,387,863</td></tr></p>
+<p><tr><td>2026-08-26</td><td>190.9</td><td>203.4</td><td>190.9</td><td>202.2</td><td>7,664,556</td></tr></p>
+<p><tr><td>2026-08-27</td><td>205.9</td><td>206.1</td><td>199.2</td><td>201.1</td><td>4,699,005</td></tr></p>
+<p><tr><td>2026-08-28</td><td>200.0</td><td>200.1</td><td>194.6</td><td>195.4</td><td>3,064,688</td></tr></p>
+<p><tr><td>2026-08-31</td><td>195.5</td><td>198.0</td><td>193.9</td><td>195.7</td><td>5,026,530</td></tr></p>
+<p><tr><td>2026-09-01</td><td>195.8</td><td>196.5</td><td>188.6</td><td>189.3</td><td>4,375,820</td></tr></p>
+<p><tr><td>2026-09-02</td><td>188.0</td><td>189.9</td><td>184.1</td><td>186.1</td><td>4,369,531</td></tr></p>
+<p><tr><td>2026-09-03</td><td>185.2</td><td>192.0</td><td>181.3</td><td>191.4</td><td>4,111,668</td></tr></p>
+<p><tr><td>2026-09-04</td><td>192.8</td><td>197.1</td><td>190.6</td><td>193.8</td><td>4,208,582</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Analyst Estimates</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>symbol</th><th>target_high</th><th>target_low</th><th>target_consensus</th><th>target_median</th><th>recommendation</th><th>recommendation_mean</th><th>number_of_analysts</th><th>current_price</th><th>currency</th></tr></p>
+<p><tr><td>ANET</td><td>289.0</td><td>185.0</td><td>241.0</td><td>246.5</td><td>strong_buy</td><td>1.3</td><td>28</td><td>193.8</td><td>USD</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='LRCX' name='Lam Research Corporation' price=307.65 market_cap=384737860500, symbol='AMAT' name='Applied Materials, Inc.' price=454.71 market_cap=361021096890, symbol='APH' name='Amphenol Corporation' price=82.78 market_cap=204132168800, symbol='SHOP' name='Shopify Inc.' price=145.09 market_cap=188276717956, symbol='QCOM' name='QUALCOMM Incorporated' price=168.74 market_cap=177177000000, symbol='UBER' name='Uber Technologies, Inc.' price=75.76 market_cap=154216981225, symbol='NOW' name='ServiceNow, Inc.' price=141.26 market_cap=146043346120, symbol='SONY' name='Sony Group Corporation' price=24.56 market_cap=144227758673, symbol='APP' name='AppLovin Corporation' price=320.56 market_cap=107688769005, symbol='INTU' name='Intuit Inc.' price=332.7 market_cap=91005759900</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-09-07 09:31</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-09-07 09:31 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ANET.html">ANET</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

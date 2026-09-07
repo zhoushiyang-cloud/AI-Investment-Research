@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMCI — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>SMCI</strong></span>
+  <span>Super Micro Computer, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 SMCI — Super Micro Computer, Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/SMCI.html">SMCI</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/SMCI Valuation.html">SMCI Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>SMCI is a high-growth AI server vendor</strong> that grew revenue from $7.12B (FY2023) to $21.97B (FY2025), a 208% cumulative increase, driven by demand for liquid-cooled AI infrastructure.</li></p>
+<p><li><strong>Profitability has compressed significantly</strong> despite revenue growth; diluted EPS fell from $11.43 (FY2023) to $1.68 (FY2025) due to aggressive pricing, rising operating expenses, and a higher share count.</li></p>
+<p><li><strong>The balance sheet is stretched</strong> with total debt of $1.77B (including $1.39B in new debt issued in FY2025), while cash stands at $5.17B; inventory ballooned to $4.68B, raising working capital risk.</li></p>
+<p><li><strong>The stock trades at ~22.3x trailing EPS</strong> ($37.39 / $1.68), a discount to historical averages but justified by margin erosion, governance overhang, and intense competition from <a href="../companies/NVDA.html">NVDA</a>-backed ODMs and <a href="../companies/HPE.html">HPE</a>.</li></p>
+<p><li><strong>We rate SMCI a HOLD</strong> with a 12-month price target of <strong>$41.00</strong>, reflecting a modest re-rating on AI demand but limited upside given execution and accounting risks.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Super Micro Computer, Inc. designs and sells modular, open-standard server and storage solutions, with a focus on high-performance AI training and inference systems. The company’s product portfolio includes:</p></p>
+<p><ul></p>
+<p><li><strong>AI Servers (liquid & air-cooled)</strong> – core growth driver, integrated with GPUs from <a href="../companies/NVDA.html">NVDA</a> and <a href="../companies/AVGO.html">AVGO</a>.</li></p>
+<p><li><strong>Blade & Multi-node Systems</strong> – SuperBlade, MicroBlade, FlexTwin, GrandTwin, BigTwin.</li></p>
+<p><li><strong>Storage & Rackmount Systems</strong> – SuperStorage, Hyper, CloudDC, WIO.</li></p>
+<p><li><strong>Embedded & Edge Systems</strong> – 5G/IoT/Edge platforms.</li></p>
+<p><li><strong>Software & Services</strong> – Server Manager, SuperCloud Composer, rack-level deployment services.</li></p>
+<p></ul></p>
+
+<p><p><strong>Revenue Share (FY2025 estimate):</strong> AI server systems account for the majority of the $21.97B total revenue, with enterprise/cloud data centers as primary end markets. The company serves enterprise data centers, cloud computing, AI, 5G, and edge computing markets via direct sales, distributors, VARs, and OEMs.</p></p>
+
+<p><p><strong>Competitive Position:</strong> SMCI is a first-mover in liquid-cooled AI racks, giving it a niche advantage over traditional OEMs like <a href="../companies/HPE.html">HPE</a> and <a href="../companies/DELL.html">DELL</a>. However, it faces intense competition from hyperscaler in-house designs and ODMs, and its margin profile is structurally lower than peers like <a href="../companies/NTAP.html">NTAP</a> or <a href="../companies/PSTG.html">PSTG</a>. CEO Charles Liang leads a company of 6,238 employees, headquartered in San Jose, CA.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Growth:</strong> FY2025 revenue reached <strong>$21.97B</strong>, up 46.6% from FY2024’s $14.99B, and up 208% from FY2023’s $7.12B. This reflects explosive AI server demand.</p></p>
+
+<p><p><strong>Margins:</strong> Gross profit in FY2025 was <strong>$2.43B</strong> (11.1% margin), down from 13.8% in FY2024 and 18.0% in FY2023. Operating income was <strong>$1.25B</strong> (5.7% margin), down from $1.21B (8.1%) in FY2024. The decline is due to competitive pricing on AI racks and higher component costs.</p></p>
+
+<p><p><strong>Earnings:</strong> Diluted EPS fell to <strong>$1.68</strong> in FY2025 from $1.92 in FY2024 and $11.43 in FY2023. Net income was $1.05B, down from $1.15B in FY2024, despite a 46% revenue increase—a clear sign of margin dilution.</p></p>
+
+<p><p><strong>Cash Flow:</strong> Operating cash flow was <strong>$1.66B</strong> in FY2025, a strong recovery from -$2.49B in FY2024 (which was driven by massive inventory build). FY2025 capex was $127M, leaving FCF of ~$1.53B.</p></p>
+
+<p><p><strong>Balance Sheet:</strong> Cash and equivalents stand at <strong>$5.17B</strong> (up from $1.67B in FY2024) after issuing $1.39B in new debt. Total debt is <strong>$1.77B</strong> (including $1.28B short-term). Inventory is high at <strong>$4.68B</strong>, representing ~78 days of COGS, a potential write-down risk. Accounts receivable are $2.20B. Total equity is $6.30B.</p></p>
+
+<p><p><strong>Key Ratios:</strong> Current ratio is ~5.2x (total current assets $12.3B / current liabilities $2.34B). The company pays no dividend.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current Multiples:</strong> At $37.39, SMCI trades at:</p></p>
+<p><ul></p>
+<p><li><strong>P/E (trailing):</strong> 22.3x ($37.39 / $1.68)</li></p>
+<p><li><strong>P/S (trailing):</strong> 1.1x ($37.39 * 628M shares / $21.97B)</li></p>
+<p><li><strong>EV/EBITDA:</strong> ~4.9x (EV = $23.5B market cap + $1.77B debt - $5.17B cash = $20.1B; EBITDA ≈ $1.29B operating income + $41M D&A + $314M SBC = $1.65B)</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison:</strong> SMCI’s P/E is lower than <a href="../companies/PSTG.html">PSTG</a> (~35x) and <a href="../companies/NTAP.html">NTAP</a> (~25x), but its margins are far inferior. <a href="../companies/HPE.html">HPE</a> trades at ~12x earnings with more diversified revenue. SMCI’s historical P/E ranged from 15-30x; the current 22x is mid-range but not cheap given the margin trajectory.</p></p>
+
+<p><p><strong>Justification:</strong> The multiple is justified only if FY2026 EPS can recover to $2.50+ on stable margins. Given the competitive pricing environment and high inventory, we see limited upside. A 22x multiple on FY2026E EPS of $1.85 (flat growth) yields a fair value of ~$41. The market is pricing in a stabilization, not a re-acceleration.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Margin Compression from AI Rack Pricing</strong> <code>#critical</code></li></p>
+<p><p>Gross margin fell from 18.0% (FY2023) to 11.1% (FY2025). If hyperscalers continue to force price concessions, FY2026 gross margin could fall below 10%, making EPS growth impossible despite revenue growth.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Inventory Obsolescence</strong> <code>#critical</code></li></p>
+<p><p>Inventory of $4.68B is up 8% YoY despite revenue growth. Rapid GPU generational shifts (e.g., <a href="../companies/NVDA.html">NVDA</a> Blackwell transition) could render existing air-cooled or older liquid-cooled racks obsolete, forcing write-downs.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Governance & Accounting Overhang</strong> <code>#medium</code></li></p>
+<p><p>The company has faced prior SEC scrutiny and delayed filings. Recent insider activity shows only option exercises and tax withholding, no open-market purchases—a lack of insider confidence signal.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Customer Concentration</strong> <code>#medium</code></li></p>
+<p><p>A large portion of revenue comes from a few AI cloud customers. Loss of a single major customer (e.g., a Tier-1 hyperscaler) could cut revenue by 20-30% instantly.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>High Debt & Refinancing Risk</strong> <code>#low</code></li></p>
+<p><p>Short-term debt is $1.28B. While cash covers this, rising interest rates could increase refinancing costs. The company issued $1.39B in debt in FY2025, signaling reliance on leverage for working capital.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Competition from ODMs and <a href="../companies/HPE.html">HPE</a></strong> <code>#medium</code></li></p>
+<p><p>ODMs (Foxconn, Quanta) and traditional OEMs are ramping liquid-cooled offerings, eroding SMCI’s first-mover advantage and pricing power.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>FY2026 Q1 Earnings Beat</strong> <code>#near-term</code></li></p>
+<p><p>If management guides gross margin above 12% and revenue above $6B for the September quarter, the stock could re-rate. Watch for commentary on AI rack backlog.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>New Liquid-Cooled Platform Wins</strong> <code>#near-term</code></li></p>
+<p><p>Announcements of design wins with major cloud providers (e.g., <a href="../companies/MSFT.html">MSFT</a>, <a href="../companies/GOOGL.html">GOOGL</a>) for next-gen GB200/GB300 racks could drive upside.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Inventory Normalization</strong> <code>#medium-term</code></li></p>
+<p><p>If inventory days decline from current ~78 days to below 60 days, it signals healthier demand and reduces write-down risk, potentially expanding the multiple.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Margin Recovery via Software/Service Attach</strong> <code>#medium-term</code></li></p>
+<p><p>Increased adoption of Supermicro Server Manager and rack-level services could lift gross margins by 100-200 bps over 12 months.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential S&P 500 Inclusion</strong> <code>#medium-term</code></li></p>
+<p><p>If SMCI sustains profitability and resolves governance concerns, index inclusion could drive passive inflows, supporting the stock price.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: HOLD</strong></td><td><strong>Conviction: Medium</strong></td><td><strong>12-Month Price Target: $41.00</strong></td></tr></p>
+<p></table></p>
+
+<p><p>SMCI is a fundamentally strong AI infrastructure player with unmatched liquid-cooling expertise, but its financials tell a cautionary tale: revenue tripled while EPS fell 85% from FY2023 to FY2025. The stock is not expensive at 22x earnings, but it is not cheap either, given the margin erosion and inventory risk. We see a balanced risk/reward. Upside to $45 is possible if margins stabilize and AI demand accelerates; downside to $30 is plausible if inventory write-downs or customer losses materialize.</p></p>
+
+<p><p>Our $41 target implies ~10% upside from the current $37.39, reflecting a modest re-rating to 22x FY2026E EPS of $1.85. We would become more constructive on a pullback to $32-34 or on evidence of gross margin expansion above 12%.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>SMCI — Super Micro Computer, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:20</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>SMCI</td></tr></p>
+<p><tr><td>Name</td><td>Super Micro Computer, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>6,238</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-06-30</td><td>21972042000.0</td><td>1252994000.0</td><td>1048868000.0</td><td>1.7</td></tr></p>
+<p><tr><td>2024-06-30</td><td>14989251000.0</td><td>1210774000.0</td><td>1152665000.0</td><td>1.9</td></tr></p>
+<p><tr><td>2023-06-30</td><td>7123482000.0</td><td>761142000.0</td><td>639991000.0</td><td>11.4</td></tr></p>
+<p><tr><td>2022-06-30</td><td>5196099000.0</td><td>335167000.0</td><td>285162000.0</td><td>5.3</td></tr></p>
+<p><tr><td>2021-06-30</td><td>3557422000.0</td><td>123947000.0</td><td>111871000.0</td><td>2.1</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-06-30</td><td>14018429000.0</td><td>7716558000.0</td><td>6301693000.0</td><td>5169911000.0</td></tr></p>
+<p><tr><td>2024-06-30</td><td>9826092000.0</td><td>4408722000.0</td><td>5417206000.0</td><td>1669766000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>3674729000.0</td><td>1702559000.0</td><td>1972005000.0</td><td>440459000.0</td></tr></p>
+<p><tr><td>2022-06-30</td><td>3205077000.0</td><td>1779330000.0</td><td>1425575000.0</td><td>267397000.0</td></tr></p>
+<p><tr><td>2021-06-30</td><td>2241964000.0</td><td>1145566000.0</td><td>1096225000.0</td><td>232266000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-06-30</td><td>1659524000.0</td><td>41000000.0</td></tr></p>
+<p><tr><td>2024-06-30</td><td>-2485972000.0</td><td>30100000.0</td></tr></p>
+<p><tr><td>2023-06-30</td><td>663580000.0</td><td>34904000.0</td></tr></p>
+<p><tr><td>2022-06-30</td><td>-440801000.0</td><td>32471000.0</td></tr></p>
+<p><tr><td>2021-06-30</td><td>122955000.0</td><td>28185000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>38.3</td><td>42.3</td><td>38.2</td><td>39.2</td><td>122,775,704</td></tr></p>
+<p><tr><td>2026-08-14</td><td>39.2</td><td>40.6</td><td>38.7</td><td>39.8</td><td>61,990,870</td></tr></p>
+<p><tr><td>2026-08-17</td><td>39.3</td><td>39.5</td><td>37.7</td><td>38.3</td><td>55,467,039</td></tr></p>
+<p><tr><td>2026-08-18</td><td>37.1</td><td>38.2</td><td>36.2</td><td>37.4</td><td>52,260,068</td></tr></p>
+<p><tr><td>2026-08-19</td><td>37.1</td><td>37.7</td><td>35.7</td><td>36.6</td><td>35,466,176</td></tr></p>
+<p><tr><td>2026-08-20</td><td>36.9</td><td>38.7</td><td>35.6</td><td>36.5</td><td>51,286,605</td></tr></p>
+<p><tr><td>2026-08-21</td><td>37.2</td><td>37.7</td><td>36.4</td><td>37.2</td><td>36,474,341</td></tr></p>
+<p><tr><td>2026-08-24</td><td>36.5</td><td>36.7</td><td>34.1</td><td>35.2</td><td>39,934,865</td></tr></p>
+<p><tr><td>2026-08-25</td><td>36.1</td><td>38.6</td><td>36.0</td><td>38.5</td><td>48,106,902</td></tr></p>
+<p><tr><td>2026-08-26</td><td>38.0</td><td>38.3</td><td>37.2</td><td>37.4</td><td>33,723,170</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='SNDK' name='Sandisk Corporation' price=1499.37 market_cap=222041328458, symbol='HPE' name='Hewlett Packard Enterprise Company' price=55.22 market_cap=73122518430, symbol='TER' name='Teradyne, Inc.' price=363.1 market_cap=56767417100, symbol='KEYS' name='Keysight Technologies, Inc.' price=321.87 market_cap=55006092098, symbol='NTAP' name='NetApp, Inc.' price=193.85 market_cap=38039960900, symbol='MDB' name='MongoDB, Inc.' price=406.11 market_cap=32664209874, symbol='PSTG' name='Pure Storage Inc.' price=86.22 market_cap=28492341385, symbol='HPQ' name='HP Inc.' price=30.52 market_cap=27911241960, symbol='BR' name='Broadridge Financial Solutions, Inc.' price=181.6 market_cap=21003492800, symbol='RGTI' name='Rigetti Computing, Inc.' price=15.94 market_cap=5298436984</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:20</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:20 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/SMCI.html">SMCI</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

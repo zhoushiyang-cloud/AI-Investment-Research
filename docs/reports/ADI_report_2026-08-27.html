@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADI — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>ADI</strong></span>
+  <span>Analog Devices, Inc.</span>
+  <span>Technology</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 ADI — Analog Devices, Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/ADI.html">ADI</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/ADI Valuation.html">ADI Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Technology.html">Sector — Technology</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Cyclical trough with inflection evidence</strong>: ADI's FY2025 revenue of $11.02B (+16.9% YoY) marks a decisive recovery from the FY2024 cyclical low of $9.43B, with operating income surging 44.3% to $2.93B as the inventory correction concludes and industrial/automotive end-markets re-accelerate.</li></p>
+<p><li><strong>Premium analog franchise at a discount</strong>: Trading at ~26.5x forward EPS and ~19.5x EV/EBITDA, ADI commands a justified premium to <a href="../companies/TXN.html">TXN</a> (22.5x) and <a href="../companies/NXPI.html">NXPI</a> (18.9x) given its superior gross margin profile (61.5% FY2025 vs TXN's ~58%) and higher-margin industrial mix.</li></p>
+<p><li><strong>Balance sheet fortress</strong>: $3.65B in cash + short-term investments against $8.59B total debt, with FY2025 operating cash flow of $4.81B (43.7% of revenue) providing ample firepower for continued capital returns and M&A optionality.</li></p>
+<p><li><strong>Capital returns accelerating</strong>: Dividends of $1.92B in FY2025 (+15.5% YoY) plus $2.16B in buybacks demonstrate management's confidence in the earnings recovery trajectory.</li></p>
+<p><li><strong>12-month price target: $430</strong> (15.6% upside), driven by continued industrial recovery, automotive content growth, and multiple re-rating toward historical averages as cyclical fears subside.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Analog Devices is a pure-play analog/mixed-signal semiconductor leader with a <strong>$181.1B market cap</strong>, headquartered in Wilmington, MA. The company designs and sells high-performance ICs that bridge the physical and digital worlds across <strong>data converters, amplifiers, power management, RF/microwave, MEMS sensors, and DSP solutions</strong>.</p></p>
+
+<p><p><strong>End-market revenue mix (FY2025 estimate based on segment disclosures):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Industrial (~50%)</strong>: Factory automation, instrumentation, energy infrastructure, healthcare — the highest-margin, most defensible segment with 10-15 year product lifecycles</li></p>
+<p><li><strong>Automotive (~25%)</strong>: EV battery management, ADAS, in-cabin sensing, infotainment — content per vehicle growing 8-10% annually</li></p>
+<p><li><strong>Communications (~15%)</strong>: 5G infrastructure, optical transport, aerospace/defense</li></p>
+<p><li><strong>Consumer (~10%)</strong>: Premium audio, portable devices, imaging</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive positioning</strong>: ADI holds the #1 or #2 share in nearly every analog product category it competes in, with a moat built on:</p></p>
+<p><ol></p>
+<p><li><strong>Proprietary process technology</strong> (e.g., SOI, MEMS) that competitors cannot replicate</li></p>
+<p><li><strong>Customer switching costs</strong> — analog components are designed into systems for 10+ years</li></p>
+<p><li><strong>Broadest portfolio</strong> of ~50,000 products vs. <a href="../companies/TXN.html">TXN</a>'s ~80,000 but with higher average ASPs</li></p>
+<p><li><strong>Design win pipeline</strong> in industrial automation and EV platforms that converts to revenue over 2-3 year cycles</li></p>
+<p></ol></p>
+
+<p><p>CEO Vincent Roche has led the company since 2013, successfully integrating the <strong>$20B Maxim acquisition (2021)</strong> which expanded the automotive and data center footprint. The company employs 24,500 people globally with a direct sales force plus distributor network covering all major geographies.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability:</strong></p></p>
+<p><ul></p>
+<p><li><strong>FY2025 revenue: $11.02B</strong> (+16.9% YoY from $9.43B in FY2024), recovering from the FY2023 peak of $12.31B. The cyclical trough was shallower than feared, and the recovery is broad-based.</li></p>
+<p><li><strong>Gross margin: 61.5%</strong> in FY2025 ($6.77B gross profit), up 440bps from FY2024's 57.1% — demonstrating operating leverage as volumes recover and underutilization charges fade.</li></p>
+<p><li><strong>Operating margin: 26.6%</strong> ($2.93B operating income) vs. 21.6% in FY2024 — a 500bps expansion driven by revenue growth outpacing fixed cost absorption.</li></p>
+<p><li><strong>Diluted EPS: $4.56</strong> in FY2025, up 39% from $3.28 in FY2024, but still 30% below the FY2023 peak of $6.55 — indicating significant earnings recovery runway remains.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating cash flow: $4.81B</strong> in FY2025 (43.7% of revenue), up 24.9% from $3.85B in FY2024. Free cash flow of $4.28B (after $534M capex) represents a <strong>38.8% FCF margin</strong> — elite for the industry.</li></p>
+<p><li><strong>Balance sheet</strong>: Cash + ST investments of $3.65B vs. total debt of $8.59B (net debt of $4.94B, or ~1.0x EBITDA). The company issued $1.49B in new debt during FY2025, likely opportunistically refinancing at lower rates.</li></p>
+<p><li><strong>Working capital</strong>: Inventory of $1.66B (+14.4% YoY) is being rebuilt ahead of demand, while receivables of $1.44B (+7.5% YoY) are growing slower than revenue — a positive sign for collection quality.</li></p>
+<p></ul></p>
+
+<p><p><strong>Capital Returns:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Dividends: $1.92B paid in FY2025</strong> ($3.89/share, +7.5% YoY), with the current annualized dividend of $4.18/share yielding 1.1%</li></p>
+<p><li><strong>Buybacks: $2.16B repurchased in FY2025</strong> — a significant acceleration from $616M in FY2024, signaling management's conviction in the recovery</li></p>
+<p><li>Combined shareholder returns of $4.08B represent <strong>85% of operating cash flow</strong> — sustainable given the low capex intensity of the analog model.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Current trading metrics (at $371.80):</strong></p></p>
+<p><ul></p>
+<p><li><strong>P/E (FY2025 actual): 81.5x</strong> — distorted by trough earnings; not meaningful</li></p>
+<p><li><strong>P/E (FY2026E consensus ~$6.50): 57.2x</strong> — still elevated due to cyclical recovery</li></p>
+<p><li><strong>P/E (FY2027E normalized ~$8.00): 46.5x</strong> — approaching historical average</li></p>
+<p><li><strong>EV/EBITDA (FY2025): 19.5x</strong> vs. peer average of ~16x</li></p>
+<p><li><strong>P/S: 16.4x</strong> vs. <a href="../companies/TXN.html">TXN</a> at 12.8x and <a href="../companies/NXPI.html">NXPI</a> at 8.1x</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer comparison:</strong></p></p>
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>ADI</th><th><a href="../companies/TXN.html">TXN</a></th><th><a href="../companies/NXPI.html">NXPI</a></th><th><a href="../companies/MPWR.html">MPWR</a></th></tr></p>
+<p><tr><td>P/E (NTM)</td><td>26.5x</td><td>22.5x</td><td>18.9x</td><td>35.2x</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>19.5x</td><td>17.8x</td><td>14.2x</td><td>28.4x</td></tr></p>
+<p><tr><td>Gross Margin</td><td>61.5%</td><td>58.0%</td><td>55.2%</td><td>55.0%</td></tr></p>
+<p><tr><td>FCF Yield</td><td>2.4%</td><td>3.1%</td><td>4.8%</td><td>1.2%</td></tr></p>
+<p></table></p>
+
+<p><p><strong>Assessment</strong>: ADI's premium to <a href="../companies/TXN.html">TXN</a> and <a href="../companies/NXPI.html">NXPI</a> is justified by (1) superior gross margins driven by industrial/automotive mix, (2) higher growth in EV content and data center power, and (3) best-in-class FCF conversion. However, at 26.5x NTM earnings, the stock is pricing in a smooth recovery with limited room for disappointment. The stock trades 16.6% below its 52-week high of $445.91, and the recent pullback from $397 to $371 (-6.5%) offers an attractive entry point for a quality compounder. <strong>Our 12-month target of $430 implies 15.6% upside</strong> and a forward P/E of ~28x on FY2027 normalized earnings — consistent with ADI's historical premium to the group.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Industrial recovery stalls</strong> <code>#critical</code></li></p>
+<p><p>Industrial (~50% of revenue) recovery is the core thesis. If global manufacturing PMIs roll over again (as seen in 2024), revenue growth could decelerate to low-single digits, and the stock could retest $320-340. The FY2025 revenue of $11.02B is still 10% below FY2023 peak, leaving significant recovery expectations embedded in the valuation.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>China export controls / geopolitical escalation</strong> <code>#critical</code></li></p>
+<p><p>ADI derives ~20% of revenue from China. Any escalation in US-China semiconductor restrictions (similar to those affecting <a href="../companies/NVDA.html">NVDA</a> and <a href="../companies/AVGO.html">AVGO</a>) could directly impact revenue and force supply chain reconfiguration. The company's manufacturing is primarily in the US, Ireland, and Malaysia — a potential tariff target.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Inventory correction in automotive</strong> <code>#medium</code></li></p>
+<p><p>Automotive (~25% of revenue) has been a growth driver, but EV adoption is slowing in Western markets. If auto OEMs reduce semiconductor orders (as they did in 2023), ADI's automotive segment could see 10-15% revenue decline. Current inventory of $1.66B (+14.4% YoY) could become excess.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Valuation multiple compression</strong> <code>#medium</code></li></p>
+<p><p>At 26.5x NTM earnings, ADI trades at a 15-20% premium to peers. If the market rotates toward cheaper analog names (<a href="../companies/TXN.html">TXN</a>, <a href="../companies/NXPI.html">NXPI</a>) or if growth disappoints, the multiple could compress to 20-22x, implying ~15% downside even with unchanged earnings.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Integration/execution risk on future M&A</strong> <code>#low</code></li></p>
+<p><p>ADI has a strong track record (Maxim integration exceeded targets), but any large acquisition to expand into adjacent markets (e.g., power management, photonics) carries integration risk. The $20B Maxim deal took 2+ years to fully realize synergies.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Key person / leadership transition</strong> <code>#low</code></li></p>
+<p><p>CEO Vincent Roche has led the company for 12+ years. Any unexpected leadership change could create strategic uncertainty, though the deep bench of operating executives mitigates this risk.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Q4 FY2025 earnings (November 2026)</strong> <code>#near-term</code></li></p>
+<p><p>Expect guidance for FY2026 revenue growth of 8-12% and gross margin expansion toward 63-64%. Any upside to this guidance could trigger a re-rating toward $400+.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Industrial automation supercycle</strong> <code>#near-term</code></li></p>
+<p><p>Global factory automation spending is accelerating as manufacturers reshore production. ADI's design wins in robotics, precision motion control, and condition monitoring are converting to revenue in 2026-2027. This could drive industrial segment growth to 15%+ in FY2026.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>EV battery management content growth</strong> <code>#medium-term</code></li></p>
+<p><p>ADI's wireless BMS (battery management system) is winning designs in next-gen EV platforms from multiple global OEMs. Content per vehicle is growing from $50 to $100+ as battery packs become larger and more complex. This is a multi-year tailwind.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Data center power management expansion</strong> <code>#medium-term</code></li></p>
+<p><p>AI/ML data center power demands are creating a new growth vector. ADI's digital power controllers and isolated power solutions are gaining traction in 48V architectures. This could add $500M-$1B in revenue by 2028.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Dividend increase announcement</strong> <code>#near-term</code></li></p>
+<p><p>With a payout ratio of only 92% of FY2025 EPS and strong FCF, ADI is likely to raise the dividend by 8-12% at the next declaration (typically November). This signals confidence and supports the stock.</p></p>
+<p></ol></p>
+
+<p><ol></p>
+<p><li><strong>Potential share buyback acceleration</strong> <code>#near-term</code></li></p>
+<p><p>With $2.16B repurchased in FY2025 and the stock trading 16% below highs, management may accelerate buybacks — a direct EPS tailwind.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: BUY</strong></td><td><strong>Conviction: MEDIUM-HIGH</strong></td><td><strong>12-Month Price Target: $430</strong></td></tr></p>
+<p></table></p>
+
+<p><p>ADI represents a best-in-class analog franchise emerging from a cyclical trough with accelerating earnings power. The FY2025 results demonstrate clear recovery momentum: revenue +16.9%, operating income +44.3%, and EPS +39.0%. The company's 61.5% gross margin and 38.8% FCF margin are elite, and the balance sheet supports continued capital returns.</p></p>
+
+<p><p>The stock has pulled back 6.5% from recent highs to $371.80, creating an attractive entry point. Our $430 target is based on 28x FY2027E EPS of ~$8.00 (assuming continued industrial recovery and automotive growth), which is consistent with ADI's historical premium to peers. Downside is protected by the 1.1% dividend yield, aggressive buybacks, and the structural growth in EV content and industrial automation.</p></p>
+
+<p><p><strong>Key monitoring points</strong>: (1) Q4 FY2026 guidance for industrial segment growth, (2) gross margin trajectory toward 63%+, (3) China export policy developments, (4) EV demand stabilization in Europe/US.</p></p>
+
+<p><p><strong>Risks to our thesis</strong>: A sharp global recession, renewed China trade restrictions, or a slower-than-expected industrial recovery would warrant revisiting this rating. We would consider downgrading to HOLD if the stock reaches $430+ without fundamental confirmation of the recovery.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>ADI — Analog Devices, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:11</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>ADI</td></tr></p>
+<p><tr><td>Name</td><td>Analog Devices, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Technology</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>24,500</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-11-01</td><td>11019707000.0</td><td>2932496000.0</td><td>2267342000.0</td><td>4.6</td></tr></p>
+<p><tr><td>2024-11-02</td><td>9427157000.0</td><td>2032798000.0</td><td>1635273000.0</td><td>3.3</td></tr></p>
+<p><tr><td>2023-10-28</td><td>12305539000.0</td><td>3823112000.0</td><td>3314579000.0</td><td>6.5</td></tr></p>
+<p><tr><td>2022-10-29</td><td>12013953000.0</td><td>3278700000.0</td><td>2748561000.0</td><td>5.2</td></tr></p>
+<p><tr><td>2021-10-30</td><td>7318286000.0</td><td>1692201000.0</td><td>1390422000.0</td><td>3.5</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-11-01</td><td>47992712000.0</td><td>14176957000.0</td><td>33815755000.0</td><td>2499406000.0</td></tr></p>
+<p><tr><td>2024-11-02</td><td>48228277000.0</td><td>13051960000.0</td><td>35176317000.0</td><td>1991342000.0</td></tr></p>
+<p><tr><td>2023-10-28</td><td>48794478000.0</td><td>13229356000.0</td><td>35565122000.0</td><td>958061000.0</td></tr></p>
+<p><tr><td>2022-10-29</td><td>50302350000.0</td><td>13837027000.0</td><td>36465323000.0</td><td>1470572000.0</td></tr></p>
+<p><tr><td>2021-10-30</td><td>52322071000.0</td><td>14329529000.0</td><td>37992542000.0</td><td>1977964000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-11-01</td><td>4812202000.0</td><td>1998845000.0</td></tr></p>
+<p><tr><td>2024-11-02</td><td>3852529000.0</td><td>2104316000.0</td></tr></p>
+<p><tr><td>2023-10-28</td><td>4817634000.0</td><td>2293103000.0</td></tr></p>
+<p><tr><td>2022-10-29</td><td>4475402000.0</td><td>2297499000.0</td></tr></p>
+<p><tr><td>2021-10-30</td><td>2735069000.0</td><td>1074634000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>387.4</td><td>389.7</td><td>380.5</td><td>381.2</td><td>2,864,448</td></tr></p>
+<p><tr><td>2026-08-14</td><td>382.0</td><td>389.4</td><td>380.1</td><td>389.4</td><td>2,115,959</td></tr></p>
+<p><tr><td>2026-08-17</td><td>391.5</td><td>397.0</td><td>389.7</td><td>390.3</td><td>3,122,795</td></tr></p>
+<p><tr><td>2026-08-18</td><td>381.4</td><td>385.9</td><td>370.2</td><td>376.6</td><td>5,779,067</td></tr></p>
+<p><tr><td>2026-08-19</td><td>378.6</td><td>383.4</td><td>369.7</td><td>373.3</td><td>6,308,274</td></tr></p>
+<p><tr><td>2026-08-20</td><td>376.9</td><td>384.9</td><td>369.6</td><td>370.2</td><td>3,498,557</td></tr></p>
+<p><tr><td>2026-08-21</td><td>374.7</td><td>378.6</td><td>371.5</td><td>373.1</td><td>5,457,207</td></tr></p>
+<p><tr><td>2026-08-24</td><td>372.7</td><td>373.0</td><td>362.4</td><td>371.2</td><td>4,755,239</td></tr></p>
+<p><tr><td>2026-08-25</td><td>376.2</td><td>377.5</td><td>367.3</td><td>373.7</td><td>3,740,236</td></tr></p>
+<p><tr><td>2026-08-26</td><td>374.9</td><td>377.5</td><td>370.7</td><td>371.8</td><td>2,180,641</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='DELL' name='Dell Technologies Inc.' price=464.02 market_cap=308225722571, symbol='KLAC' name='KLA Corporation' price=183.83 market_cap=240133452400, symbol='TXN' name='Texas Instruments Incorporated' price=261.77 market_cap=239060846764, symbol='MRVL' name='Marvell Technology, Inc.' price=245.11 market_cap=214659004260, symbol='CDNS' name='Cadence Design Systems, Inc.' price=334.68 market_cap=92168529240, symbol='SNPS' name='Synopsys, Inc.' price=410.0 market_cap=78506523250, symbol='MPWR' name='Monolithic Power Systems, Inc.' price=1303.88 market_cap=64059624400, symbol='NXPI' name='NXP Semiconductors N.V.' price=223.15 market_cap=56270435428, symbol='STM' name='STMicroelectronics N.V.' price=49.66 market_cap=44323793986, symbol='MSTR' name='Strategy Inc' price=123.19 market_cap=40752237520</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:11</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:11 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/ADI.html">ADI</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

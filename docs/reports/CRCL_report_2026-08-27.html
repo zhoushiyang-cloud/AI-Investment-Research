@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRCL — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>CRCL</strong></span>
+  <span>Circle Internet Group</span>
+  <span>Financial Services</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 CRCL — Circle Internet Group</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/CRCL.html">CRCL</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Financial Services.html">Sector — Financial Services</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/CRCL Valuation.html">CRCL Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Financial Services.html">Sector — Financial Services</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Circle (CRCL) is the dominant issuer of USDC</strong>, the second-largest stablecoin globally, with total revenue of $2.75B in FY2025, driven almost entirely by interest income on reserve assets ($2.64B).</li></p>
+<p><li><strong>Core operating economics are weak</strong>: operating revenue (transaction fees) was only $109.8M in FY2025, while the company reported a net loss of -$69.5M, despite the massive interest income tailwind.</li></p>
+<p><li><strong>The stock has been highly volatile post-IPO</strong> (June 2025), trading between $49.90 and $159.47, currently at $89.91. Recent price action shows a +19.3% rebound over the last 10 sessions, suggesting renewed momentum.</li></p>
+<p><li><strong>Valuation is challenging</strong>: with a market cap of $24.0B and negative GAAP net income, traditional P/E is meaningless. The market is pricing in future stablecoin adoption and potential regulatory clarity, not current earnings power.</li></p>
+<p><li><strong>We initiate with a HOLD rating</strong> (Medium conviction) with a 12-month price target of <strong>$95.00</strong>, reflecting the balance between the company's strategic moat in stablecoin infrastructure and its current lack of profitability and dependence on interest rate cycles.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Circle Internet Group, Inc. is the issuer of <strong>USD Coin (USDC)</strong>, the second-largest USD-pegged stablecoin by market capitalization. The company operates as the core infrastructure layer for stablecoin and blockchain-based financial applications.</p></p>
+
+<p><p><strong>Revenue Segments (FY2025):</strong></p></p>
+<p><ul></p>
+<p><li><strong>Interest Income on Reserves</strong>: $2.64B (96.0% of total revenue) — This is the dominant driver. Circle earns yield on the U.S. Treasury bills and cash backing USDC in circulation.</li></p>
+<p><li><strong>Operating Revenue (Transaction & Services)</strong>: $109.8M (4.0% of total revenue) — This includes fees from cross-border payment settlement, treasury management APIs, and blockchain infrastructure services for enterprise clients.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong></p></p>
+<p><ul></p>
+<p><li>Circle holds a <strong>duopoly position</strong> in the USD stablecoin market alongside Tether (USDT). However, USDC is widely considered the more regulated, transparent, and institutionally-compliant option.</li></p>
+<p><li>The company benefits from a <strong>first-mover advantage</strong> in regulated stablecoin issuance, with a New York BitLicense and a pending MiCA license in Europe.</li></p>
+<p><li>Key partnerships include <a href="../companies/BLK.html">BLK</a> (BlackRock) for the BUIDL tokenized fund, and integrations with major payment platforms like <a href="../companies/V.html">V</a> (Visa) and <a href="../companies/MA.html">MA</a> (Mastercard).</li></p>
+<p><li>The moat is defensible due to regulatory barriers, network effects with exchanges and wallets, and the trust associated with full reserve backing and monthly attestations.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue Trends:</strong></p></p>
+<p><ul></p>
+<p><li>FY2025 Total Revenue: <strong>$2.75B</strong>, up from $1.68B in FY2024 (+64% YoY). This growth was almost entirely driven by higher interest rates on the reserve portfolio, not organic transaction growth.</li></p>
+<p><li>Operating Revenue (ex-interest) grew from $15.2M to $109.8M (+623% YoY), showing early traction in fee-based services, though it remains a small fraction of the total.</li></p>
+<p></ul></p>
+
+<p><p><strong>Profitability & Margins:</strong></p></p>
+<p><ul></p>
+<p><li><strong>GAAP Net Loss: -$69.5M</strong> in FY2025, a sharp reversal from +$155.7M net income in FY2024. The swing is primarily due to a <strong>$566.2M stock-based compensation expense</strong> in FY2025 (vs. $50.1M in FY2024), a typical post-IPO phenomenon.</li></p>
+<p><li>Operating Income was <strong>-$96.4M</strong> in FY2025, down from +$167.2M in FY2024, reflecting heavy investment in compliance, engineering, and sales.</li></p>
+<p><li>Excluding SBC, the company would be highly profitable, but on a GAAP basis, it is loss-making.</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Operating Cash Flow: $542.1M</strong> in FY2025, up from $344.6M in FY2024 — a strong positive signal, driven by interest income collections.</li></p>
+<p><li><strong>Cash & Equivalents: $1.53B</strong> as of FY2025, providing ample liquidity.</li></p>
+<p><li><strong>Total Assets: $78.7B</strong>, but this is misleading — the vast majority ($77.8B) is the USDC reserve portfolio held in custody for token holders, not available to shareholders.</li></p>
+<p><li><strong>Total Shareholders' Equity: $3.33B</strong>, up from $573M in FY2024, reflecting the IPO proceeds.</li></p>
+<p><li><strong>Key Risk</strong>: The business model is highly sensitive to interest rates. If the Fed cuts rates significantly, the $2.64B interest income line will compress dramatically, exposing the underlying operating losses.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><ul></p>
+<p><li><strong>Market Cap</strong>: $24.03B</li></p>
+<p><li><strong>P/E (GAAP)</strong>: Not meaningful (negative EPS of -$0.44).</li></p>
+<p><li><strong>P/S (Total Revenue)</strong>: ~8.7x on FY2025 revenue. This is rich for a financial services company, but the market is paying for the growth optionality of stablecoin adoption, not current earnings.</li></p>
+<p><li><strong>Peer Comparison</strong>: Compared to traditional financial infrastructure names like <a href="../companies/TW.html">TW</a> (Tradeweb, ~$22.9B market cap) or <a href="../companies/LPLA.html">LPLA</a> (LPL Financial, ~$28.8B), CRCL trades at a premium on a revenue basis but lacks their profitability. The closest comparable is <a href="../companies/COIN.html">COIN</a> (Coinbase), which also trades at a premium due to crypto exposure.</li></p>
+<p><li><strong>Justification</strong>: The premium is justified only if USDC supply grows significantly (from ~$60B to $200B+) and if Circle successfully diversifies into higher-margin software/services. The current valuation implies the market expects USDC to become a global payment standard. Given the regulatory tailwinds (potential GENIUS Act in the US) and enterprise adoption, we see the premium as defensible but not cheap.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Interest Rate Compression</strong> <code>#critical</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>96% of revenue comes from interest on reserves. A 200bps cut in Fed Funds would reduce annualized revenue by ~$1.2B, potentially pushing the company into a severe cash burn scenario on an operating basis.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Regulatory Uncertainty</strong> <code>#critical</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>While the GENIUS Act is a tailwind, any adverse ruling on reserve requirements, or a shift in SEC/Fed policy on stablecoins, could disrupt the business model. A ban on non-bank stablecoin issuers would be existential.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Competition from Tether & Banks</strong> <code>#medium</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>Tether (USDT) has a larger market cap and deeper liquidity. Additionally, traditional banks (e.g., <a href="../companies/JPM.html">JPM</a> with JPM Coin) and other fintechs are entering the space, potentially eroding Circle's market share.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Concentration Risk</strong> <code>#medium</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>A significant portion of USDC circulation is tied to a few large exchanges (e.g., <a href="../companies/COIN.html">COIN</a>). If a major partner shifts to a competing stablecoin, it could cause a rapid decline in USDC supply and revenue.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Key Person & Execution Risk</strong> <code>#low</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>The company is heavily reliant on CEO Jeremy Allaire's vision. Execution on the transition from interest-income to fee-based revenue is unproven at scale.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>US GENIUS Act Passage</strong> <code>#near-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>Formal federal regulatory framework for stablecoins would legitimize USDC, potentially unlocking institutional and government adoption. This is the single largest potential catalyst.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>USDC Supply Growth</strong> <code>#near-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>A rebound in crypto market sentiment or increased on-chain activity (DeFi, payments) could drive USDC market cap from ~$60B towards $100B+, directly boosting reserve interest income.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Enterprise & Payments Expansion</strong> <code>#medium-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>New partnerships with global payment processors (e.g., <a href="../companies/V.html">V</a>, <a href="../companies/MA.html">MA</a>) or e-commerce platforms for settlement could drive the "operating revenue" line item above $500M annually, validating the software story.</li></p>
+<p></ul></p>
+<p><ol></p>
+<p><li><strong>Tokenized Asset Growth</strong> <code>#medium-term</code></li></p>
+<p></ol></p>
+<p><ul></p>
+<p><li>The success of BlackRock's BUIDL fund (built on Circle's infrastructure) could position Circle as the settlement layer for tokenized real-world assets (RWAs), a massive TAM expansion.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: HOLD</strong> (Medium Conviction)</p></p>
+<p><p><strong>12-Month Price Target: $95.00</strong></p></p>
+
+<p><p>We believe CRCL is a strategically vital company with a strong moat in the regulated stablecoin market. However, the current valuation (~$24B market cap) already prices in significant future growth, while the company's core economics remain dependent on the interest rate environment and are currently loss-making on a GAAP basis. The stock's high volatility (range: $49.90 - $159.47) suggests a binary outcome based on regulatory news and crypto market cycles.</p></p>
+
+<p><p>Our $95 target implies a ~5.7% upside from the current price of $89.91. We would become more constructive on a pullback to the $70-$75 range, or if we see evidence of operating revenue scaling faster than expected (e.g., >$300M annualized run-rate). Conversely, a break below $70 on high volume would signal a loss of investor confidence and warrant a downgrade.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>CRCL — Circle Internet Group</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:00</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>CRCL</td></tr></p>
+<p><tr><td>Name</td><td>Circle Internet Group</td></tr></p>
+<p><tr><td>Sector</td><td>Financial Services</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>1,100</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>2746642000.0</td><td>-96435000.0</td><td>-69518000.0</td><td>-0.4</td></tr></p>
+<p><tr><td>2024-12-31</td><td>1676253000.0</td><td>167158000.0</td><td>155667000.0</td><td>0.3</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>78713207000.0</td><td>75382434000.0</td><td>3329327000.0</td><td>1526046000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>45834409000.0</td><td>44124115000.0</td><td>570529000.0</td><td>750981000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>542129000.0</td><td>76627000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>344576000.0</td><td>50854000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>70.1</td><td>75.9</td><td>70.0</td><td>75.4</td><td>10,750,410</td></tr></p>
+<p><tr><td>2026-08-14</td><td>74.5</td><td>74.6</td><td>71.2</td><td>71.6</td><td>8,581,625</td></tr></p>
+<p><tr><td>2026-08-17</td><td>71.2</td><td>75.7</td><td>70.7</td><td>74.6</td><td>9,772,450</td></tr></p>
+<p><tr><td>2026-08-18</td><td>72.8</td><td>74.2</td><td>71.4</td><td>71.7</td><td>9,000,531</td></tr></p>
+<p><tr><td>2026-08-19</td><td>73.8</td><td>81.2</td><td>73.7</td><td>78.6</td><td>23,236,847</td></tr></p>
+<p><tr><td>2026-08-20</td><td>83.0</td><td>85.3</td><td>79.5</td><td>83.7</td><td>22,190,550</td></tr></p>
+<p><tr><td>2026-08-21</td><td>88.0</td><td>93.0</td><td>86.4</td><td>88.0</td><td>26,017,965</td></tr></p>
+<p><tr><td>2026-08-24</td><td>89.9</td><td>92.3</td><td>86.6</td><td>87.7</td><td>17,470,056</td></tr></p>
+<p><tr><td>2026-08-25</td><td>84.7</td><td>93.5</td><td>84.2</td><td>92.0</td><td>18,132,203</td></tr></p>
+<p><tr><td>2026-08-26</td><td>89.7</td><td>93.0</td><td>87.0</td><td>89.9</td><td>15,275,084</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-24</td></tr></p>
+<p><tr><td>2026-08-21</td></tr></p>
+<p><tr><td>2026-08-14</td></tr></p>
+<p><tr><td>2026-08-12</td></tr></p>
+<p><tr><td>2026-08-11</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p><tr><td>2026-08-05</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='MS' name='Morgan Stanley' price=214.03 market_cap=337585238400, symbol='FITB' name='Fifth Third Bancorp' price=55.1 market_cap=49937791200, symbol='IX' name='ORIX Corporation' price=39.73 market_cap=44108767178, symbol='RJF' name='Raymond James Financial, Inc.' price=176.69 market_cap=33942149000, symbol='LPLA' name='LPL Financial Holdings Inc.' price=360.245 market_cap=28813425761, symbol='SYF' name='Synchrony Financial' price=79.78 market_cap=25958085615, symbol='WRB' name='W. R. Berkley Corporation' price=68.67 market_cap=25564261590, symbol='TW' name='Tradeweb Markets Inc.' price=107.51 market_cap=22887399340, symbol='FUTU' name='Futu Holdings Limited' price=127.34 market_cap=17771353619</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:00</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:00 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/CRCL.html">CRCL</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

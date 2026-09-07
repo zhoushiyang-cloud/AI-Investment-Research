@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOOG — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>GOOG</strong></span>
+  <span>Alphabet Inc.</span>
+  <span>Communication Services</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 GOOG — Alphabet Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/GOOG.html">GOOG</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Communication Services.html">Sector — Communication Services</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/GOOG Valuation.html">GOOG Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Communication Services.html">Sector — Communication Services</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>Alphabet remains a core holding</strong> with FY2025 revenue of $402.8B (+15.1% YoY) and diluted EPS of $10.81 (+34.4% YoY), demonstrating accelerating growth and margin expansion.</li></p>
+<p><li><strong>Operating leverage is exceptional</strong>: Operating income grew to $129.0B (32.0% margin, up from 32.1% in FY2024), driven by disciplined cost control and AI-driven efficiency gains across Search and Cloud.</li></p>
+<p><li><strong>Google Cloud is the key growth engine</strong>, with the segment contributing meaningfully to the top line; total company operating cash flow reached a record $164.7B in FY2025.</li></p>
+<p><li><strong>Balance sheet is fortress-like</strong>: $126.8B in cash + short-term investments vs. $46.5B in long-term debt, with $41.5B in total equity. The company returned $55.8B to shareholders via buybacks and dividends in FY2025.</li></p>
+<p><li><strong>We rate GOOG a BUY with High conviction</strong>, setting a 12-month price target of <strong>$410</strong>, representing ~21% upside from the current price of $339.10.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Alphabet Inc. operates through three primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>Google Services</strong> (est. ~85% of revenue): Includes Search, YouTube ads, Android, Chrome, hardware (Pixel), and Google Play. This segment is the cash cow, generating the bulk of advertising revenue. Search remains the dominant global gateway for information, though it faces competitive pressure from AI-native assistants.</li></p>
+<p><li><strong>Google Cloud</strong> (est. ~12-13% of revenue): Provides infrastructure (GCP), cybersecurity, database, analytics, and AI solutions, plus the Google Workspace suite. This is the company's fastest-growing major segment and is now firmly profitable, benefiting from the enterprise AI buildout.</li></p>
+<p><li><strong>Other Bets</strong> (est. <1% of revenue): A portfolio of nascent ventures focused on healthcare (Verily) and internet services (Waymo, Wing). These are long-duration optionality plays with minimal current financial impact.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position</strong>: Alphabet is a top-tier player in digital advertising alongside <a href="../companies/META.html">META</a>, and a leading hyperscaler competing with <a href="../companies/MSFT.html">MSFT</a> (Azure) and <a href="../companies/AMZN.html">AMZN</a> (AWS). Its proprietary AI stack (TPUs, Gemini models, DeepMind) provides a differentiated advantage. The company's scale, data moat, and distribution (Search, YouTube, Android) create formidable barriers to entry. With a market cap of $4.12T, it is the second-largest company globally, trailing only <a href="../companies/NVDA.html">NVDA</a>.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Revenue & Profitability</strong>:</p></p>
+<p><ul></p>
+<p><li>FY2025 revenue grew to <strong>$402.8B</strong> from $350.0B in FY2024 (+15.1% YoY), accelerating from the 13.9% growth seen in FY2024.</li></p>
+<p><li>Gross profit expanded to <strong>$240.3B</strong> (59.7% margin), up from $203.7B (58.2% margin) in FY2024.</li></p>
+<p><li>Operating income surged to <strong>$129.0B</strong> (32.0% margin) from $112.4B (32.1% margin) in FY2024. The slight margin dip is due to increased R&D investment (<strong>$61.1B</strong> in FY2025, up 23.9% YoY) as the company aggressively invests in AI infrastructure.</li></p>
+<p><li>Net income rose to <strong>$132.2B</strong> (up 32.0% YoY), with diluted EPS of <strong>$10.81</strong> (up 34.4% YoY).</li></p>
+<p></ul></p>
+
+<p><p><strong>Cash Flow & Balance Sheet</strong>:</p></p>
+<p><ul></p>
+<p><li>Operating cash flow hit a record <strong>$164.7B</strong> in FY2025, up from $125.3B in FY2024 (+31.5%).</li></p>
+<p><li>Capital expenditures were heavy at <strong>$91.4B</strong> (up 74% YoY), reflecting massive investment in AI data centers and TPUs. Free cash flow was ~$73.3B.</li></p>
+<p><li>The balance sheet remains pristine: <strong>$30.7B in cash</strong> and <strong>$96.1B in short-term investments</strong> ($126.8B total liquidity) against <strong>$46.5B in long-term debt</strong>.</li></p>
+<p><li>Shareholder returns were robust: <strong>$45.7B in buybacks</strong> and <strong>$10.0B in dividends</strong> in FY2025. The company initiated a $0.85 annualized dividend.</li></p>
+<p></ul></p>
+
+<p><p><strong>Segment Performance</strong>: While specific segment breakdowns are not provided in the data, the overall growth and margin expansion indicate strong performance across both Google Services (advertising recovery) and Google Cloud (AI-driven enterprise adoption).</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p>At the current price of <strong>$339.10</strong>, GOOG trades at:</p></p>
+<p><ul></p>
+<p><li><strong>P/E (TTM)</strong>: ~31.4x (based on FY2025 diluted EPS of $10.81).</li></p>
+<p><li><strong>P/E (Forward)</strong>: ~28x, assuming continued EPS growth of ~10-15% in FY2026.</li></p>
+<p><li><strong>EV/EBITDA</strong>: Approximately ~22x (EV ~$4.0T, EBITDA ~$180B).</li></p>
+<p></ul></p>
+
+<p><p><strong>Peer Comparison</strong>: GOOG trades at a discount to <a href="../companies/NVDA.html">NVDA</a> (~24x forward earnings) and <a href="../companies/MSFT.html">MSFT</a> (~35x forward earnings), but at a premium to <a href="../companies/META.html">META</a> (~27x). Given Alphabet's superior growth rate (15%+ revenue growth) and expanding margins, this valuation is <strong>attractive</strong>. The market is not fully pricing in the monetization potential of AI across Search and Cloud.</p></p>
+
+<p><p><strong>Historical Context</strong>: GOOG's current multiple is in line with its 5-year average, but the quality of earnings has improved significantly. The shift from a pure advertising play to a diversified AI infrastructure and services company justifies a re-rating. The stock is down ~16% from its 52-week high of $404.47, presenting an entry point.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Search Disruption</strong> <code>#critical</code></li></p>
+<p><p>The rise of AI-native search assistants (e.g., ChatGPT, Perplexity) could erode Google's search query volume and ad pricing power. If the company fails to maintain its dominance in AI-driven information retrieval, the core cash cow is at risk. This is the single largest overhang on the stock.</p></p>
+<p><li><strong>Regulatory & Antitrust Actions</strong> <code>#critical</code></li></p>
+<p><p>Alphabet faces ongoing antitrust litigation from the DOJ regarding its search and ad-tech businesses. A forced divestiture of the ad-tech stack or restrictions on default search deals (e.g., paying Apple $20B+/year) could materially impact revenue and profitability.</p></p>
+<p><li><strong>Excessive AI Capex</strong> <code>#medium</code></li></p>
+<p><p>The company spent <strong>$91.4B</strong> on capex in FY2025. If AI monetization (Cloud, Gemini subscriptions) does not scale as quickly as expected, this could compress free cash flow and ROIC, leading to multiple compression.</p></p>
+<p><li><strong>Cloud Competition</strong> <code>#medium</code></li></p>
+<p><p>Google Cloud is growing but remains a distant third behind <a href="../companies/MSFT.html">MSFT</a> Azure and <a href="../companies/AMZN.html">AMZN</a> AWS. Intense price competition and the commoditization of AI infrastructure could pressure margins in this segment.</p></p>
+<p><li><strong>Key Personnel Risk</strong> <code>#low</code></li></p>
+<p><p>The departure of key AI researchers (e.g., to competitors or startups) could slow innovation. However, the depth of the DeepMind team and the scale of Alphabet's AI investment mitigate this risk.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Gemini Monetization</strong> <code>#near-term</code></li></p>
+<p><p>The rollout of Gemini Advanced subscriptions and the integration of Gemini into Workspace (Docs, Gmail, Meet) could drive incremental subscription revenue and increase ARPU across the Google Services segment.</p></p>
+<p><li><strong>Cloud Profitability Inflection</strong> <code>#near-term</code></li></p>
+<p><p>As AI workloads scale, Google Cloud's operating margin should expand significantly. Any quarter showing a step-change in Cloud profitability will likely be rewarded by the market.</p></p>
+<p><li><strong>Search AI Integration</strong> <code>#near-term</code></li></p>
+<p><p>The successful deployment of AI Overviews in Search, which maintains or improves ad click-through rates, would alleviate fears of AI disruption and drive ad revenue growth.</p></p>
+<p><li><strong>Waymo Commercialization</strong> <code>#medium-term</code></li></p>
+<p><p>Waymo is scaling its robotaxi service in multiple cities. A major expansion or a strategic partnership (e.g., with a major automaker) could unlock significant value in the Other Bets segment.</p></p>
+<p><li><strong>Buyback Acceleration</strong> <code>#near-term</code></li></p>
+<p><p>With $126.8B in liquidity, Alphabet has ample capacity to increase its buyback program, providing a floor under the stock price.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: BUY</strong></td><td><strong>Conviction: High</strong></td></tr></p>
+<p></table></p>
+<p><p><strong>12-Month Price Target: $410</strong></p></p>
+
+<p><p>Alphabet is executing exceptionally well in a transformative AI era. The company has successfully defended its core Search franchise while pivoting to become a leader in AI infrastructure and enterprise cloud. The FY2025 results demonstrate a rare combination of double-digit revenue growth, expanding margins, and massive cash generation. The current valuation (~31x trailing earnings) does not fully reflect the earnings power of Google Cloud or the potential for AI to enhance Search monetization.</p></p>
+
+<p><p>Our $410 price target implies a forward P/E of ~34x on our FY2026 EPS estimate of ~$12.00, which we believe is justified given the company's growth trajectory and competitive moat. The risk/reward is asymmetric to the upside, with the stock trading 16% below its 52-week high. We recommend investors add to positions on any weakness.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>GOOG — Alphabet Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:15</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>GOOG</td></tr></p>
+<p><tr><td>Name</td><td>Alphabet Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Communication Services</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>190,820</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th></tr></p>
+<p><tr><td>2025-12-31</td><td>402836000000.0</td><td>129039000000.0</td><td>132170000000.0</td><td>10.8</td></tr></p>
+<p><tr><td>2024-12-31</td><td>350018000000.0</td><td>112390000000.0</td><td>100118000000.0</td><td>8.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>307394000000.0</td><td>84293000000.0</td><td>73795000000.0</td><td>5.8</td></tr></p>
+<p><tr><td>2022-12-31</td><td>282836000000.0</td><td>74842000000.0</td><td>59972000000.0</td><td>4.6</td></tr></p>
+<p><tr><td>2021-12-31</td><td>257637000000.0</td><td>78714000000.0</td><td>76033000000.0</td><td>5.6</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>cash_and_equivalents</th></tr></p>
+<p><tr><td>2025-12-31</td><td>595281000000.0</td><td>180016000000.0</td><td>415265000000.0</td><td>30708000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>450256000000.0</td><td>125172000000.0</td><td>325084000000.0</td><td>23466000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>402392000000.0</td><td>119013000000.0</td><td>283379000000.0</td><td>24048000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>365264000000.0</td><td>109120000000.0</td><td>256144000000.0</td><td>21879000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>359268000000.0</td><td>107633000000.0</td><td>251635000000.0</td><td>20945000000.0</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>164713000000.0</td><td>21136000000.0</td></tr></p>
+<p><tr><td>2024-12-31</td><td>125299000000.0</td><td>15311000000.0</td></tr></p>
+<p><tr><td>2023-12-31</td><td>101746000000.0</td><td>11946000000.0</td></tr></p>
+<p><tr><td>2022-12-31</td><td>91495000000.0</td><td>13475000000.0</td></tr></p>
+<p><tr><td>2021-12-31</td><td>91652000000.0</td><td>10273000000.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>344.6</td><td>345.8</td><td>342.4</td><td>343.9</td><td>14,997,753</td></tr></p>
+<p><tr><td>2026-08-14</td><td>344.3</td><td>348.1</td><td>342.1</td><td>343.5</td><td>10,946,825</td></tr></p>
+<p><tr><td>2026-08-17</td><td>344.1</td><td>345.1</td><td>339.6</td><td>341.4</td><td>12,606,101</td></tr></p>
+<p><tr><td>2026-08-18</td><td>339.9</td><td>342.4</td><td>337.5</td><td>341.3</td><td>14,254,267</td></tr></p>
+<p><tr><td>2026-08-19</td><td>339.8</td><td>343.6</td><td>338.1</td><td>341.7</td><td>13,360,537</td></tr></p>
+<p><tr><td>2026-08-20</td><td>339.7</td><td>340.8</td><td>336.2</td><td>338.2</td><td>14,187,720</td></tr></p>
+<p><tr><td>2026-08-21</td><td>340.3</td><td>343.3</td><td>337.8</td><td>341.8</td><td>15,363,922</td></tr></p>
+<p><tr><td>2026-08-24</td><td>340.7</td><td>348.1</td><td>339.6</td><td>344.6</td><td>16,450,576</td></tr></p>
+<p><tr><td>2026-08-25</td><td>346.0</td><td>346.7</td><td>342.1</td><td>343.3</td><td>14,031,031</td></tr></p>
+<p><tr><td>2026-08-26</td><td>343.2</td><td>343.2</td><td>337.0</td><td>339.1</td><td>16,176,420</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-11</td></tr></p>
+<p><tr><td>2026-08-10</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-07</td></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-08-06</td></tr></p>
+<p><tr><td>2026-07-30</td></tr></p>
+<p><tr><td>2026-07-29</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='NVDA' name='NVIDIA Corporation' price=209.66 market_cap=5078174860000, symbol='AAPL' name='Apple Inc.' price=313.45 market_cap=4603751738200, symbol='MSFT' name='Microsoft Corporation' price=496.37 market_cap=3685820253500, symbol='TSM' name='Taiwan Semiconductor Manufacturing Company Limited' price=417.69 market_cap=2166340831200, symbol='AVGO' name='Broadcom Inc.' price=355.59 market_cap=1691747872200, symbol='META' name='Meta Platforms, Inc.' price=576.14 market_cap=1467708912440, symbol='CSCO' name='Cisco Systems, Inc.' price=112.36 market_cap=442859598959, symbol='GRMN' name='Garmin Ltd.' price=289.02 market_cap=55738374060, symbol='FLEX' name='Flex Ltd.' price=111.82 market_cap=41306641000, symbol='EXLS' name='ExlService Holdings, Inc.' price=37.5 market_cap=5685487500</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:15</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:15 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/GOOG.html">GOOG</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

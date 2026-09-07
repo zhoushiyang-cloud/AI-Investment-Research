@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPCX — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>SPCX</strong></span>
+  <span>Space Exploration Technologies Corp.</span>
+  <span>Industrials</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 SPCX — Space Exploration Technologies Corp.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/SPCX.html">SPCX</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><strong>Market Cap:</strong> —</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/SPCX Valuation.html">SPCX Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Industrials.html">Sector — Industrials</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>SPCX is the dominant player in space launch and satellite broadband</strong>, with a vertically integrated model spanning reusable rockets (Falcon 9, Falcon Heavy, Starship) and the Starlink constellation. The company holds a near-monopoly on cost-effective orbital access.</li></p>
+<p><li><strong>Post-IPO volatility is elevated</strong>: Since listing on 2026-06-12, the stock has ranged from $104.83 to $225.64, currently trading at $139.63. The last 10 sessions show a -1.2% decline, with a recent low of $130.39, indicating a consolidation phase after the initial public offering pop faded.</li></p>
+<p><li><strong>Market cap stands at $1.83 trillion</strong>, making SPCX one of the largest public companies globally. This valuation embeds significant expectations for Starlink's growth and Starship's success.</li></p>
+<p><li><strong>Fundamentals are opaque</strong>; the provided data lacks revenue, margin, and earnings figures. We must rely on qualitative positioning and price action, flagging the lack of financial disclosure as a key risk.</li></p>
+<p><li><strong>We initiate with a HOLD rating</strong> and a 12-month price target of <strong>$155.00</strong>, reflecting a balanced risk/reward given the extreme valuation and unresolved execution milestones.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Space Exploration Technologies Corp. (SPCX) is a vertically integrated aerospace and defense company founded in 2002 by Elon Musk. It operates two primary, highly synergistic segments:</p></p>
+<p><ol></p>
+<p><li><strong>Launch Services (estimated ~30-40% of revenue, data not available):</strong> Provides commercial, civil, and national security launch services using Falcon 9 and Falcon Heavy. The reusable architecture provides a significant cost advantage over competitors. The company is the primary launch provider for NASA (ISS crew/cargo) and the US military.</li></p>
+<p><li><strong>Starlink (estimated ~60-70% of revenue, data not available):</strong> A satellite-based broadband internet constellation serving consumer, commercial, and government (Starshield) customers. This is the primary growth engine, generating recurring subscription revenue.</li></p>
+<p></ol></p>
+
+<p><p><strong>Competitive Position:</strong> SPCX holds a dominant, defensible position. It has effectively commoditized launch through reusability, leaving competitors like <a href="../companies/LMT.html">LMT</a>, <a href="../companies/BA.html">BA</a>, and international players (Arianespace, Roscosmos) at a structural disadvantage. Starlink has a first-mover scale advantage with over 22,000 employees supporting its operations. The company serves government agencies, national security organizations, commercial satellite operators, and research institutions. The Starship program is the key long-term catalyst, designed to reduce launch costs further and enable missions to the Moon and Mars.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><p><strong>Data Availability:</strong> The provided dataset does not include revenue, EBITDA, net income, or cash flow statements. Therefore, a quantitative fundamental analysis is <strong>not possible</strong> based on the available data. We must rely on market data and qualitative factors.</p></p>
+
+<p><p><strong>Market Data Points:</strong></p></p>
+<p><ul></p>
+<p><li><strong>Market Capitalization:</strong> $1,826,783,091,666 (~$1.83 Trillion)</li></p>
+<p><li><strong>Last Price:</strong> $139.63</li></p>
+<p><li><strong>52-Week Range:</strong> $104.83 - $225.64 (Stock has traded down ~38% from its high)</li></p>
+<p><li><strong>Average Daily Volume:</strong> ~119.5 million shares (extremely high liquidity)</li></p>
+<p><li><strong>Employees:</strong> 22,000</li></p>
+<p><li><strong>Dividend:</strong> $0.00 (No dividend; all cash is reinvested)</li></p>
+<p><li><strong>Beta:</strong> 0.0 (Data not meaningful for a newly listed company)</li></p>
+<p></ul></p>
+
+<p><p><strong>Price Trend (Last 10 Days):</strong> The stock has been in a short-term downtrend, declining from $141.29 to $139.63 (-1.2%). It recently tested support near $130.39 before bouncing. This suggests a period of consolidation and indecision post-IPO.</p></p>
+
+<p><p><strong>Insider Activity:</strong> Recent filings show a mix of insider transactions, including a sale at $105.318 and various grants/awards. The sale at a price well below the current market price suggests early investors or employees taking profits, which is typical post-IPO but warrants monitoring.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><p><strong>Quantitative Valuation:</strong> With a market cap of $1.83 trillion and no earnings data available, we cannot calculate a P/E or EV/EBITDA multiple. This is a critical data gap.</p></p>
+
+<p><p><strong>Qualitative Assessment:</strong> The current valuation is <strong>extremely aggressive</strong>. It prices SPCX at a level comparable to the largest technology companies in the world (e.g., <a href="../companies/NVDA.html">NVDA</a>, <a href="../companies/MSFT.html">MSFT</a>), despite SPCX having a fraction of their revenue and profitability. The market is pricing in:</p></p>
+<p><ol></p>
+<p><li><strong>Starlink Dominance:</strong> Achieving global broadband market share with high margins.</li></p>
+<p><li><strong>Starship Success:</strong> Radical reduction in launch costs, opening new markets and solidifying the launch monopoly.</li></p>
+<p><li><strong>Government Contracts:</strong> Continued expansion of national security and deep space exploration mandates.</li></p>
+<p></ol></p>
+
+<p><p>The stock's decline from $225.64 to $139.63 indicates the market is reassessing the speed at which these expectations will be met. The current price is a "show-me" valuation; it requires flawless execution. Given the lack of fundamental data, we cannot deem the stock undervalued. It is fairly valued to slightly overvalued relative to the execution risk.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>Lack of Financial Transparency</strong> <code>#critical</code></li></p>
+<p><p>The absence of revenue, margin, and cash flow data in this analysis is a major red flag. Investors are flying blind on fundamentals. Any future disclosure of weak financials could trigger a severe de-rating.</p></p>
+<p><li><strong>Starship Development/Execution Risk</strong> <code>#critical</code></li></p>
+<p><p>The entire long-term valuation hinges on Starship's success. Any significant delays, test failures, or cost overruns in the program could shatter investor confidence and lead to a substantial sell-off.</p></p>
+<p><li><strong>Starlink Competitive & Regulatory Pressure</strong> <code>#medium</code></li></p>
+<p><p>Starlink faces increasing competition from Amazon's Project Kuiper and potential regulatory hurdles regarding spectrum allocation and orbital debris. A slowdown in subscriber growth or increased capex requirements would pressure the stock.</p></p>
+<p><li><strong>Key Person Risk (Elon Musk)</strong> <code>#medium</code></li></p>
+<p><p>The company's valuation is heavily tied to the vision and leadership of Elon Musk. Any distraction, legal issue, or change in his role could have a disproportionate negative impact on the stock price.</p></p>
+<p><li><strong>Post-IPO Volatility & Lock-up Expiry</strong> <code>#medium</code></li></p>
+<p><p>The stock is only ~2.5 months old. The recent insider sale at $105.318 suggests early investors are taking profits. The expiration of lock-up periods could flood the market with supply, creating downward pressure on the share price.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ol></p>
+<p><li><strong>Starship Orbital Flight Success</strong> <code>#near-term</code></li></p>
+<p><p>A fully successful orbital test flight and booster recovery would be a massive positive catalyst, validating the technology and de-risking the core growth story.</p></p>
+<p><li><strong>Starlink Subscriber Milestone Announcement</strong> <code>#near-term</code></li></p>
+<p><p>Any announcement of a significant increase in Starlink subscribers or a major enterprise/government contract (e.g., Starshield) would provide tangible evidence of the business model's traction.</p></p>
+<p><li><strong>Q2/Q3 Earnings Release (First as Public Co.)</strong> <code>#near-term</code></li></p>
+<p><p>The first earnings report as a public company will be a major catalyst. If the company provides strong forward guidance and reveals better-than-expected margins, the stock could re-rate higher.</p></p>
+<p><li><strong>NASA or DoD Contract Award</strong> <code>#medium-term</code></li></p>
+<p><p>Winning a major new contract for lunar landers, Mars sample return, or national security launches would solidify the revenue backlog and demonstrate government trust.</p></p>
+<p><li><strong>Starlink Direct-to-Cell Service Launch</strong> <code>#medium-term</code></li></p>
+<p><p>Commercial launch of the direct-to-cellphone service would open a massive new TAM (Total Addressable Market) and disrupt the traditional telecom industry.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td><strong>Rating: HOLD</strong></td><td><strong>Conviction: Medium</strong></td></tr></p>
+<p></table></p>
+
+<p><p>SPCX is a revolutionary company with a dominant competitive position, but the current valuation at $139.63 (Market Cap $1.83T) leaves little room for error. The stock has already shown significant volatility, dropping 38% from its high. While the long-term story is compelling, the lack of fundamental data and the high execution risk associated with Starship and Starlink's growth warrant a cautious approach.</p></p>
+
+<p><p>We recommend investors wait for a pullback towards the $120-$125 support level or for the first earnings report to provide clarity on fundamentals before establishing a position. The risk/reward is balanced at current levels, but not compelling enough to initiate a new buy.</p></p>
+
+<p><p><strong>12-Month Price Target: $155.00</strong></p></p>
+<p><p>This target implies a ~11% upside from the current price of $139.63. It assumes the company executes on its near-term milestones (Starship test, Starlink growth) without major setbacks, allowing the stock to recover from its recent oversold condition but not re-test its all-time highs.</p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>SPCX — Space Exploration Technologies Corp.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 15:06</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>SPCX</td></tr></p>
+<p><tr><td>Name</td><td>Space Exploration Technologies Corp.</td></tr></p>
+<p><tr><td>Sector</td><td>Industrials</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>—</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>—</td></tr></p>
+<p><tr><td>Employees</td><td>22,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics</h2></p>
+
+<p><p><em>Metrics data not available.</em></p></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>143.8</td><td>145.1</td><td>139.8</td><td>141.3</td><td>120,282,152</td></tr></p>
+<p><tr><td>2026-08-14</td><td>142.9</td><td>144.0</td><td>135.5</td><td>140.0</td><td>96,727,761</td></tr></p>
+<p><tr><td>2026-08-17</td><td>140.0</td><td>149.8</td><td>139.6</td><td>146.2</td><td>116,675,369</td></tr></p>
+<p><tr><td>2026-08-18</td><td>140.7</td><td>146.5</td><td>139.4</td><td>143.3</td><td>84,190,976</td></tr></p>
+<p><tr><td>2026-08-19</td><td>145.0</td><td>145.0</td><td>136.7</td><td>139.7</td><td>76,612,316</td></tr></p>
+<p><tr><td>2026-08-20</td><td>137.3</td><td>137.9</td><td>130.4</td><td>134.0</td><td>119,813,167</td></tr></p>
+<p><tr><td>2026-08-21</td><td>134.3</td><td>137.3</td><td>131.2</td><td>137.0</td><td>78,808,308</td></tr></p>
+<p><tr><td>2026-08-24</td><td>134.4</td><td>138.3</td><td>133.1</td><td>135.0</td><td>60,188,375</td></tr></p>
+<p><tr><td>2026-08-25</td><td>136.9</td><td>139.8</td><td>136.1</td><td>137.9</td><td>53,075,008</td></tr></p>
+<p><tr><td>2026-08-26</td><td>137.0</td><td>140.2</td><td>135.1</td><td>139.6</td><td>61,380,487</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-14</td></tr></p>
+<p><tr><td>2026-08-14</td></tr></p>
+<p><tr><td>2026-08-14</td></tr></p>
+<p><tr><td>2026-08-13</td></tr></p>
+<p><tr><td>2026-08-11</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-08-04</td></tr></p>
+<p><tr><td>2026-06-26</td></tr></p>
+<p></table></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 15:06</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 15:06 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/SPCX.html">SPCX</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>

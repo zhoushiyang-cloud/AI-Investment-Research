@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMZN — Investment Research Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+    --buy: #3fb950; --sell: #f85149; --hold: #d2991d;
+    --callout-abstract: #1a2a3a; --callout-info: #1a2a3a;
+    --callout-warning: #2a1a0a; --callout-tip: #1a2a1a;
+    --callout-quote: #1a1a2a;
+    --h1: #fff; --h2: #e0e0e0; --strong: #fff;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+    --text: #1f2328; --muted: #656d76; --accent: #0969da;
+    --buy: #1a7f37; --sell: #cf222e; --hold: #9a6700;
+    --callout-abstract: #f0f6fc; --callout-info: #f0f6fc;
+    --callout-warning: #fff8e1; --callout-tip: #e6f6e6;
+    --callout-quote: #f3f4f6;
+    --h1: #1f2328; --h2: #2f3640; --strong: #1f2328;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    max-width: 720px; margin: 0 auto; padding: 16px;
+    line-height: 1.6;
+  }
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed; top: 12px; right: 12px; z-index: 999;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.2em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+  }
+  .theme-toggle:active { transform: scale(0.9); }
+  h1 { font-size:1.4em; color:var(--h1); margin:16px 0 8px; }
+  h2 { font-size:1.15em; color:var(--h2); margin:20px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  h3 { font-size:1em; color:var(--h2); margin:14px 0 4px; }
+  h4, h5, h6 { font-size:0.9em; color:var(--muted); margin:10px 0 4px; }
+  p { margin:6px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { color: var(--strong); }
+  em { color: var(--muted); }
+  code { background:var(--card); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+  pre { background:var(--card); padding:12px; border-radius:6px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:3px solid var(--border); padding:4px 12px; margin:8px 0; color:var(--muted); }
+  hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+  ul, ol { padding-left:24px; margin:8px 0; }
+  li { margin:3px 0; }
+
+  /* Tables */
+  .md-table { width:100%; border-collapse:collapse; margin:10px 0; font-size:0.85em; }
+  .md-table th { background:var(--card); color:var(--strong); padding:8px 10px; text-align:left;
+    border:1px solid var(--border); font-weight:600; }
+  .md-table td { padding:6px 10px; border:1px solid var(--border); }
+  .md-table tr:nth-child(even) { background:var(--bg); }
+
+  /* Callouts */
+  .callout {
+    border-radius: 6px; margin: 12px 0; padding: 12px 14px;
+    background: var(--card);
+  }
+  .callout-title { font-weight:700; margin-bottom:6px; font-size:0.9em; }
+  .callout-body { font-size:0.88em; }
+  .callout-body p { margin:4px 0; }
+  .callout-body ul, .callout-body ol { margin:4px 0; padding-left:20px; }
+  .callout-warning { background:var(--callout-warning); }
+  .callout-tip, .callout-success { background:var(--callout-tip); }
+  .callout-quote { background:var(--callout-quote); font-style:italic; }
+  .callout-abstract { background:var(--callout-abstract); }
+  .callout-info { background:var(--callout-info); }
+  .callout-example { background:var(--callout-info); }
+
+  /* Metadata header */
+  .meta-header {
+    background:var(--card); border-radius:8px; padding:12px 16px;
+    margin-bottom:16px; font-size:0.82em; color:var(--muted);
+  }
+  .meta-header span { margin-right:16px; }
+
+  /* Back link */
+  .back-link {
+    display:inline-block; margin-bottom:16px; font-size:0.82em;
+    color:var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width:500px) {
+    body { padding:10px; font-size:0.9em; }
+    h1 { font-size:1.2em; }
+    .md-table { font-size:0.7em; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode" id="themeBtn">☀️</button>
+<a class="back-link" href="javascript:history.back()">← Back</a>
+<div class="meta-header">
+  <span><strong>AMZN</strong></span>
+  <span>Amazon.com, Inc.</span>
+  <span>Consumer Cyclical</span>
+  <span>2026-08-27</span>
+</div>
+<hr>
+
+<h1>📊 AMZN — Amazon.com, Inc.</h1>
+<blockquote><em>Investment Research Report · August 27, 2026</em></blockquote>
+
+<table class="md-table">
+<tr><td><strong>Ticker:</strong> <a href="../companies/AMZN.html">AMZN</a></td><td><strong>Sector:</strong> <a href="../companies/Sector — Consumer Cyclical.html">Sector — Consumer Cyclical</a></td><td><strong>Market Cap:</strong> $2.8T</td></tr>
+</table>
+
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Quick Navigation</div><div class="callout-body"><table class="md-table"></p>
+<p><tr><td>- <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></td><td><a href="../companies/Peer Comparison.html">Peer Comparison</a></td><td><a href="../companies/AMZN Valuation.html">AMZN Valuation</a></td></tr></p>
+<p><tr><td>- <a href="../companies/Sector — Consumer Cyclical.html">Sector — Consumer Cyclical</a></td><td><a href="../companies/Economic Indicators.html">Economic Indicators</a></td></tr></p>
+<p></table></p>
+<p></div></div></p>
+<p><div class="callout callout-abstract" style="border-left:3px solid #58a6ff"><div class="callout-title">📋 Executive Summary</div><div class="callout-body"><ul></p>
+<p><li><strong>AWS re-acceleration is the core thesis.</strong> AWS remains the profit engine, and the market is paying for sustained growth in cloud and AI infrastructure. The current valuation implies confidence in this trajectory.</li></p>
+<p><li><strong>Retail margins are structurally improving.</strong> The North America segment has driven operating leverage, with overall operating margins expanding to 12.1% TTM, a significant improvement from 10.8% in FY2024.</li></p>
+<p><li><strong>Trading below consensus targets.</strong> At $260.28, the stock sits ~21% below the consensus target of $329.07, offering a compelling risk/reward for long-term investors.</li></p>
+<p><li><strong>Capital intensity is the key variable.</strong> TTM free cash flow is negative (-$11.6B) due to heavy AI/data center capex. The market is forgiving this today, but a slowdown in AWS growth could change that narrative quickly.</li></p>
+<p><li><strong>Valuation is reasonable, not cheap.</strong> At 20.7x forward P/E and 11.6x EV/EBITDA, the stock is not a value trap, but it is priced for continued operational excellence.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Business Overview</div><div class="callout-body"><p>Amazon is a diversified technology and retail conglomerate operating through three primary segments:</p></p>
+<p><ul></p>
+<p><li><strong>North America (Retail):</strong> The largest revenue contributor, comprising e-commerce, physical stores, and advertising. This segment is the cash cow, generating significant operating income through high-margin advertising and fulfillment efficiencies.</li></p>
+<p><li><strong>International (Retail):</strong> The global e-commerce arm, which has historically been a margin drag but is now showing signs of profitability improvement.</li></p>
+<p><li><strong>Amazon Web Services (AWS):</strong> The global leader in cloud infrastructure. This is the company's primary profit engine, with industry-leading operating margins and a critical growth vector in AI/ML services.</li></p>
+<p></ul></p>
+
+<p><p><strong>Competitive Position:</strong> Amazon holds a dominant position in e-commerce and is the undisputed leader in cloud infrastructure, competing with <a href="../companies/MSFT.html">MSFT</a> (Azure) and <a href="../companies/GOOGL.html">GOOGL</a> (GCP). Its competitive moat is built on scale, logistics network, and the Prime ecosystem. The company is also a top-tier player in digital advertising, competing with <a href="../companies/META.html">META</a> and <a href="../companies/GOOGL.html">GOOGL</a>.</p></p>
+<p></div></div></p>
+<p><div class="callout callout-example" style="border-left:3px solid #3fb950"><div class="callout-title">📊 Financial Analysis</div><div class="callout-body"><ul></p>
+<p><li><strong>Revenue Growth:</strong> TTM revenue stands at $775.7B, up from $716.9B in FY2025 (an 8.2% increase). This reflects continued growth across retail and, more importantly, acceleration in AWS.</li></p>
+<p><li><strong>Profitability:</strong> The margin story is compelling. TTM operating margin is 12.1% (up from 10.8% in FY2025), and net margin has expanded to 17.4%. This is driven by a mix shift toward high-margin AWS and advertising, plus retail efficiency gains.</li></p>
+<p><li><strong>Cash Flow:</strong> Operating cash flow is robust at $139.5B (FY2025). However, TTM free cash flow is <strong>negative at -$11.6B</strong> due to massive capital expenditures ($131.8B in FY2025). This is a deliberate investment in AI infrastructure and fulfillment, which the market is currently accepting.</li></p>
+<p><li><strong>Balance Sheet:</strong> The balance sheet is solid. Amazon holds $123B in cash and short-term investments against $153B in total debt, resulting in a manageable net debt position. The current ratio is 1.03, indicating adequate short-term liquidity.</li></p>
+<p><li><strong>Key Efficiency Ratios:</strong> The cash conversion cycle is highly negative at -63 days, a testament to its powerful working capital model (collecting cash from customers before paying suppliers). ROE is strong at 30.5%, and ROA is 12.3%.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-info" style="border-left:3px solid #58a6ff"><div class="callout-title">ℹ️ Valuation Assessment</div><div class="callout-body"><ul></p>
+<p><li><strong>Current Multiples:</strong> The stock trades at 20.7x TTM P/E, 3.6x Price/Sales, and 11.6x EV/EBITDA. These are premium multiples to the broader market, reflecting its growth profile and market leadership.</li></p>
+<p><li><strong>Peer Comparison:</strong> Compared to <a href="../companies/BABA.html">BABA</a> (which trades at a significant discount due to idiosyncratic risks), Amazon commands a premium, which is justified by its superior growth, profitability, and diversified business model.</li></p>
+<p><li><strong>Justification:</strong> The valuation is supported by the earnings yield of 4.8% and a PEG ratio of 0.23, suggesting that the market is not fully pricing in the near-term growth rate. The stock is trading 9% above its 50-day MA ($250.88) and 9% above its 200-day MA ($238.53), indicating a healthy uptrend.</li></p>
+<p><li><strong>Target Price Rationale:</strong> Our 12-month price target of <strong>$320</strong> is based on a 24x forward P/E applied to our forward EPS estimate of ~$13.30. This multiple is a slight premium to the current 20.7x, justified by the expected acceleration in AWS growth and continued margin expansion.</li></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-warning" style="border-left:3px solid #d2991d"><div class="callout-title">⚠️ Risks</div><div class="callout-body"><ol></p>
+<p><li><strong>AI Capex Overbuild</strong> <code>#critical</code></li></p>
+<p><p>The negative FCF (-$11.6B TTM) is a direct result of the AI infrastructure arms race. If the ROI on this spending disappoints or if cloud demand softens, the market could re-rate the stock sharply lower.</p></p>
+<p><li><strong>AWS Growth Deceleration</strong> <code>#critical</code></li></p>
+<p><p>The stock's premium multiple is predicated on AWS re-accelerating. Any data point suggesting a slowdown in cloud spending or share loss to <a href="../companies/MSFT.html">MSFT</a> or <a href="../companies/GOOGL.html">GOOGL</a> would be a major negative catalyst.</p></p>
+<p><li><strong>Regulatory & Antitrust Scrutiny</strong> <code>#medium</code></li></p>
+<p><p>Ongoing antitrust cases in the US and EU pose a long-term overhang. A forced breakup or significant operational changes could unlock value but also disrupt the integrated model.</p></p>
+<p><li><strong>Consumer Spending Slowdown</strong> <code>#medium</code></li></p>
+<p><p>As a discretionary retailer, Amazon is exposed to a weakening macro environment. A recession could pressure retail margins and slow advertising growth, which is a key profit driver.</p></p>
+<p><li><strong>Margin Compression from Fulfillment Costs</strong> <code>#low</code></li></p>
+<p><p>Rising labor and logistics costs could erode the recent operating margin gains if not offset by efficiency improvements and higher-margin revenue streams.</p></p>
+<p></ol></p>
+<p></div></div></p>
+<p><div class="callout callout-tip" style="border-left:3px solid #3fb950"><div class="callout-title">💡 Catalysts</div><div class="callout-body"><ul></p>
+<p><li><strong>AWS AI Revenue Inflection</strong> <code>#near-term</code></li></p>
+<p><p>Continued strong results from AWS, particularly around its AI/ML services (Bedrock, SageMaker), would be the single biggest catalyst to drive the stock higher.</p></p>
+<p><li><strong>Advertising Growth</strong> <code>#near-term</code></li></p>
+<p><p>Amazon's advertising business is growing faster than retail and carries significantly higher margins. Continued strength here will drive upward earnings revisions.</p></p>
+<p><li><strong>Retail Margin Expansion</strong> <code>#near-term</code></li></p>
+<p><p>Further improvements in North America and International segment operating margins, driven by regionalization of the fulfillment network, would boost overall profitability.</p></p>
+<p><li><strong>New AI Products (e.g., Alexa+)</strong> <code>#medium-term</code></li></p>
+<p><p>Successful monetization of AI-powered consumer products could open new revenue streams and strengthen the ecosystem, providing a longer-term tailwind.</p></p>
+<p></ul></p>
+<p></div></div></p>
+<p><div class="callout callout-quote" style="border-left:3px solid #8b949e"><div class="callout-title">💬 Recommendation</div><div class="callout-body"><p><strong>Rating: Buy</strong> (Conviction: High)</p></p>
+
+<p><p>Amazon is executing well across its three core pillars. The market is focused on the near-term negative FCF, but we believe this is a prudent investment in the next wave of computing. The margin story is undeniable, and the valuation is reasonable for a company with this growth profile and competitive positioning. We see a clear path to $320 over the next 12 months, driven by AWS re-acceleration and continued retail margin expansion.</p></p>
+
+<p><p><strong>12-Month Price Target: $320.00</strong></p></p>
+
+
+<p></div></div>---</p>
+
+<p><div class="callout callout-note" style="border-left:3px solid #58a6ff"><div class="callout-title">📝 📋 Financial Data Appendix <em>(click to expand)</em></div><div class="callout-body"></p>
+<p><h1>AMZN — Amazon.com, Inc.</h1></p>
+
+<p><blockquote><em>Auto-generated: 2026-08-27 16:06</em></blockquote></p>
+
+<p><h2>Company Overview</h2></p>
+
+<p><h3>Profile</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Ticker</td><td>AMZN</td></tr></p>
+<p><tr><td>Name</td><td>Amazon.com, Inc.</td></tr></p>
+<p><tr><td>Sector</td><td>Consumer Cyclical</td></tr></p>
+<p><tr><td>Industry</td><td>—</td></tr></p>
+<p><tr><td>Market Cap</td><td>$2.8T</td></tr></p>
+<p><tr><td>Enterprise Value</td><td>$2.9T</td></tr></p>
+<p><tr><td>Employees</td><td>1,576,000</td></tr></p>
+<p><tr><td>Country</td><td>—</td></tr></p>
+<p><tr><td>Website</td><td>—</td></tr></p>
+<p></table></p>
+
+<p><h2>Key Metrics (TTM)</h2></p>
+
+<p><h3>Valuation & Profitability</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>P/E Ratio</td><td>20.7</td></tr></p>
+<p><tr><td>P/B Ratio</td><td>5.1</td></tr></p>
+<p><tr><td>P/S Ratio</td><td>3.6</td></tr></p>
+<p><tr><td>P/FCF Ratio</td><td>-240.8</td></tr></p>
+<p><tr><td>PEG Ratio</td><td>0.2</td></tr></p>
+<p><tr><td>EV/EBITDA</td><td>11.6</td></tr></p>
+<p><tr><td>EV/Sales</td><td>3.8</td></tr></p>
+<p><tr><td>ROE</td><td>30.5%</td></tr></p>
+<p><tr><td>ROA</td><td>12.3%</td></tr></p>
+<p><tr><td>ROIC</td><td>8.5%</td></tr></p>
+<p><tr><td>Gross Margin</td><td>50.8%</td></tr></p>
+<p><tr><td>Operating Margin</td><td>12.1%</td></tr></p>
+<p><tr><td>Net Margin</td><td>17.4%</td></tr></p>
+<p><tr><td>EBITDA Margin</td><td>32.7%</td></tr></p>
+<p><tr><td>Debt/Equity</td><td>0.4</td></tr></p>
+<p><tr><td>Current Ratio</td><td>1.0</td></tr></p>
+<p><tr><td>Dividend Yield</td><td>0.0%</td></tr></p>
+<p><tr><td>Earnings Yield</td><td>4.8%</td></tr></p>
+<p><tr><td>FCF Yield</td><td>-0.4%</td></tr></p>
+<p></table></p>
+
+<p><h2>Financial Statements</h2></p>
+
+<p><h3>Income Statement (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_revenue</th><th>gross_profit</th><th>operating_income</th><th>net_income</th><th>eps_diluted</th><th>ebitda</th><th>cost_of_revenue</th><th>r_and_d</th></tr></p>
+<p><tr><td>2025-12-31</td><td>716,924,000,000</td><td>360,510,000,000</td><td>79,975,000,000</td><td>77,670,000,000</td><td>7.2</td><td>165,341,000,000</td><td>356,414,000,000</td><td>108,521,000,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>637,959,000,000</td><td>311,671,000,000</td><td>68,593,000,000</td><td>59,248,000,000</td><td>5.5</td><td>123,815,000,000</td><td>326,288,000,000</td><td>88,544,000,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>574,785,000,000</td><td>270,046,000,000</td><td>36,852,000,000</td><td>30,425,000,000</td><td>2.9</td><td>89,402,000,000</td><td>304,739,000,000</td><td>85,622,000,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>513,983,000,000</td><td>225,152,000,000</td><td>12,248,000,000</td><td>-2,722,000,000</td><td>-0.3</td><td>38,352,000,000</td><td>288,831,000,000</td><td>73,213,000,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>469,822,000,000</td><td>197,478,000,000</td><td>24,879,000,000</td><td>33,364,000,000</td><td>3.2</td><td>74,393,000,000</td><td>272,344,000,000</td><td>56,052,000,000</td></tr></p>
+<p></table></p>
+
+<p><h3>Balance Sheet (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>total_assets</th><th>total_liabilities</th><th>total_equity</th><th>total_debt</th><th>net_debt</th><th>cash_and_equivalents</th><th>goodwill_intangibles</th></tr></p>
+<p><tr><td>2025-12-31</td><td>818,042,000,000</td><td>406,977,000,000</td><td>411,065,000,000</td><td>152,987,000,000</td><td>66,177,000,000</td><td>86,810,000,000</td><td>32,470,000,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>624,894,000,000</td><td>338,924,000,000</td><td>285,970,000,000</td><td>130,900,000,000</td><td>52,121,000,000</td><td>78,779,000,000</td><td>31,676,000,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>527,854,000,000</td><td>325,979,000,000</td><td>201,875,000,000</td><td>135,611,000,000</td><td>62,224,000,000</td><td>73,387,000,000</td><td>30,476,000,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>462,675,000,000</td><td>316,632,000,000</td><td>146,043,000,000</td><td>140,118,000,000</td><td>86,230,000,000</td><td>53,888,000,000</td><td>26,385,000,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>420,549,000,000</td><td>282,304,000,000</td><td>138,245,000,000</td><td>116,395,000,000</td><td>80,175,000,000</td><td>36,220,000,000</td><td>20,478,000,000</td></tr></p>
+<p></table></p>
+
+<p><h3>Cash Flow (Annual)</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>period_ending</th><th>operating_cash_flow</th><th>capital_expenditure</th><th>free_cash_flow</th><th>depreciation_amortization</th></tr></p>
+<p><tr><td>2025-12-31</td><td>139,514,000,000</td><td>-131,819,000,000</td><td>7,695,000,000</td><td>65,756,000,000</td></tr></p>
+<p><tr><td>2024-12-31</td><td>115,877,000,000</td><td>-82,999,000,000</td><td>32,878,000,000</td><td>52,795,000,000</td></tr></p>
+<p><tr><td>2023-12-31</td><td>84,946,000,000</td><td>-52,729,000,000</td><td>32,217,000,000</td><td>48,663,000,000</td></tr></p>
+<p><tr><td>2022-12-31</td><td>46,752,000,000</td><td>-63,645,000,000</td><td>-16,893,000,000</td><td>41,921,000,000</td></tr></p>
+<p><tr><td>2021-12-31</td><td>46,327,000,000</td><td>-61,053,000,000</td><td>-14,726,000,000</td><td>34,296,000,000</td></tr></p>
+<p></table></p>
+
+<p><h2>Current Price</h2></p>
+
+<p><h3>Quote</h3></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>Metric</th><th>Value</th></tr></p>
+<p><tr><td>Last Price</td><td>$260.3</td></tr></p>
+<p><tr><td>Open</td><td>$261.3</td></tr></p>
+<p><tr><td>High</td><td>$262.1</td></tr></p>
+<p><tr><td>Low</td><td>$258.2</td></tr></p>
+<p><tr><td>Previous Close</td><td>$261.1</td></tr></p>
+<p><tr><td>Change %</td><td>-0.3%</td></tr></p>
+<p><tr><td>Volume</td><td>20,669,810</td></tr></p>
+<p><tr><td>52-Week High</td><td>$287.2</td></tr></p>
+<p><tr><td>52-Week Low</td><td>$196.0</td></tr></p>
+<p><tr><td>50-Day MA</td><td>$250.9</td></tr></p>
+<p><tr><td>200-Day MA</td><td>$238.5</td></tr></p>
+<p><tr><td>Market Cap</td><td>$2.8T</td></tr></p>
+<p></table></p>
+
+<p><h2>Price History (K-Line)</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>date</th><th>open</th><th>high</th><th>low</th><th>close</th><th>volume</th></tr></p>
+<p><tr><td>2026-08-13</td><td>267.2</td><td>269.6</td><td>264.7</td><td>265.1</td><td>32,170,200</td></tr></p>
+<p><tr><td>2026-08-14</td><td>264.9</td><td>265.8</td><td>262.4</td><td>262.6</td><td>27,251,700</td></tr></p>
+<p><tr><td>2026-08-17</td><td>265.4</td><td>265.8</td><td>258.3</td><td>261.3</td><td>43,896,516</td></tr></p>
+<p><tr><td>2026-08-18</td><td>260.6</td><td>262.2</td><td>257.7</td><td>259.4</td><td>33,171,300</td></tr></p>
+<p><tr><td>2026-08-19</td><td>260.9</td><td>266.4</td><td>258.6</td><td>265.8</td><td>35,762,439</td></tr></p>
+<p><tr><td>2026-08-20</td><td>263.2</td><td>263.8</td><td>259.5</td><td>260.1</td><td>28,374,100</td></tr></p>
+<p><tr><td>2026-08-21</td><td>260.7</td><td>261.1</td><td>257.0</td><td>258.6</td><td>35,723,000</td></tr></p>
+<p><tr><td>2026-08-24</td><td>259.6</td><td>263.3</td><td>259.1</td><td>262.1</td><td>28,070,500</td></tr></p>
+<p><tr><td>2026-08-25</td><td>262.5</td><td>263.9</td><td>259.8</td><td>261.1</td><td>25,550,214</td></tr></p>
+<p><tr><td>2026-08-26</td><td>261.3</td><td>262.1</td><td>258.2</td><td>260.3</td><td>21,528,373</td></tr></p>
+<p></table></p>
+
+
+<p><h2>Analyst Estimates</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>symbol</th><th>target_high</th><th>target_low</th><th>target_consensus</th><th>target_median</th></tr></p>
+<p><tr><td>AMZN</td><td>390.0</td><td>300.0</td><td>329.1</td><td>325.0</td></tr></p>
+<p></table></p>
+
+<p><h2>Recent SEC Filings</h2></p>
+
+<p><table class="md-table"></p>
+<p><tr><th>filing_date</th></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-25</td></tr></p>
+<p><tr><td>2026-08-19</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-18</td></tr></p>
+<p><tr><td>2026-08-14</td></tr></p>
+<p></table></p>
+
+<p><h2>Peers</h2></p>
+
+<p><p>symbol='BABA' name='Alibaba Group Holding Limited' price=119.83 market_cap=287217185855, symbol='CASY' name="Casey's General Stores, Inc." price=807.12 market_cap=29867394888, symbol='GME' name='GameStop Corp.' price=17.97 market_cap=8062981888, symbol='ETSY' name='Etsy, Inc.' price=81.74 market_cap=7756817922, symbol='RH' name='Rh' price=148.57 market_cap=2808121570, symbol='RVLV' name='Revolve Group, Inc.' price=23.36 market_cap=1666846563, symbol='RERE' name='ATRenew Inc.' price=4.0 market_cap=1450601874, symbol='LQDT' name='Liquidity Services, Inc.' price=41.89 market_cap=1306181767, symbol='LITB' name='LightInTheBox Holding Co., Ltd.' price=3.092 market_cap=28257508, symbol='TLF' name='Tandy Leather Factory, Inc.' price=2.6001 market_cap=21174094</p></p>
+
+<p><h2>Research Framework</h2></p>
+
+<p><p>> [!abstract] Moat Assessment</p></p>
+<p><blockquote><em>What protects this company from competitors?</em><br>1. <strong>Switching Costs</strong> — how hard is it for customers to leave?<br>2. <strong>Network Effects</strong> — does each user make it more valuable?<br>3. <strong>Intangible Assets</strong> — patents, brand, regulatory moats?<br>4. <strong>Cost Advantage</strong> — structural cost position vs peers?<br>5. <strong>Efficient Scale</strong> — is the market naturally limited?</blockquote></p>
+
+<p><p>> [!warning] Risks</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Risk</td><td>Severity</td><td>Probability</td><td><br></td><td>---</td><td>------</td><td>----------</td><td>-------------</td><td><br></td><td>1</td><td><em>Describe risk...</em></td><td><code>#critical</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe risk...</em></td><td><code>#medium</code></td><td>High / Med / Low</td><td><br></td><td>3</td><td><em>Describe risk...</em></td><td><code>#low</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!tip] Catalysts</p></p>
+<table class="md-table">
+<tr><td><blockquote></td><td>#</td><td>Catalyst</td><td>Timeline</td><td>Impact</td><td><br></td><td>---</td><td>----------</td><td>----------</td><td>--------</td><td><br></td><td>1</td><td><em>Describe catalyst...</em></td><td><code>#near-term</code></td><td>High / Med / Low</td><td><br></td><td>2</td><td><em>Describe catalyst...</em></td><td><code>#medium-term</code></td><td>High / Med / Low</td><td></blockquote></td></tr>
+</table>
+
+<p><p>> [!question] Investment Thesis</p></p>
+<p><blockquote>- <strong>Position:</strong> [Long / Neutral / Avoiding]<br>- <strong>Fair Value Estimate:</strong> $___ (margin of safety: ___%)<br>- <strong>Key Assumption Being Priced In:</strong> ___<br>- <strong>What Would Change My Mind:</strong> ___</blockquote></p>
+
+<p><p><em>Last data refresh: 2026-08-27 16:06</em></p></p>
+
+
+<p></div></div>---</p>
+<p><em>Report generated 2026-08-27 16:06 · AI Investment System</em></p>
+<p><em>Related: <a href="../companies/AMZN.html">AMZN</a> · <a href="../companies/Peer Comparison.html">Peer Comparison</a> · <a href="../companies/Investment Dashboard.html">Investment Dashboard</a></em></p>
+<a class="back-link" href="javascript:history.back()" style="margin-top:24px;display:block;">← Back</a>
+
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+    }
+  })();
+  function toggleTheme() {
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+      document.getElementById('themeBtn').textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('themeBtn').textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+</script>
+
+</body>
+</html>
